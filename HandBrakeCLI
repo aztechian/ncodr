@@ -1,0 +1,510 @@
+#!/usr/bin/env bash
+
+MAX=12
+
+function run() {
+  header
+  for i in $(seq 1 $MAX); do
+    sleep 1
+    let t=$(($MAX-$i))
+    pct=$(echo "($i / $MAX) * 100" | bc -l)
+    let fps=$((${RANDOM}%67))
+    let fpsd=$((${RANDOM}%100))
+    echo -ne "\rEncoding: task 1 of 1, ${pct:0:4} % (20.63 fps, avg ${fps}.${fpsd} fps, ETA 00h00m${t}s)[15:17:06] h264: \"Chapter 2\" (2) at frame 15015 time 56367842"
+  done
+  sleep 2
+  echo ""
+  echo "Finished!"
+}
+
+function header() {
+  cat <<-'EOF'
+  15:02:16] hb_init: starting libhb thread
+  [15:02:16] thread 7f9ac716f700 started ("libhb")
+  HandBrake svn7412 (2015082501) - Linux x86_64 - https://handbrake.fr
+  8 CPUs detected
+  Opening Storks...
+  [15:02:16] CPU: Intel(R) Xeon(R) CPU E31230 @ 3.20GHz
+  [15:02:16]  - Intel microarchitecture Sandy Bridge
+  [15:02:16]  - logical processor count: 8
+  [15:02:16] OpenCL: library not available
+  [15:02:16] hb_scan: path=Storks, title_index=0
+  [15:02:16] scan: BD has 16 title(s)
+  [15:02:16] bd: scanning title 1
+  [15:02:16] bd: playlist 00010.MPLS
+  [15:02:16] bd: duration is 00:00:00 (625 ms)
+  [15:02:16] bd: ignoring title (too short)
+  [15:02:16] bd: scanning title 2
+  [15:02:16] bd: playlist 00013.MPLS
+  [15:02:16] bd: duration is 00:00:11 (11011 ms)
+  [15:02:16] bd: video id=0x1011, stream type=H.264, format 1080p
+  [15:02:16] bd: aspect = 16:9
+  [15:02:16] bd: audio id=0x1100, lang=English (AC3), 3cc=eng
+  [15:02:16] bd: chap 1 packet=768, 10760 ms
+  [15:02:16] bd: chap 2 packet=14281152, 250 ms
+  [15:02:16] bd: title 2 has 2 chapters
+  [15:02:16] bd: scanning title 3
+  [15:02:16] bd: playlist 00014.MPLS
+  [15:02:16] bd: duration is 00:00:07 (7007 ms)
+  [15:02:16] bd: ignoring title (too short)
+  [15:02:16] bd: scanning title 4
+  [15:02:16] bd: playlist 00017.MPLS
+  [15:02:16] bd: duration is 00:00:08 (8008 ms)
+  [15:02:16] bd: ignoring title (too short)
+  [15:02:16] bd: scanning title 5
+  [15:02:16] bd: playlist 00020.MPLS
+  [15:02:16] bd: duration is 00:00:04 (4963 ms)
+  [15:02:16] bd: ignoring title (too short)
+  [15:02:16] bd: scanning title 6
+  [15:02:16] bd: playlist 00021.MPLS
+  [15:02:16] bd: duration is 00:02:34 (154195 ms)
+  [15:02:16] bd: video id=0x1011, stream type=H.264, format 1080p
+  [15:02:16] bd: aspect = 16:9
+  [15:02:16] bd: audio id=0x1100, lang=English (AC3), 3cc=eng
+  [15:02:16] bd: chap 1 packet=768, 153945 ms
+  [15:02:16] bd: chap 2 packet=246744768, 250 ms
+  [15:02:16] bd: title 6 has 2 chapters
+  [15:02:16] bd: scanning title 7
+  [15:02:16] bd: playlist 00022.MPLS
+  [15:02:16] bd: duration is 00:01:05 (65065 ms)
+  [15:02:16] bd: video id=0x1011, stream type=H.264, format 1080p
+  [15:02:16] bd: aspect = 16:9
+  [15:02:16] bd: audio id=0x1100, lang=English (AC3), 3cc=eng
+  [15:02:16] bd: chap 1 packet=768, 64814 ms
+  [15:02:16] bd: chap 2 packet=87435072, 250 ms
+  [15:02:16] bd: title 7 has 2 chapters
+  [15:02:16] bd: scanning title 8
+  [15:02:16] bd: playlist 00023.MPLS
+  [15:02:16] bd: duration is 00:01:21 (81122 ms)
+  [15:02:16] bd: video id=0x1011, stream type=H.264, format 1080p
+  [15:02:16] bd: aspect = 16:9
+  [15:02:16] bd: audio id=0x1100, lang=English (AC3), 3cc=eng
+  [15:02:16] bd: chap 1 packet=768, 80872 ms
+  [15:02:16] bd: chap 2 packet=128481408, 250 ms
+  [15:02:16] bd: title 8 has 2 chapters
+  [15:02:16] bd: scanning title 9
+  [15:02:16] bd: playlist 00024.MPLS
+  [15:02:16] bd: duration is 00:02:18 (138513 ms)
+  [15:02:16] bd: video id=0x1011, stream type=H.264, format 1080p
+  [15:02:16] bd: aspect = 16:9
+  [15:02:16] bd: audio id=0x1100, lang=English (AC3), 3cc=eng
+  [15:02:16] bd: chap 1 packet=768, 138263 ms
+  [15:02:16] bd: chap 2 packet=223168512, 250 ms
+  [15:02:16] bd: title 9 has 2 chapters
+  [15:02:16] bd: scanning title 10
+  [15:02:16] bd: playlist 00025.MPLS
+  [15:02:16] bd: duration is 00:01:59 (119319 ms)
+  [15:02:16] bd: video id=0x1011, stream type=H.264, format 1080i
+  [15:02:16] bd: aspect = 16:9
+  [15:02:16] bd: audio id=0x1100, lang=English (AC3), 3cc=eng
+  [15:02:16] bd: chap 1 packet=768, 119119 ms
+  [15:02:16] bd: chap 2 packet=190118208, 200 ms
+  [15:02:16] bd: title 10 has 2 chapters
+  [15:02:16] bd: scanning title 11
+  [15:02:16] bd: playlist 00026.MPLS
+  [15:02:16] bd: duration is 00:02:09 (129504 ms)
+  [15:02:16] bd: video id=0x1011, stream type=H.264, format 1080p
+  [15:02:16] bd: aspect = 16:9
+  [15:02:16] bd: audio id=0x1100, lang=English (AC3), 3cc=eng
+  [15:02:16] bd: chap 1 packet=768, 129254 ms
+  [15:02:16] bd: chap 2 packet=203164416, 250 ms
+  [15:02:16] bd: title 11 has 2 chapters
+  [15:02:16] bd: scanning title 12
+  [15:02:16] bd: playlist 00052.MPLS
+  [15:02:16] bd: duration is 00:00:23 (23231 ms)
+  [15:02:16] bd: video id=0x1011, stream type=H.264, format 1080p
+  [15:02:16] bd: aspect = 16:9
+  [15:02:16] bd: chap 1 packet=768, 22981 ms
+  [15:02:16] bd: chap 2 packet=29705472, 250 ms
+  [15:02:16] bd: title 12 has 2 chapters
+  [15:02:16] bd: scanning title 13
+  [15:02:16] bd: playlist 00100.MPLS
+  [15:02:16] bd: duration is 01:26:57 (5217795 ms)
+  [15:02:16] bd: video id=0x1011, stream type=H.264, format 1080p
+  [15:02:16] bd: aspect = 16:9
+  [15:02:16] bd: audio id=0x711100, lang=English (DTS), 3cc=eng
+  [15:02:16] bd: audio id=0x1100, lang=English (DTS-HD MA), 3cc=eng
+  [15:02:16] bd: audio id=0x1101, lang=English (AC3), 3cc=eng
+  [15:02:16] bd: audio id=0x1102, lang=Francais (AC3), 3cc=fra
+  [15:02:16] bd: audio id=0x1103, lang=Espanol (AC3), 3cc=spa
+  [15:02:16] bd: audio id=0x1104, lang=Espanol (AC3), 3cc=spa
+  [15:02:16] bd: subtitle id=0x1200, lang=English, 3cc=eng
+  [15:02:16] bd: subtitle id=0x1201, lang=Francais, 3cc=fra
+  [15:02:16] bd: subtitle id=0x1202, lang=Espanol, 3cc=spa
+  [15:02:16] bd: subtitle id=0x1203, lang=Francais, 3cc=fra
+  [15:02:16] bd: subtitle id=0x1204, lang=Espanol, 3cc=spa
+  [15:02:16] bd: chap 1 packet=768, 626500 ms
+  [15:02:16] bd: chap 2 packet=2452713984, 609233 ms
+  [15:02:16] bd: chap 3 packet=4806968256, 588671 ms
+  [15:02:16] bd: chap 4 packet=7138112448, 545628 ms
+  [15:02:16] bd: chap 5 packet=9255906240, 654445 ms
+  [15:02:16] bd: chap 6 packet=11784536448, 539956 ms
+  [15:02:16] bd: chap 7 packet=13839171840, 461586 ms
+  [15:02:16] bd: chap 8 packet=15617532480, 442275 ms
+  [15:02:16] bd: chap 9 packet=17403265152, 385301 ms
+  [15:02:16] bd: chap 10 packet=18919680960, 363946 ms
+  [15:02:16] bd: chap 11 packet=20248635264, 250 ms
+  [15:02:16] bd: title 13 has 11 chapters
+  [15:02:16] bd: scanning title 14
+  [15:02:16] bd: playlist 00120.MPLS
+  [15:02:16] bd: duration is 00:00:01 (1001 ms)
+  [15:02:16] bd: ignoring title (too short)
+  [15:02:16] bd: scanning title 15
+  [15:02:16] bd: playlist 00431.MPLS
+  [15:02:16] bd: duration is 00:00:04 (4004 ms)
+  [15:02:16] bd: ignoring title (too short)
+  [15:02:16] bd: scanning title 16
+  [15:02:16] bd: playlist 00432.MPLS
+  [15:02:16] bd: duration is 00:00:04 (4004 ms)
+  [15:02:16] bd: ignoring title (too short)
+  [15:02:16] scan: decoding previews for title 2
+  [15:02:16] scan: title angle(s) 1
+  [15:02:16] scan: audio 0x1100: ac3, rate=48000Hz, bitrate=448000 English (AC3) (5.1 ch)
+  Scanning title 1 of 9, preview 8, 54.44 %[15:02:17] scan: 10 previews, 1920x1080, 23.976 fps, autocrop = 0/0/0/0, aspect 16:9, PAR 1:1
+  [15:02:17] stream: 5 good frames, 0 errors (0%)
+  [15:02:17] scan: decoding previews for title 6
+  [15:02:17] scan: title angle(s) 1
+  Scanning title 2 of 9, preview 1, 56.11 %[15:02:17] scan: audio 0x1100: ac3, rate=48000Hz, bitrate=448000 English (AC3) (5.1 ch)
+  Scanning title 2 of 9, preview 10, 61.11 %[15:02:18] scan: 10 previews, 1920x1080, 23.976 fps, autocrop = 138/138/0/0, aspect 16:9, PAR 1:1
+  [15:02:18] stream: 4 good frames, 0 errors (0%)
+  [15:02:18] scan: decoding previews for title 7
+  [15:02:18] scan: title angle(s) 1
+  [15:02:18] scan: audio 0x1100: ac3, rate=48000Hz, bitrate=448000 English (AC3) (5.1 ch)
+  Scanning title 3 of 9, preview 9, 66.11 %[15:02:19] scan: 10 previews, 1920x1080, 23.976 fps, autocrop = 140/140/0/0, aspect 16:9, PAR 1:1
+  [15:02:19] stream: 5 good frames, 0 errors (0%)
+  [15:02:19] scan: decoding previews for title 8
+  [15:02:19] scan: title angle(s) 1
+  Scanning title 4 of 9, preview 1, 67.22 %[15:02:19] scan: audio 0x1100: ac3, rate=48000Hz, bitrate=192000 English (AC3) (2.0 ch) (Dolby Surround)
+  [15:02:19] Broken timestamps detected.  Reordering.
+  Scanning title 4 of 9, preview 10, 72.22 %[15:02:20] scan: 10 previews, 1920x1080, 23.976 fps, autocrop = 142/142/0/0, aspect 16:9, PAR 1:1
+  [15:02:20] stream: 5 good frames, 0 errors (0%)
+  [15:02:20] scan: decoding previews for title 9
+  [15:02:20] scan: title angle(s) 1
+  Scanning title 5 of 9, preview 1, 72.78 %[15:02:20] scan: audio 0x1100: ac3, rate=48000Hz, bitrate=448000 English (AC3) (5.1 ch)
+  Scanning title 5 of 9, preview 1, 72.78 %[15:02:20] Broken timestamps detected.  Reordering.
+  Scanning title 5 of 9, preview 7, 76.11 %[15:02:21] scan: 10 previews, 1920x1080, 23.976 fps, autocrop = 142/142/0/0, aspect 16:9, PAR 1:1
+  [15:02:21] stream: 5 good frames, 0 errors (0%)
+  [15:02:21] scan: decoding previews for title 10
+  [15:02:21] scan: title angle(s) 1
+  Scanning title 6 of 9, preview 1, 78.33 %[15:02:21] scan: audio 0x1100: ac3, rate=48000Hz, bitrate=192000 English (AC3) (2.0 ch) (Dolby Surround)
+  Scanning title 6 of 9, preview 1, 78.33 %[15:02:22] Broken timestamps detected.  Reordering.
+  Scanning title 6 of 9, preview 9, 82.78 %[15:02:23] scan: 10 previews, 1920x1080, 29.970 fps, autocrop = 0/0/0/0, aspect 16:9, PAR 1:1
+  [15:02:23] stream: 7 good frames, 0 errors (0%)
+  [15:02:23] scan: decoding previews for title 11
+  [15:02:23] scan: title angle(s) 1
+  [15:02:23] scan: audio 0x1100: ac3, rate=48000Hz, bitrate=192000 English (AC3) (2.0 ch) (Dolby Surround)
+  Scanning title 7 of 9, preview 7, 87.22 %[15:02:24] scan: 10 previews, 1920x1080, 23.976 fps, autocrop = 0/0/0/0, aspect 16:9, PAR 1:1
+  [15:02:24] stream: 5 good frames, 0 errors (0%)
+  [15:02:24] scan: decoding previews for title 12
+  [15:02:24] scan: title angle(s) 1
+  Scanning title 8 of 9, preview 9, 93.89 %[15:02:25] scan: 10 previews, 1920x1080, 23.976 fps, autocrop = 0/0/0/0, aspect 16:9, PAR 1:1
+  [15:02:25] stream: 5 good frames, 0 errors (0%)
+  [15:02:25] scan: decoding previews for title 13
+  [15:02:25] scan: title angle(s) 1
+  [15:02:25] scan: audio 0x711100: dca, rate=48000Hz, bitrate=1536000 English (DTS) (5.1 ch)
+  [dca @ 0x7f9ac0184760] Not a valid DCA frame
+  [dca @ 0x7f9ac0184760] Not a valid DCA frame
+  [dca @ 0x7f9ac0184760] Not a valid DCA frame
+  [15:02:25] scan: audio 0x1100: dca, rate=48000Hz, bitrate=1536000 English (DTS-HD MA) (5.1 ch)
+  [15:02:25] scan: audio 0x1101: ac3, rate=48000Hz, bitrate=448000 English (AC3) (5.1 ch)
+  [15:02:25] scan: audio 0x1102: ac3, rate=48000Hz, bitrate=448000 Francais (AC3) (5.1 ch)
+  [15:02:25] scan: audio 0x1103: ac3, rate=48000Hz, bitrate=448000 Espanol (AC3) (5.1 ch)
+  [15:02:25] scan: audio 0x1104: ac3, rate=48000Hz, bitrate=448000 Espanol (AC3) (5.1 ch)
+  Scanning title 9 of 9, preview 8, 98.89 %[15:02:26] scan: 10 previews, 1920x1080, 23.976 fps, autocrop = 138/138/0/0, aspect 16:9, PAR 1:1
+  [15:02:26] stream: 6 good frames, 0 errors (0%)
+  Scanning title 9 of 9, preview 10, 100.00 %[15:02:26] libhb: scan thread found 9 valid title(s)
+  Searching for main feature title...
+   + Title (0) index 2 has length 11sec
+   + Title (1) index 6 has length 154sec
+   + Title (2) index 7 has length 65sec
+   + Title (3) index 8 has length 81sec
+   + Title (4) index 9 has length 138sec
+   + Title (5) index 10 has length 119sec
+   + Title (6) index 11 has length 129sec
+   + Title (7) index 12 has length 23sec
+   + Title (8) index 13 has length 5217sec
+  Found main feature title 13
+  + Using preset: High Profile
+  + title 13:
+    + Main Feature
+    + playlist: 00100.MPLS
+    + duration: 01:26:57
+    + size: 1920x1080, pixel aspect: 1/1, display aspect: 1.78, 23.976 fps
+    + autocrop: 138/138/0/0
+    + support opencl: no
+    + chapters:
+      + 1: cells 0->0, 0 blocks, duration 00:10:27
+      + 2: cells 0->0, 0 blocks, duration 00:10:09
+      + 3: cells 0->0, 0 blocks, duration 00:09:49
+      + 4: cells 0->0, 0 blocks, duration 00:09:06
+      + 5: cells 0->0, 0 blocks, duration 00:10:54
+      + 6: cells 0->0, 0 blocks, duration 00:09:00
+      + 7: cells 0->0, 0 blocks, duration 00:07:42
+      + 8: cells 0->0, 0 blocks, duration 00:07:22
+      + 9: cells 0->0, 0 blocks, duration 00:06:25
+      + 10: cells 0->0, 0 blocks, duration 00:06:04
+      + 11: cells 0->0, 0 blocks, duration 00:00:00
+    + audio tracks:
+      + 1, English (DTS) (5.1 ch) (iso639-2: eng), 48000Hz, 1536000bps
+      + 2, English (DTS-HD MA) (5.1 ch) (iso639-2: eng)
+      + 3, English (AC3) (5.1 ch) (iso639-2: eng), 48000Hz, 448000bps
+      + 4, Francais (AC3) (5.1 ch) (iso639-2: fra), 48000Hz, 448000bps
+      + 5, Espanol (AC3) (5.1 ch) (iso639-2: spa), 48000Hz, 448000bps
+      + 6, Espanol (AC3) (5.1 ch) (iso639-2: spa), 48000Hz, 448000bps
+    + subtitle tracks:
+      + 1, English (iso639-2: eng) (Bitmap)(PGS)
+      + 2, Francais (iso639-2: fra) (Bitmap)(PGS)
+      + 3, Espanol (iso639-2: spa) (Bitmap)(PGS)
+      + 4, Francais (iso639-2: fra) (Bitmap)(PGS)
+      + 5, Espanol (iso639-2: spa) (Bitmap)(PGS)
+  [15:02:26] 1 job(s) to process
+  [15:02:26] json job:
+  {
+      "Audio": {
+          "AudioList": [
+              {
+                  "Encoder": 1125984256,
+                  "Track": 1
+              },
+              {
+                  "Encoder": 2048,
+                  "Track": 0
+              },
+              {
+                  "Encoder": 4194304,
+                  "Track": 0
+              }
+          ],
+          "CopyMask": [
+              "copy:aac",
+              "copy:ac3",
+              "copy:dts",
+              "copy:dtshd",
+              "copy:eac3",
+              "copy:flac",
+              "copy:mp3",
+              "copy:truehd"
+          ],
+          "FallbackEncoder": "ac3"
+      },
+      "Destination": {
+          "ChapterList": [
+              {
+                  "Name": "Chapter 1"
+              },
+              {
+                  "Name": "Chapter 2"
+              },
+              {
+                  "Name": "Chapter 3"
+              },
+              {
+                  "Name": "Chapter 4"
+              },
+              {
+                  "Name": "Chapter 5"
+              },
+              {
+                  "Name": "Chapter 6"
+              },
+              {
+                  "Name": "Chapter 7"
+              },
+              {
+                  "Name": "Chapter 8"
+              },
+              {
+                  "Name": "Chapter 9"
+              },
+              {
+                  "Name": "Chapter 10"
+              },
+              {
+                  "Name": "Chapter 11"
+              }
+          ],
+          "ChapterMarkers": true,
+          "File": "Storks.m4v",
+          "Mp4Options": {
+              "IpodAtom": false,
+              "Mp4Optimize": true
+          },
+          "Mux": "m4v"
+      },
+      "Filters": {
+          "FilterList": [
+              {
+                  "ID": 3,
+                  "Settings": ""
+              },
+              {
+                  "ID": 5,
+                  "Settings": "0"
+              },
+              {
+                  "ID": 10,
+                  "Settings": "1920:804:138:138:0:0"
+              }
+          ],
+          "Grayscale": false
+      },
+      "Metadata": {},
+      "PAR": {
+          "Den": 1,
+          "Num": 1
+      },
+      "SequenceID": 0,
+      "Source": {
+          "Angle": 0,
+          "Path": "Storks",
+          "Range": {
+              "End": 11,
+              "Start": 1,
+              "Type": "chapter"
+          },
+          "Title": 13
+      },
+      "Subtitle": {
+          "Search": {
+              "Burn": true,
+              "Default": false,
+              "Enable": false,
+              "Forced": false
+          },
+          "SubtitleList": []
+      },
+      "Video": {
+          "Bitrate": -1,
+          "ColorMatrixCode": 0,
+          "Encoder": "x264",
+          "HWDecode": false,
+          "Level": "4.1",
+          "OpenCL": false,
+          "Options": "threads=3",
+          "Preset": "medium",
+          "Profile": "high",
+          "QSV": {
+              "AsyncDepth": 4,
+              "Decode": false
+          },
+          "Quality": 22.0,
+          "Tune": "",
+          "Turbo": false,
+          "TwoPass": false
+      }
+  }
+  [15:02:26] starting job
+  [15:02:26] yadif thread started for segment 0
+  [15:02:26] yadif thread started for segment 1
+  [15:02:26] decomb check thread started for segment 7
+  [15:02:26] decomb check thread started for segment 6
+  [15:02:26] mask filter thread started for segment 6
+  [15:02:26] mask filter thread started for segment 4
+  [15:02:26] mask erode thread started for segment 1
+  [15:02:26] mask filter thread started for segment 0
+  [15:02:26] mask erode thread started for segment 4
+  [15:02:26] decomb check thread started for segment 3
+  [15:02:26] decomb check thread started for segment 2
+  [15:02:26] decomb check thread started for segment 1
+  [15:02:26] decomb check thread started for segment 0
+  [15:02:26] mask dilate thread started for segment 4
+  [15:02:26] decomb filter thread started for segment 6
+  [15:02:26] decomb filter thread started for segment 5
+  [15:02:26] mask dilate thread started for segment 6
+  [15:02:26] mask dilate thread started for segment 7
+  [15:02:26] yadif thread started for segment 5
+  [15:02:26] yadif thread started for segment 6
+  [15:02:26] Auto Passthru: allowed codecs are AAC, AC3, E-AC3, TrueHD, DTS, DTS-HD, MP3, FLAC
+  [15:02:26] yadif thread started for segment 7
+  [15:02:26] decomb filter thread started for segment 0
+  [15:02:26] yadif thread started for segment 4
+  [15:02:26] yadif thread started for segment 3
+  [15:02:26] decomb filter thread started for segment 2
+  [15:02:26] mask filter thread started for segment 3
+  [15:02:26] decomb filter thread started for segment 3
+  [15:02:26] yadif thread started for segment 2
+  [15:02:26] mask filter thread started for segment 5
+  [15:02:26] mask filter thread started for segment 7
+  [15:02:26] decomb check thread started for segment 5
+  [15:02:26] mask erode thread started for segment 0
+  [15:02:26] mask filter thread started for segment 1
+  [15:02:26] decomb check thread started for segment 4
+  [15:02:26] mask erode thread started for segment 2
+  [15:02:26] mask erode thread started for segment 3
+  [15:02:26] mask filter thread started for segment 2
+  [15:02:26] mask erode thread started for segment 5
+  [15:02:26] mask erode thread started for segment 6
+  [15:02:26] mask erode thread started for segment 7
+  [15:02:26] mask dilate thread started for segment 0
+  [15:02:26] mask dilate thread started for segment 1
+  [15:02:26] mask dilate thread started for segment 2
+  [15:02:26] mask dilate thread started for segment 3
+  [15:02:26] decomb filter thread started for segment 7
+  [15:02:26] mask dilate thread started for segment 5
+  [15:02:26] decomb filter thread started for segment 1
+  [15:02:26] decomb filter thread started for segment 4
+  [15:02:26] Auto Passthru: fallback is AC3
+  [15:02:26] Auto Passthru: using DTS-HD Passthru for track 1
+  [15:02:26] work: mixdown not specified, track 2 setting mixdown 5.1 Channels
+  [15:02:26] work: bitrate not specified, track 2 setting bitrate 640 Kbps
+  [15:02:26] work: mixdown not specified, track 3 setting mixdown Dolby Pro Logic II
+  [15:02:26] work: bitrate not specified, track 3 setting bitrate 160 Kbps
+  [15:02:26] sync: expecting 125101 video frames
+  [15:02:26] job configuration:
+  [15:02:26]  * source
+  [15:02:26]    + Storks
+  [15:02:26]    + title 13, chapter(s) 1 to 11
+  [15:02:26]  * destination
+  [15:02:26]    + Storks.m4v
+  [15:02:26]    + container: MPEG-4 (libavformat)
+  [15:02:26]      + optimized for HTTP streaming (fast start)
+  [15:02:26]      + chapter markers
+  [15:02:26]  * video track
+  [15:02:26]    + decoder: h264
+  [15:02:26]      + bitrate 200 kbps
+  [15:02:26]    + filters
+  [15:02:26]      + Decomb (default settings)
+  [15:02:26]      + Framerate Shaper (0)
+  [15:02:26]        + frame rate: same as source (around 23.976 fps)
+  [15:02:26]      + Crop and Scale (1920:804:138:138:0:0)
+  [15:02:26]        + source: 1920 * 1080, crop (138/138/0/0): 1920 * 804, scale: 1920 * 804
+  [15:02:26]    + Output geometry
+  [15:02:26]      + storage dimensions: 1920 x 804
+  [15:02:26]      + pixel aspect ratio: 1 : 1
+  [15:02:26]      + display dimensions: 1920 x 804
+  [15:02:26]    + encoder: H.264 (libx264)
+  [15:02:26]      + preset:  medium
+  [15:02:26]      + options: threads=3
+  [15:02:26]      + profile: high
+  [15:02:26]      + level:   4.1
+  [15:02:26]      + quality: 22.00 (RF)
+  [15:02:26]  * audio track 1
+  [15:02:26]    + decoder: English (DTS-HD MA) (5.1 ch) (track 2, id 0x1100)
+  [15:02:26]      + bitrate: 1536 kbps, samplerate: 48000 Hz
+  [15:02:26]    + DTS-HD Passthru
+  [15:02:26]  * audio track 2
+  [15:02:26]    + decoder: English (DTS) (5.1 ch) (track 1, id 0x711100)
+  [15:02:26]      + bitrate: 1536 kbps, samplerate: 48000 Hz
+  [15:02:26]    + mixdown: 5.1 Channels
+  [15:02:26]    + encoder: AC3 (libavcodec)
+  [15:02:26]      + bitrate: 640 kbps, samplerate: 48000 Hz
+  [15:02:26]  * audio track 3
+  [15:02:26]    + decoder: English (DTS) (5.1 ch) (track 1, id 0x711100)
+  [15:02:26]      + bitrate: 1536 kbps, samplerate: 48000 Hz
+  [15:02:26]    + mixdown: Dolby Pro Logic II
+  [15:02:26]    + dither: triangular
+  [15:02:26]    + encoder: AAC (libfdk_aac)
+  [15:02:26]      + bitrate: 160 kbps, samplerate: 48000 Hz
+  [15:02:26] encx264: min-keyint: 24, keyint: 240
+  [15:02:26] encx264: encoding at constant RF 22.000000
+  [15:02:26] encx264: unparsed options: threads=3:level=4.1:vbv-maxrate=62500:vbv-bufsize=78125
+  x264 [info]: using SAR=1/1
+  x264 [info]: using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX
+  x264 [info]: profile High, level 4.1
+  [15:02:26] reader: first SCR 1044806 id 0x1011 DTS 1044806
+  [15:02:26] h264: "Chapter 1" (1) at frame 0 time 3754
+  [15:02:26] sync: first pts is 3754
+EOF
+}
+
+run

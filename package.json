@@ -1,0 +1,33 @@
+{
+  "name": "ncoder",
+  "version": "1.0.0",
+  "description": "Encoding/Ripping Queue",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aztechian/ncoder.git"
+  },
+  "keywords": [
+    "encode",
+    "queue",
+    "handbrake",
+    "avconv",
+    "dvdbackup",
+    "makemkv"
+  ],
+  "author": "Ian Martin <ian@imartin.net>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aztechian/ncoder/issues"
+  },
+  "homepage": "https://github.com/aztechian/ncoder#readme",
+  "dependencies": {
+    "bull": "~2",
+    "bull-ui": "~1",
+    "bluebird": ""
+  }
+}
