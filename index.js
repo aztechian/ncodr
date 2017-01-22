@@ -2,6 +2,7 @@
   'use strict';
 
   var ripper = require('./Rip'),
+    fs = require('fs'),
     encoder = require('./Encode'),
     ui = require('bull-ui/app')({
       redis: {
@@ -32,7 +33,11 @@
     return encoder.encode(job);
   });
 
-  ripQ.process(function(job) {
-    return ripper.rip(job);
-  });
+  if(fs.existsSync('/dev/sr0')) {
+    //if a DVD device exists, then we can process the Ripping queue
+    ripQ.process(function(job) {
+      return ripper.rip(job);
+    });
+  }
+
 }());
