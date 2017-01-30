@@ -12,8 +12,9 @@
     }),
     Queue = require('bull');
 
-  ui.listen(1337, function() {
-    console.log('bull-ui started listening on port', this.address().port);
+  var port = process.env.PORT || 2000;
+  ui.listen(port, function() {
+    console.log('UI started listening on port', this.address().port);
   });
 
   var ripQ = Queue('disc ripping');
@@ -38,6 +39,8 @@
     ripQ.process(function(job) {
       return ripper.rip(job);
     });
+  } else {
+    console.log("No DVD device found, not processing Ripping jobs.");
   }
 
 }());

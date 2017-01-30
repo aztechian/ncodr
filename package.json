@@ -28,6 +28,6 @@
   "dependencies": {
     "bull": "~2",
     "bull-ui": "~1",
-    "bluebird": ""
+    "bluebird": "^3.4.6"
   }
 }

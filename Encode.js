@@ -24,17 +24,18 @@
       var hb = spawn(job.data.type, job.data.options.split(' '));
       console.log("Starting HandBrake job: " + job.jobId);
       hb.stdout.on('data', function(data) {
-        console.log(data.toString());
-        var finished = data.toString().match(/^Finished/);
-        var pct = data.toString().match(/Encoding: .*, (\d+\.\d+) %/);
-        if (pct) {
+        // console.log(data.toString());
+        var line = data.toString(),
+          finished = line.match(/^Finished/),
+          status = line.match(/Encoding: .*, (\d+\.\d+) % \((\d+\.\d+) fps,/);
+        if (status) {
           // console.log(pct[1]);
-          job.progress(pct[1]);
+          job.progress(status[1] + " / " + status[2] + 'fps');
         } else if (finished) {
           // console.log("finished");
           job.progress(100);
         } else {
-          console.log("Received: " + data.toString());
+          // console.log("Received: " + data.toString());
           job.progress(0);
         }
       });
