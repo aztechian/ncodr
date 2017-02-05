@@ -3,14 +3,14 @@
 
   var redishost = process.env.REDIS || 'localhost';
   var redisport = process.env.REDIS_PORT || 6379;
+  var redispw = process.env.REDIS_PW || '';
 
   var ripper = require('./Rip'),
     fs = require('fs'),
     encoder = require('./Encode'),
     ui = require('bull-ui/app')({
       redis: {
-        host: redishost,
-        port: redisport
+        url: 'redis://:' + redispw + '@' + redishost + ':' + redisport
       }
     }),
     Queue = require('bull');
