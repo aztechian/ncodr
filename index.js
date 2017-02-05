@@ -1,8 +1,10 @@
 (function() {
   'use strict';
 
-  var redishost = process.env.REDIS || 'localhost';
-  var redisport = process.env.REDIS_PORT || 6379;
+  console.log("Found redis host: " + process.env.OPENSHIFT_REDIS_DB_HOST);
+  console.log("Found redis port: " + process.env.OPENSHIFT_REDIS_DB_PORT);
+  var redishost = process.env.OPENSHIFT_REDIS_DB_HOST || process.env.REDIS || 'localhost';
+  var redisport = process.env.OPENSHIFT_REDIS_DB_PORT || process.env.REDIS_PORT || 6379;
   var redispw = process.env.REDIS_PW || '';
 
   var ripper = require('./Rip'),
@@ -10,8 +12,8 @@
     encoder = require('./Encode'),
     ui = require('bull-ui/app')({
       redis: {
-        host: 'redis',
-        port: 6379,
+        host: redishost,
+        port: redisport,
         password: redispw
       }
     }),
