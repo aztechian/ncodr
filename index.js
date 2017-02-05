@@ -1,13 +1,16 @@
 (function() {
   'use strict';
 
+  var redishost = process.env.REDIS || 'localhost';
+  var redisport = process.env.REDIS_PORT || 6379;
+
   var ripper = require('./Rip'),
     fs = require('fs'),
     encoder = require('./Encode'),
     ui = require('bull-ui/app')({
       redis: {
-        host: 'localhost',
-        port: '6379'
+        host: redishost,
+        port: redisport
       }
     }),
     Queue = require('bull');
