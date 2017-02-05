@@ -10,7 +10,9 @@
     encoder = require('./Encode'),
     ui = require('bull-ui/app')({
       redis: {
-        url: 'redis://:' + redispw + '@' + redishost + ':' + redisport
+        host: 'redis',
+        port: 6379,
+        password: redispw
       }
     }),
     Queue = require('bull');
