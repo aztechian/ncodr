@@ -17,7 +17,7 @@
     }),
     Queue = require('bull');
 
-  var port = process.env.PORT || 2000;
+  var port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 2000;
   ui.listen(port, function() {
     console.log('UI started listening on port', this.address().port);
   });
