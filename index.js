@@ -1,6 +1,7 @@
 (function() {
   'use strict';
 
+  console.log(process.env);
   console.log("Found redis host: " + process.env.OPENSHIFT_REDIS_DB_HOST);
   console.log("Found redis port: " + process.env.OPENSHIFT_REDIS_DB_PORT);
   var redishost = process.env.OPENSHIFT_REDIS_DB_HOST || process.env.REDIS || 'localhost';
