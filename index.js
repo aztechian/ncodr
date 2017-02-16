@@ -26,8 +26,8 @@
     console.log('UI started listening on port', this.address().port);
   });
 
-  var ripQ = Queue('disc ripping');
-  var encodeQ = Queue('video encoding');
+  var ripQ = Queue('disc ripping', redisport, redishost, {password: redispw});
+  var encodeQ = Queue('video encoding', redisport, redishost, {password: redispw});
 
   encodeQ.add({
     type: './HandBrakeCLI',
