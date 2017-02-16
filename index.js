@@ -4,9 +4,10 @@
   console.log(process.env);
   console.log("Found redis host: " + process.env.REDIS_SERVICE_HOST);
   console.log("Found redis port: " + process.env.REDIS_SERVICE_PORT);
+  console.log("Found redis password: " + process.env.REDIS_PASSWORD);
   var redishost = process.env.REDIS_SERVICE_HOST || process.env.REDIS || 'localhost';
   var redisport = process.env.REDIS_SERVICE_PORT || process.env.REDIS_PORT || 6379;
-  var redispw = process.env.REDIS_PW || '';
+  var redispw = process.env.REDIS_PW || process.env.REDIS_PASSWORD || '';
 
   var ripper = require('./Rip'),
     fs = require('fs'),
