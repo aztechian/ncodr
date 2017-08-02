@@ -1,0 +1,7 @@
+Core:
+  listen: OPENSHIFT_NODEJS_PORT
+  interface: OPENSHIFT_NODEJS_IP
+  redis:
+    host: REDIS_HOST
+    port: REDIS_PORT
+    password: REDIS_PASSWORD

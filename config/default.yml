@@ -1,0 +1,19 @@
+Core:
+  listen: 8080
+  interface: 0.0.0.0
+  loglevel: info
+  queues:
+    - ripQ:
+      description: disc ripping
+    - encodeQ:
+      description: video encoding
+  redis:
+    host: localhost
+    port: 6379
+    password: ''
+Ripper:
+  device: /dev/sr0
+  # disc: 0
+  output: /rips
+Encoder:
+  output: /media
