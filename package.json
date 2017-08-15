@@ -4,7 +4,7 @@
   "description": "Encoding/Ripping Queue",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --opts mocha.opts 'encoder/**/*.test.js' 'ripper/**/*.test.js'",
+    "test": "./node_modules/.bin/instanbul ./node_modules/.bin/_mocha --opts mocha.opts 'encoder/**/*.test.js' 'ripper/**/*.test.js'",
     "start": "node index.js"
   },
   "repository": {
@@ -26,8 +26,7 @@
   },
   "homepage": "https://github.com/aztechian/ncoder#readme",
   "dependencies": {
-    "bull": "~2",
-    "bull-ui": "~1",
+    "bull": "3.0.0-rc.4",
     "bluebird": "^3.4.6",
     "config": "~1.26",
     "js-yaml": "~3",
@@ -37,6 +36,7 @@
     "mocha": "*",
     "chai": "*",
     "chai-as-promised": "*",
+    "istanbul": "*",
     "sinon": "*",
     "mock-spawn": "*"
   }

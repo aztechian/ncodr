@@ -12,7 +12,8 @@
     isDvd: detect
   };
 
-  function detect(device) {
+  function detect() {
+    var device = config.get('device');
     logger.debug('Checking device: ' + device + ' for DVD structure');
     var stderr = '',
       dvd = spawn('lsdvd', [device]);
@@ -34,7 +35,8 @@
     });
   }
 
-  function getLabel(device) {
+  function getLabel() {
+    var device = config.get('device');
     logger.debug("Getting the DVD label of device: " + device);
 
     var labelOutput,
@@ -55,9 +57,10 @@
   }
 
   function rip() {
+    var device = config.get('device');
     return new Promise(function(resolve, reject) {
       var stderr = '';
-      var ripper = spawn('./dvdbackup', ['-M', '-p', '-v', '-i', config.get('device'), '-o', job.data.destination]);
+      var ripper = spawn('./dvdbackup', ['-M', '-p', '-v', '-i', device, '-o', job.data.destination]);
       ripper.stdout.on('data', function(data) {
         console.log(data.toString());
       });

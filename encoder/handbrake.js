@@ -1,43 +1,39 @@
 (function() {
   var spawn = require('child_process').spawn;
+  var config = require('config').get('Encoder');
+  var logger = require('winston');
 
   module.exports = {
     encode: encode
   };
 
-  function encode(job) {
-    switch (job.data.type) {
-      case 'HandBrakeCLI':
-      case './HandBrakeCLI':
-        return handbrakeEncode(job);
-      case 'avconv':
-        return avconvEncode(job);
-      default:
-        console.log("Unrecognized command: " + job.data.type);
-        return false;
-    }
+  var executor = 'HandBrakeCLI';
+  if (process.env.NODE_ENV === 'development') {
+    executor = '../HandBrakeCLI';
   }
 
-  function handbrakeEncode(job) {
+  function encode(job) {
     return new Promise(function(resolve, reject) {
-      console.log("Starting job: " + job.data.type);
-      var hb = spawn(job.data.type, job.data.options.split(' '));
-      console.log("Starting HandBrake job: " + job.jobId);
+      var hb = spawn(executor, job.data.options.split(' '));
+      logger.info("Starting HandBrake encode for job: " + job.jobId);
       hb.stdout.on('data', function(data) {
-        // console.log(data.toString());
+        logger.verbose(data.toString());
         var line = data.toString(),
           finished = line.match(/^Finished/),
           status = line.match(/Encoding: .*, (\d+\.\d+) % \((\d+\.\d+) fps,/);
         if (status) {
-          // console.log(pct[1]);
+          logger.verbose(pct[1]);
           job.progress(status[1] + " / " + status[2] + 'fps');
         } else if (finished) {
-          // console.log("finished");
+          logger.verbose("finished");
           job.progress(100);
         } else {
-          // console.log("Received: " + data.toString());
+          logger.verbose("Received: ", data);
           job.progress(0);
         }
+      });
+      hb.on('error', function(err) {
+        reject(err);
       });
       hb.on("exit", function(code) {
         if (code !== 0) {
@@ -47,9 +43,5 @@
         }
       });
     });
-  }
-
-  function avconvEncode() {
-
   }
 }());

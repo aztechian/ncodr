@@ -10,7 +10,7 @@
   chai.use(chaiAsPromised);
   var expect = chai.expect;
 
-  describe('detection', function() {
+  describe('ripper detection', function() {
     before(function() {
       child_process.spawn = spawn;
       spawn.setDefault(spawn.simple(0, 'Disc Title: My Awesome Movie'));

@@ -1,7 +1,7 @@
 Core:
   listen: 8080
   interface: 0.0.0.0
-  loglevel: info
+  logLevel: info
   queues:
     - ripQ:
       description: disc ripping
@@ -12,8 +12,19 @@ Core:
     port: 6379
     password: ''
 Ripper:
+  force: false
   device: /dev/sr0
   # disc: 0
   output: /rips
 Encoder:
   output: /media
+  hbOpts:
+    - '--preset High Profile'
+    - '--optimize'
+    - '--quality 21'
+    - '--cfr'
+    - '--main-feature'
+    - '--min-duration=3600'
+  avOpts:
+    - '-strict experimental'
+    - '-c copy'

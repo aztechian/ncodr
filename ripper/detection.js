@@ -7,7 +7,7 @@
     logger = require('winston'),
     fs = require('fs');
 
-
+  var device = config.get('device');
   module.exports = {
     detect: detect,
     isRipper: hardwareCheck
@@ -15,18 +15,20 @@
 
   function hardwareCheck() {
     try {
-      fs.accessSync(config.get('device'));
+      fs.accessSync(device);
+      logger.debug('ripping is supported');
       return true;
     } catch(e) {
       if (e.code !== 'ENOENT') {
-        logger.warn("Caught error checking for optical drive '" + config.get('device') + "': " + e.code );
+        logger.warn("Caught error checking for optical drive '" + device + "': " + e.message );
       }
+      logger.debug('ripping is not supported');
       return false;
     }
   }
 
   function detect(job) {
-    logger.info('Detecting disc type');
+    logger.verbose('Detecting disc type');
 
     if (dvdbackup.isDvd()) {
       return dvdbackup.rip(job);
@@ -36,7 +38,7 @@
       return makemkv.rip(job);
     }
 
-    logger.info("DVD and Blu-Ray detection failed on device " + config.get('device'));
+    logger.error("DVD and Blu-Ray detection failed on device " + device);
     return Promise.reject(new Error('unknown device type'));
   }
 
