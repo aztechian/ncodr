@@ -1,0 +1,11 @@
+.git
+.gitignore
+.jsbeautifyrc
+.jshintrc
+.vagrant
+Dockerfile
+dvdbackup
+HandBrakeCLI
+.dockerignore
+node_modules
+coverage

@@ -1,5 +1,5 @@
 Core:
-  listen: 8080
+  listen: 2000
   interface: 0.0.0.0
   logLevel: info
   queues:

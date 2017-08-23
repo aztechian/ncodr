@@ -56,11 +56,11 @@
     });
   }
 
-  function rip() {
+  function rip(job) {
     var device = config.get('device');
     return new Promise(function(resolve, reject) {
       var stderr = '';
-      var ripper = spawn('./dvdbackup', ['-M', '-p', '-v', '-i', device, '-o', job.data.destination]);
+      var ripper = spawn('./dvdbackup', ['-M', '-p', '-v', '-i', device, '-o', config.get('output')]);
       ripper.stdout.on('data', function(data) {
         console.log(data.toString());
       });

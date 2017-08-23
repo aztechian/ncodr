@@ -56,7 +56,7 @@
     });
   }
 
-  function rip(device) {
+  function rip(job) {
     return new Promise(function(resolve, reject) {
       var label = getLabel(device),
         stderr = '',
