@@ -5,20 +5,12 @@
   var encoder = require('./encoder');
   var config = require('config');
   var logger = require('winston');
-    // ui = require('bull-ui/app')({
-    //   redis: {
-    //     host: redishost,
-    //     port: redisport,
-    //     password: redispw
-    //   }
-    // }),
+  var Promise = require('bluebird');
+  var express = require('express');
+  var Arena = require('bull-arena');
   var Queue = require('bull');
 
   logger.level = config.get('Core.logLevel');
-
-  logger.debug("Found redis host: " + process.env.REDIS_SERVICE_HOST);
-  logger.debug("Found redis port: " + process.env.REDIS_SERVICE_PORT);
-  logger.debug("Found redis password: " + process.env.REDIS_PASSWORD);
   var redisConfig = config.get('Core.redis');
   var redishost = redisConfig.get('host');
   var redisport = redisConfig.get('port');
@@ -26,21 +18,39 @@
 
   var port = config.get('Core.listen');
   var ip = config.get('Core.interface');
+
+  var router = express.Router();
+  var queues = [
+    {
+      name: 'disc ripping',
+      port: redisport,
+      host: redishost,
+      hostId: 'ncodr'
+    },
+    {
+      name: 'video encoding',
+      port: redisport,
+      host: redishost,
+      hostId: 'ncodr'
+    }
+  ];
+  var arena = Arena({queues: queues}, {port: port});
+  router.use('/', arena);
   // ui.listen(port, process.env.OPENSHIFT_NODEJS_IP, function() {
   //   console.log('UI started listening on port', this.address().port);
   // });
 
   var ripQ = Queue('disc ripping', {redis: {port: redisport, host: redishost, password: redispw} });
-  logger.debug('Created ' + ripQ.name + ' queue');
+  logger.info('Created ' + ripQ.name + ' queue');
+  logger.debug(ripQ);
   var encodeQ = Queue('video encoding', {redis: {port: redisport, host: redishost, password: redispw} });
-  logger.debug('Created ' + encodeQ.name + ' queue');
+  logger.info('Created ' + encodeQ.name + ' queue');
+  logger.debug(encodeQ);
 
   // encodeQ.add({
-  //   type: './HandBrakeCLI',
-  //   options: '-Z "High Profile" -O -q 21 --main-feature --min-duration 2000 -i /mnt/temp/RIP -o',
-  //   destination: '/mnt/temp'
+  //   type: 'handbrake',
+  //   source: '/rips/somemovie'
   // });
-  //
   // ripQ.add({
   //   destination: '/mnt/temp'
   // });
@@ -63,5 +73,4 @@
     });
     logger.debug('Listening for ' + ripQ.name + ' jobs');
   }
-
 }());

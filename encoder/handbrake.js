@@ -11,6 +11,7 @@
   if (process.env.NODE_ENV === 'development') {
     executor = '../HandBrakeCLI';
   }
+  logger.debug("Chose executor of: " + executor);
 
   function encode(job) {
     return new Promise(function(resolve, reject) {
@@ -33,6 +34,7 @@
         }
       });
       hb.on('error', function(err) {
+        logger.warn('Uh oh. Caught an error during handbrake encode: ' + err);
         reject(err);
       });
       hb.on("exit", function(code) {
