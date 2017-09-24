@@ -9,3 +9,4 @@ HandBrakeCLI
 .dockerignore
 node_modules
 coverage
+*.iso

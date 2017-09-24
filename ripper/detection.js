@@ -1,5 +1,5 @@
 (function() {
-  'use strict';
+
   var dvdbackup = require('./dvdbackup'),
     makemkv = require('./makemkv'),
     config = require('config').get('Ripper'),
@@ -18,9 +18,9 @@
       fs.accessSync(device);
       logger.debug('ripping is supported');
       return true;
-    } catch(e) {
+    } catch (e) {
       if (e.code !== 'ENOENT') {
-        logger.warn("Caught error checking for optical drive '" + device + "': " + e.message );
+        logger.warn("Caught error checking for optical drive '" + device + "': " + e.message);
       }
       logger.debug('ripping is not supported');
       return false;
@@ -30,16 +30,22 @@
   function detect(job) {
     logger.verbose('Detecting disc type');
 
-    if (dvdbackup.isDvd()) {
-      return dvdbackup.rip(job);
-    }
+    return Promise.join(dvdbackup.isDvd(device), makemkv.isBd(device), function(isDvd, isBd) {
+      if (isDvd) {
+        return dvdbackup.rip(job);
+      }
 
-    if (makemkv.isBd()) {
-      return makemkv.rip(job);
-    }
+      if (isBd) {
+        return makemkv.setup()
+          .then(function(result) {
+            return makemkv.rip(job);
+          });
+      }
 
-    logger.error("DVD and Blu-Ray detection failed on device " + device);
-    return Promise.reject(new Error('unknown device type'));
+      if(!isDvd && !isBd) {
+        return Promise.reject(`DVD and Blu-Ray detection failed on device: ${device}`);
+      }
+    });
   }
 
 }());

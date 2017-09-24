@@ -19,12 +19,12 @@
       logger.info("Starting HandBrake encode for job: " + job.jobId);
       hb.stdout.on('data', function(data) {
         logger.verbose(data.toString());
-        var line = data.toString(),
-          finished = line.match(/^Finished/),
-          status = line.match(/Encoding: .*, (\d+\.\d+) % \((\d+\.\d+) fps,/);
+        var line = data.toString();
+        var finished = line.match(/^Finished/);
+        var status = line.match(/Encoding: .*, (\d+\.\d+) % \((\d+\.\d+) fps,/);
         if (status) {
-          logger.verbose(pct[1]);
-          job.progress(status[1] + " / " + status[2] + 'fps');
+          logger.verbose(`${status[1]} / ${status[2]} fps`);
+          job.progress(status[1]);
         } else if (finished) {
           logger.verbose("finished");
           job.progress(100);
@@ -39,7 +39,7 @@
       });
       hb.on("exit", function(code) {
         if (code !== 0) {
-          reject(new Error("HandBrakeCLI " + args.join(" ") + " exited with code " + code));
+          reject(new Error("HandBrakeCLI " + job.data.options + " exited with code " + code));
         } else {
           resolve();
         }

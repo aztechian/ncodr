@@ -1,5 +1,15 @@
 {
-  globals: {
-    "require": true
-  }
+  "globals": {
+    "require": true,
+    "module": true,
+    "process": true,
+    "describe": true,
+    "it": true,
+    "beforeEach": true,
+    "afterEach": true,
+    "before": true,
+    "after": true
+  },
+  "esversion": 6,
+  "strict": "implied"
 }

@@ -4,6 +4,8 @@ logs
 npm-debug.log*
 
 /config/local*
+*.iso
+/.vagrant
 
 # Runtime data
 pids

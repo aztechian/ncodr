@@ -10,5 +10,4 @@
   function encode(job) {
     return Promise.reject('Not implemented.');
   }
-
 }());

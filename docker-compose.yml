@@ -1,0 +1,21 @@
+---
+version: '3'
+services:
+  redis:
+    image: redis:latest
+    deploy:
+      replicas: 1
+    ports:
+      - "6379:6379"
+  ncodr:
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
+    image: ncodr:dev
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/ncodr
+      - ~/Documents/legobatman.iso:/dev/sr0
+    ports:
+      - "2000:2000"
