@@ -112,11 +112,9 @@
         var label = l;
         var output = config.get('output') + "/" + label;
         var messages = '';
-        var data = job.data;
-        data.title = label;
+        job.data.title = label;
         logger.debug(`makemkv: Starting makemkvcon with output to ${output} ...`);
-        job.update(data);
-        var ripper = spawn('makemkvcon', ['backup', '--decrypt', '--progress=-stdout', '--robot', 'disc:' + disc, output]);
+        var ripper = spawn('makemkvcon', config.get('makemkvOpts').concat([`disc:${disc}`, output]));
         readline.createInterface({
           input: ripper.stdout,
           terminal: false
@@ -154,7 +152,8 @@
         ripper.on('exit', function(code) {
           logger.debug('makemkv: Completed makemkvcon process: ' + code);
           if (code === 0) {
-            resolve({status: code, title: label});
+            job.progress(100);
+            resolve(label);
           } else {
             reject(code);
           }

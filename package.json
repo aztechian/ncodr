@@ -28,7 +28,7 @@
   "dependencies": {
     "bluebird": "^3.4.6",
     "bull": "3.0.0-rc.4",
-    "bull-arena": "~2.1.1",
+    "bull-arena": "~2.2.0",
     "config": "~1.26",
     "express": "^4.15.4",
     "js-yaml": "~3",

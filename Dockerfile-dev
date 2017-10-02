@@ -26,5 +26,6 @@ RUN echo "deb http://us.archive.ubuntu.com/ubuntu/ xenial universe \
 
 USER ${U}
 EXPOSE 2000
-VOLUME ['/rips','/media']
-ENTRYPOINT ["/bin/bash"]
+VOLUME ['/rips','/media','/ncodr']
+ENTRYPOINT ["/usr/bin/npm"]
+CMD ["start"]

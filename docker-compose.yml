@@ -12,10 +12,18 @@ services:
       context: .
       dockerfile: Dockerfile-dev
     image: ncodr:dev
-    stdin_open: true
-    tty: true
+    depends_on:
+      - redis
+    # stdin_open: true
+    # tty: true
+    working_dir: /ncodr
     volumes:
       - .:/ncodr
       - ~/Documents/legobatman.iso:/dev/sr0
+      - ./media:/media
+      - ./rips:/rips
+    environment:
+      - REDIS_HOST=redis
+      - LOG_LEVEL=debug
     ports:
       - "2000:2000"

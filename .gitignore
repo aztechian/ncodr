@@ -6,6 +6,8 @@ npm-debug.log*
 /config/local*
 *.iso
 /.vagrant
+/media
+/rips
 
 # Runtime data
 pids

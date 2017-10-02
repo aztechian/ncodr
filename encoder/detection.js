@@ -8,14 +8,14 @@
   };
 
   function detect(job) {
-    switch (job.type) {
+    switch (job.data.type) {
       case 'handbrake':
       case 'handbrakecli':
-        return handbrake.rip(job);
+        return handbrake.encode(job);
       case 'avconv':
-        return avconv.rip(job);
+        return avconv.encode(job);
       default:
-        return new Promise.reject('unkown job type: ' + job.type);
+        return new Promise.reject(new Error('unkown job type: ' + job.type));
     }
   }
 

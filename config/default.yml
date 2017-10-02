@@ -17,15 +17,23 @@ Ripper:
   device: /dev/sr0
   # disc: 0
   output: /rips
+  makemkvOpts:
+    - backup
+    - '--decrypt'
+    - '--progress=-stdout'
+    - '--robot'
 Encoder:
   output: /media
+  input: /rips
   hbOpts:
-    - '--preset High Profile'
+    - '--preset'
+    - High Profile
     - '--optimize'
-    - '--quality 21'
+    - '--quality'
+    - 21
     - '--cfr'
     - '--main-feature'
-    - '--min-duration=3600'
+    # - '--min-duration=3600'
   avOpts:
     - '-strict experimental'
     - '-c copy'
