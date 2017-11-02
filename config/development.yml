@@ -1,3 +1,5 @@
 ---
 Core:
-  logLevel: debug  
+  logLevel: debug
+Ripper:
+  mkvKey: ''

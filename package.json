@@ -2,10 +2,15 @@
   "name": "ncoder",
   "version": "1.0.0",
   "description": "Encoding/Ripping Queue",
+  "engines": [
+    ">= 8.3.0"
+  ],
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/instanbul cover ./node_modules/.bin/_mocha --opts mocha.opts 'encoder/**/*.test.js' 'ripper/**/*.test.js'",
-    "start": "node index.js"
+    "test": "NODE_ENV=test nyc --require babel-register mocha --opts mocha.opts 'server/**/*.test.js'",
+    "dev": "backpack dev | pino",
+    "compile": "rm -rf build && backpack build",
+    "start": "node build/main.js | pino"
   },
   "repository": {
     "type": "git",
@@ -26,20 +31,30 @@
   },
   "homepage": "https://github.com/aztechian/ncoder#readme",
   "dependencies": {
-    "bluebird": "^3.4.6",
+    "bluebird": "^3.5.1",
+    "body-parser": "^1.18.2",
     "bull": "3.0.0-rc.4",
     "bull-arena": "~2.2.0",
+    "cheerio": "*",
     "config": "~1.26",
-    "express": "^4.15.4",
+    "express": "^4.16.2",
+    "got": "^7.1.0",
     "js-yaml": "~3",
-    "winston": "~2"
+    "pino": "^4.8.0"
   },
   "devDependencies": {
-    "mocha": "*",
+    "backpack-core": "^0.4.3",
+    "babel-eslint": "*",
+    "babel-preset-env": "^1.6.1",
+    "babel-register": "^6.0",
     "chai": "*",
     "chai-as-promised": "*",
-    "istanbul": "*",
-    "sinon": "*",
-    "mock-spawn": "*"
+    "eslint": "^4.9.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.7.0",
+    "mocha": "^4.0.1",
+    "mock-spawn": "*",
+    "nyc": "^11.3.0",
+    "sinon": "^4.0.2"
   }
 }

@@ -3,11 +3,12 @@ Core:
   listen: 2000
   interface: 0.0.0.0
   logLevel: info
+  sessionSecret: pleaseOverrideMe
   queues:
-    - ripQ:
-      description: disc ripping
-    - encodeQ:
-      description: video encoding
+    - id: ripQ
+      name: disc ripping
+    - id: encodeQ
+      name: video encoding
   redis:
     host: localhost
     port: 6379
@@ -16,6 +17,7 @@ Ripper:
   force: false
   device: /dev/sr0
   # disc: 0
+  # mkvKey: abcdefg
   output: /rips
   makemkvOpts:
     - backup

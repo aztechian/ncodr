@@ -1,0 +1,10 @@
+{
+  "presets": [
+    "backpack-core/babel",
+    ["env", {
+      "targets": {
+        "node": "current"
+      }
+    }]
+  ]
+}
