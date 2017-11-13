@@ -28,4 +28,4 @@ USER ${U}
 EXPOSE 2000
 VOLUME ['/rips','/media','/ncodr']
 ENTRYPOINT ["/usr/bin/npm"]
-CMD ["start"]
+CMD ["run", "dev"]

@@ -22,13 +22,13 @@ export class HandBrake {
         const finished = line.match(/^Finished/);
         const status = line.match(/Encoding: .*, (\d+\.\d+) % \((\d+\.\d+) fps,/);
         if (status) {
-          logger.verbose(`${status[1]} % | ${status[2]} fps`);
+          logger.trace(`${status[1]} % | ${status[2]} fps`);
           job.progress(status[1]);
         } else if (finished) {
-          logger.verbose('finished');
+          logger.trace('finished');
           job.progress(100);
         } else {
-          logger.verbose('Received: ', data);
+          logger.trace('Received: ', data);
           job.progress(0);
         }
       });

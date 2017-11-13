@@ -23,7 +23,9 @@ RUN echo "deb http://us.archive.ubuntu.com/ubuntu/ xenial universe \
   chmod 4755 /usr/bin/bd_info
 # apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 816950D8 && \
 
-COPY ./ /app/
+COPY ["./package*", "./README.md", "/app/"]
+COPY ["./build", "/app/build"]
+COPY ["./config", "/app/config"]
 WORKDIR /app
 RUN apt-key adv --fetch-keys http://deb.nodesource.com/gpgkey/nodesource.gpg.key && \
   echo "deb http://deb.nodesource.com/node_8.x xenial main" >> /etc/apt/sources.list && \

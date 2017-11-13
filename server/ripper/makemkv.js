@@ -10,7 +10,7 @@ import logger from '../common/logger';
 const mkdir = Promise.promisify(fs.mkdir);
 const writeFile = Promise.promisify(fs.writeFile);
 
-export default class MakeMKV {
+export class MakeMKV {
   constructor() {
     this.device = config.get('device');
     // collect all messages output from ripping
@@ -30,7 +30,7 @@ export default class MakeMKV {
       const bd_info = spawn('bd_info', [this.device]); // eslint-disable-line camelcase
       bd_info.on('error', err => {
         logger.warn(this.constructor.name, err);
-        reject(err);
+        return reject(err);
       });
       bd_info.stderr.on('data', data => {
         logger.debug(this.constructor.name, data);
@@ -38,22 +38,23 @@ export default class MakeMKV {
       bd_info.on('exit', code => {
         if (code === 0) {
           logger.info(`${this.constructor.name}: Blu-Ray found on ${this.device}`);
-          resolve(true);
-        } else {
-          logger.info(`${this.constructor.name}: Not a BD`);
-          resolve(false);
+          return resolve(true);
         }
+        logger.info(`${this.constructor.name}: Not a BD`);
+        return reject(new Error('Not a Blu-Ray'));
       });
     });
   }
 
   getBetaKey() {
-    if (config.has('mkvKey')) {
+    if (config.has('mkvKey') && config.get('mkvKey')) {
+      logger.info('Using MakeMKV key from configuration value');
       return Promise.resolve(config.get('mkvKey'));
     }
     return got('http://www.makemkv.com/forum2/viewtopic.php?f=5&t=1053')
       .then(response => {
         const $ = cheerio.load(response.body);
+        logger.debug(`retrieved content from forum post: ${$('div.codecontent').text()}`);
         return $('div.codecontent').text();
       })
       .catch(err => {
@@ -93,7 +94,7 @@ export default class MakeMKV {
         terminal: false,
       }).on('line', line => {
         if (line.match(/^Volume Identifier/)) {
-          logger.debug(`makemkv: Found BD volume label: ${line}`);
+          logger.debug(`${this.constructor.name}: Found BD volume label: ${line}`);
           labelOutput += line.replace(/^.*Identifier *: */, '');
         }
       });
@@ -101,7 +102,6 @@ export default class MakeMKV {
         reject(error);
       });
       labelProc.on('exit', code => {
-        logger.debug(`makemkv: Calling callback with label = ${labelOutput}`);
         if (code === 0) {
           resolve(labelOutput.replace(/ /, '_'));
         } else {
@@ -111,25 +111,23 @@ export default class MakeMKV {
     });
   }
 
-  processOutput(line, job) {
+  handleOutput(line) {
     const msgType = line.split(':')[0];
+    let pct;
     switch (msgType) {
       case 'MSG':
       {
         const msg = line.split(',')[3];
-        logger.verbose(`${this.constructor.name}: ${msg}`);
+        logger.trace(`${this.constructor.name}: ${msg}`);
         this.messages += `${msg}\n`;
-        if (msg.match(/Backup failed/)) {
-          // ripper.kill('SIGINT');
-          throw new Error(this.messages);
-        }
         break;
       }
       case 'PRGV':
       {
         const total = parseInt(line.split(',')[1], 10);
         const max = parseInt(line.split(',')[2], 10);
-        job.progress((total / max) * 100);
+        pct = (total / max) * 100;
+        // job.progress((total / max) * 100);
         break;
       }
       case 'DRV':
@@ -141,44 +139,49 @@ export default class MakeMKV {
         logger.debug(`${this.constructor.name}: ${line}`);
         break;
     }
+    return pct;
   }
 
-  rip(job) {
+  process(job) {
     this.messages = '';
+    return this.updateKey()
+      .then(() => this.getLabel())
+      .then(label => this.rip(job, label));
+  }
+
+  rip(job, label) {
+    const output = path.join(config.get('output'), label);
+    const opts = config.get('makemkvOpts').concat([`disc:${this.disc}`, output]);
     job.progress(1);
     return new Promise((resolve, reject) => {
-      let output = '';
-      this.getLabel()
-        .then(label => {
-          output = path.join(config.get('output'), label);
-          // eslint-disable-next-line no-param-reassign
-          job.data.title = label;
-          logger.debug(`makemkv: Starting makemkvcon with output to ${output} ...`);
-          const ripper = spawn('makemkvcon', config.get('makemkvOpts').concat([`disc:${this.disc}`, output]));
-          readline.createInterface({
-            input: ripper.stdout,
-            terminal: false,
-          }).on('line', line => {
-            try {
-              this.processOutput(line, job);
-            } catch (e) {
-              reject(e);
-            }
-          });
-          ripper.on('error', err => {
-            logger.debug(`${this.constructor.name}: Caught error while ripping`, err);
-            reject(err);
-          });
-          ripper.on('exit', code => {
-            logger.debug(`${this.constructor.name}: Completed makemkvcon process: ${code}`);
-            if (code === 0) {
-              job.progress(100);
-              resolve(label);
-            } else {
-              reject(code);
-            }
-          });
-        });
+      logger.info(`${this.constructor.name}: Starting makemkvcon with output to ${output} ...`);
+      const ripper = spawn('makemkvcon', opts);
+      readline.createInterface({
+        input: ripper.stdout,
+        terminal: false,
+      }).on('line', line => {
+        const pct = this.handleOutput(line);
+        if (pct) job.progress(pct);
+      });
+      ripper.on('error', err => {
+        logger.debug(`${this.constructor.name}: Caught error while ripping`, err);
+        return reject(err);
+      });
+      ripper.on('exit', code => {
+        logger.debug(`${this.constructor.name}: Completed makemkvcon process: ${code}`);
+        if (code === 0) {
+          job.progress(100);
+          if (this.messages.match(/Backup failed/)) {
+            logger.warn(`${this.constructor.name}: Backup was detected as a failure.`);
+            return reject(new Error(this.messages));
+          }
+          logger.debug(`returning from job promise with ${label}`);
+          return resolve(label);
+        }
+        return reject(new Error(label));
+      });
     });
   }
 }
+
+export default new MakeMKV();

@@ -8,6 +8,7 @@ npm-debug.log*
 /.vagrant
 /media/*
 /rips/*
+/isos/*
 
 # Runtime data
 pids

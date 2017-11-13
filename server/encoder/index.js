@@ -9,6 +9,6 @@ export default function (job) {
     case 'avconv':
       return avconv.encode(job);
     default:
-      return Promise.reject(new Error(`unkown job type: ${job.type}`));
+      return Promise.reject(new Error(`unkown job type: ${job.data.type}`));
   }
 }

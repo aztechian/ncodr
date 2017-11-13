@@ -23,8 +23,8 @@ if (ripperConfig.get('force')) {
   ripper.isRipper()
     .then(() => {
       // we have the hardware avaialable to rip discs
-      ripQ.process(job => ripper.rip(job));
       logger.debug(`Listening for ${ripQ.name} jobs`);
+      return ripQ.process(job => ripper.process(job));
     })
     .catch(() => {
       logger.debug(`No ripping hardware detected, not processing ${ripQ.name} jobs on this node.`);
@@ -32,11 +32,11 @@ if (ripperConfig.get('force')) {
 }
 
 ripQ.on('global:completed', (job, result) => {
-  logger.warn(`The job - ${job.name} completed with `, result);
+  logger.warn(`The job - ${job.id} completed with `, result);
 });
 
 encodeQ.on('global:completed', (job, result) => {
-  logger.warn(`The job - ${job.name} completed with `, result);
+  logger.warn(`The job - ${job.id} completed with `, result);
 });
 
 export default new Server()

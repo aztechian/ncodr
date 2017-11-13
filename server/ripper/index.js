@@ -16,7 +16,7 @@ export class Ripper {
         if (err) {
           logger.warn(`Caught error checking for optical drive "${this.device}": ${err}`);
           logger.info(`ripping is not supported on ${this.device}`);
-          reject(this.device);
+          reject(new Error(this.device));
         } else {
           logger.info(`ripping is supported on ${this.device}`);
           resolve(this.device);
@@ -26,19 +26,21 @@ export class Ripper {
   }
 
   process(job) {
-    const dvd = new DVDBackup();
-    const mkv = new MakeMkv();
+    const isDvd = DVDBackup.detect()
+      .then(() => true)
+      .catch(() => false);
 
-    return Promise.join(dvd.detect(job), mkv.detect(job), (isDvd, isBd) => {
-      if (isDvd) {
-        return dvd.rip(job);
-      }
-      if (isBd) {
-        return mkv.rip(job);
-      }
+    const isBd = MakeMkv.detect()
+      .then(() => true)
+      .catch(() => false);
 
-      return Promise.reject(new Error(`DVD and Blu-Ray detection failed on device: ${this.device}`));
-    });
+    return Promise.all([isDvd, isBd])
+      .then(values => {
+        const [dvd, bd] = values;
+        if (dvd) return DVDBackup.process(job);
+        if (bd) return MakeMkv.process(job);
+        throw new Error(`DVD and Blu-Ray detection failed on device: ${this.device}`);
+      });
   }
 }
 

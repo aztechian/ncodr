@@ -4,7 +4,12 @@ import qSvc from './services/bull';
 export class Job {
   fetch(req, res, next) {
     return qSvc.getJob(req.params.queue, req.params.id)
-      .then(response => res.json(response))
+      .then(response => {
+        if (response) {
+          return res.json(response);
+        }
+        return utils.respond(res, 404, `Job ${req.params.id} not found for ${req.params.queue}`);
+      })
       .catch(err => utils.respond(res, 500, `Error getting waiting jobs for ${req.params.queue}: ${err}`))
       .catch(next);
   }

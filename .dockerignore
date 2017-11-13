@@ -1,7 +1,7 @@
 .git
 .gitignore
 .jsbeautifyrc
-.jshintrc
+.eslint*
 .vagrant
 Dockerfile
 dvdbackup
@@ -10,3 +10,6 @@ HandBrakeCLI
 node_modules
 coverage
 *.iso
+media
+rips
+isos
