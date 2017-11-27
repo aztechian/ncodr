@@ -6,18 +6,20 @@ export class Job {
     return qSvc.getJob(req.params.queue, req.params.id)
       .then(response => {
         if (response) {
-          return res.json(response);
+          const job = response.job.toJSON();
+          job.state = response.state;
+          return res.json(job);
         }
         return utils.respond(res, 404, `Job ${req.params.id} not found for ${req.params.queue}`);
       })
-      .catch(err => utils.respond(res, 500, `Error getting waiting jobs for ${req.params.queue}: ${err}`))
+      .catch(err => utils.respond(res, 500, `Error getting job ${req.params.id} from ${req.params.queue}: ${err}`))
       .catch(next);
   }
 
   update(req, res, next) {
     return qSvc.updateJob(req.params.queue, req.body)
       .then(response => res.json(response))
-      .catch(err => utils.respond(res, 500, `Error getting waiting jobs for ${req.params.queue}: ${err}`))
+      .catch(err => utils.respond(res, 500, `Error updating job ${req.params.id} from ${req.params.queue}: ${err}`))
       .catch(next);
   }
 

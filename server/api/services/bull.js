@@ -13,6 +13,7 @@ export class BullService {
   getQueueInfo(queue) {
     const q = this.getQueue(queue);
     return q.getJobCounts()
+      .timeout(2000, `Unable to get job counts from ${queue}`)
       .then(counts => Object.keys(counts).reduce((acc, cur) => acc + counts[cur], 0))
       .then(counts => {
         const {
@@ -33,7 +34,12 @@ export class BullService {
   getJob(queue, id) {
     return this.getQueue(queue)
       .getJob(id)
-      .timeout(2000, `Unable to retrieve job ${id} from ${queue}`);
+      .timeout(2000, `Unable to retrieve job ${id} from ${queue}`)
+      .then(job => job.getState().then(state => ({ job, state })));
+  }
+
+  getJobState(job) {
+    return job.getState();
   }
 
   createJob(queue, obj) {
