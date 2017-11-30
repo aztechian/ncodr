@@ -51,19 +51,22 @@ export class BullService {
   removeJob(queue, id) {
     return this.getJob(queue, id)
       .timeout(2000, `Unable to remove job ${id} from ${queue}`)
-      .then(job => job.remove());
+      .then(result => {
+        const key = result.job.lockKey();
+        return result.job.releaseLock(key).then(() => result.job.remove());
+      });
   }
 
   updateJob(queue, obj) {
     return this.getJob(queue, obj.id)
       .timeout(2000, `Unable to update job ${obj.id} in ${queue}`)
-      .then(job => job.update(obj));
+      .then(result => result.job.update(obj));
   }
 
   retryJob(queue, id) {
     return this.getJob(queue, id)
       .timeout(2000, `Unable to retry job ${id} in ${queue}`)
-      .then(job => job.retry());
+      .then(result => result.job.retry());
   }
 
   queues() {

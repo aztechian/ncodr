@@ -39,13 +39,14 @@
     "express": "^4.16.2",
     "got": "^7.1.0",
     "js-yaml": "~3",
-    "pino": "^4.8.0"
+    "pino": "^4.8.0",
+    "source-map-support": "^0.4",
+    "babel-register": "^6.0"
   },
   "devDependencies": {
     "backpack-core": "^0.4.3",
     "babel-eslint": "*",
     "babel-preset-env": "^1.6.1",
-    "babel-register": "^6.0",
     "chai": "*",
     "chai-as-promised": "*",
     "eslint": "^4.9.0",

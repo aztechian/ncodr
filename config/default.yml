@@ -28,13 +28,11 @@ Encoder:
   output: /media
   input: /rips
   hbOpts:
-    - '--preset'
-    - High Profile
-    - '--optimize'
-    - '--quality'
-    - 21
-    - '--cfr'
-    - '--main-feature'
+    '--preset': High Profile
+    '--optimize': ''
+    '--quality': 21
+    '--cfr': ''
+    '--main-feature': ''
     # - '--min-duration=3600'
   avOpts:
     - '-strict experimental'
