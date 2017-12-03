@@ -19,6 +19,11 @@ export class HandBrake {
 
     if (job.data.scan) optArray.push('--scan');
     optArray.push('-i', path.join(config.get('input'), job.data.input));
+    if (Object.prototype.hasOwnProperty.call(job.data.options, '-t')) {
+      // if -t is specified by user, don't use --main-feature
+      const idx = optArray.indexOf('--main-feature');
+      if (idx > -1) optArray.splice(idx, 1);
+    }
 
     let out = '';
     if (job.data.output) {
@@ -31,33 +36,45 @@ export class HandBrake {
     return new Promise((resolve, reject) => {
       let output = '';
       const hb = spawn('HandBrakeCLI', optArray);
-      logger.info(`Starting HandBrake encode for job: ${job.id} ${optArray}`);
+      logger.info(`${this.constructor.name}: Starting HandBrake encode for job: ${job.id} ${optArray}`);
+      logger.info(`${this.constructor.name}: process started with pid - ${hb.pid}`);
+      logger.info(`${this.constructor.name}: HandBrakeCLI ${optArray.join(' ')}`);
       readline.createInterface({
         input: hb.stdout,
         terminal: false,
       }).on('line', data => {
-        logger.debug(`handbrake: ${data.toString()}`);
+        logger.debug(`${this.constructor.name}: ${data.toString()}`);
         const line = data.toString();
         output += line;
         const finished = line.match(/^Finished/);
         const status = line.match(/Encoding: .*, (\d+\.\d+) % \((\d+\.\d+) fps,/);
         if (status) {
-          logger.trace(`${status[1]} % | ${status[2]} fps`);
+          logger.trace(`${this.constructor.name}: ${status[1]} % | ${status[2]} fps`);
           job.progress(status[1]);
         } else if (finished) {
-          logger.trace('finished');
+          logger.trace(`${this.constructor.name}: finished`);
           job.progress(100);
         } else {
-          logger.trace('Received: ', data);
+          logger.trace(`${this.constructor.name}: Received: `, data);
           job.progress(0);
         }
       });
+      hb.stderr.on('data', data => {
+        logger.trace(`${this.constructor.name}: ${data.toString()}`);
+      });
+
       hb.on('error', err => {
-        logger.warn(`Uh oh. Caught an error during handbrake encode: ${err}`);
+        logger.warn(`${this.constructor.name}: Uh oh. Caught an error during encode: ${err}`);
         reject(err);
       });
+      hb.on('close', code => {
+        logger.info(`${this.constructor.name}: Called exit on HandBrakeCLI: ${code}`);
+        job.progress(100);
+        if (code === 0) return resolve(code);
+        return reject(new Error(`(${hb.cwd}) ${hb.file} ${hb.args} exited with: ${code}`));
+      });
       hb.on('exit', code => {
-        logger.info(`Called exit on HandBrakeCLI: ${code}`);
+        logger.info(`${this.constructor.name}: Called exit on HandBrakeCLI: ${code}`);
         if (job.data.scan) {
           job.progress(100);
           return resolve(output);
@@ -70,6 +87,7 @@ export class HandBrake {
       });
     });
   }
+  // TODO: add code to set the owner/group of output file
 }
 
 export default new HandBrake();

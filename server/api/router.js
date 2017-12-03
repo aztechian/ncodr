@@ -23,4 +23,5 @@ export default express
   .get('/queues/:queue/jobs/:id', job.fetch)
   .put('/queues/:queue/jobs/:id', job.update)
   .delete('/queues/:queue/jobs/:id', job.remove)
-  .post('/queues/:queue/jobs/:id/retry', job.retry);
+  .post('/queues/:queue/jobs/:id/retry', job.retry)
+  .post('/queues/:queue/jobs/:id/remove', job.remove);

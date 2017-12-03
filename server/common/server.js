@@ -43,7 +43,7 @@ export default class ExpressServer {
     this._app.use(requestLogger);
     this._app.use(bodyParser.json());
     this._app.use(Express.static(`${root}/build`));
-    // app.use(Express.static(`${root}/public`));
+    // this._app.use(Express.static(`${root}/public`));
   }
 
   get app() {
