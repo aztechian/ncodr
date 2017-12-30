@@ -5,6 +5,7 @@ import Queues from './common/queues';
 import ripper from './ripper';
 import encoder from './encoder';
 import apiRouter from './api/router';
+import authRouter from './auth/router';
 
 const port = config.get('listen');
 const ip = config.get('interface');
@@ -40,5 +41,6 @@ encodeQ.on('global:completed', (job, result) => {
 });
 
 export default new Server()
+  .router('/auth', authRouter)
   .router('/api', apiRouter)
   .listen(port);

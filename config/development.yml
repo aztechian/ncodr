@@ -1,5 +1,6 @@
 ---
 Core:
   logLevel: debug
+  googleCallback: http://localhost:2000/auth/google/callback
 Ripper:
   mkvKey: ''

@@ -61,11 +61,23 @@ export class DvdBackup {
         input: ripper.stdout,
         terminal: false,
       }).on('line', line => {
-        logger.debug(`${this.constructor.name}: `, line);
-        if (line.match(/^Copying Title, part/)) {
-          const [current, total] = line.match(/^.*, part (\d+)\/(\d+): (\d+)% done/);
-          job.progress(current / total);
+        if (line.length > 0) {
+          logger.debug(`${this.constructor.name}: `, line);
         }
+        if (line.match(/^Copying Title, part/)) {
+          const [current, total, pct] = line.match(/^.*, part (\d+)\/(\d+): (\d+)% done/);
+          const overall = ((current / total) * pct).toFixed(0);
+          logger.trace(`setting progress to ${overall}`);
+          job.progress(overall);
+        }
+      });
+      ripper.stdout.on('data', line => {
+        logger.trace(line.toString());
+      });
+      ripper.on('error', code => {
+        job.progress(100);
+        logger.info(`Caught error during DVD rip: ${code}`);
+        return reject(new Error(`Error during DVD rip: ${code}`));
       });
       ripper.on('exit', code => {
         job.progress(100);

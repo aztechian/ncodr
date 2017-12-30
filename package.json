@@ -41,7 +41,10 @@
     "js-yaml": "~3",
     "pino": "^4.8.0",
     "source-map-support": "^0.4",
-    "babel-register": "^6.0"
+    "babel-register": "^6.0",
+    "passport": "^0.4",
+    "passport-google-oauth20": "^1.0",
+    "keyv": "^3.0"
   },
   "devDependencies": {
     "backpack-core": "^0.4.3",
