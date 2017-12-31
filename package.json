@@ -8,9 +8,9 @@
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test nyc --require babel-register mocha --opts mocha.opts 'server/**/*.test.js'",
-    "dev": "backpack dev | pino",
+    "dev": "backpack dev | pino-clf -a 1 -d 2 | pino",
     "compile": "rm -rf build && backpack build",
-    "start": "node build/main.js | pino"
+    "start": "node build/main.js | pino-clf -a 1 -d 2 | pino"
   },
   "repository": {
     "type": "git",
@@ -31,33 +31,36 @@
   },
   "homepage": "https://github.com/aztechian/ncoder#readme",
   "dependencies": {
+    "babel-register": "^6.0",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.2",
-    "bull": "^3.0",
+    "bull": "^3.3.7",
     "cheerio": "*",
     "config": "~1.26",
     "express": "^4.16.2",
+    "express-pino-logger": "^3.0.1",
     "got": "^7.1.0",
     "js-yaml": "~3",
-    "pino": "^4.8.0",
-    "source-map-support": "^0.4",
-    "babel-register": "^6.0",
+    "keyv": "^3.0",
+    "ncodr-ui": "github:aztechian/ncodr-ui#v1.0.1",
     "passport": "^0.4",
     "passport-google-oauth20": "^1.0",
-    "keyv": "^3.0"
+    "pino": "^4.10.2",
+    "pino-clf": "^1.0.2",
+    "source-map-support": "^0.4"
   },
   "devDependencies": {
-    "backpack-core": "^0.4.3",
-    "babel-eslint": "*",
+    "babel-eslint": "^8.1.2",
     "babel-preset-env": "^1.6.1",
+    "backpack-core": "^0.4.3",
     "chai": "*",
     "chai-as-promised": "*",
-    "eslint": "^4.9.0",
+    "eslint": "^4.14.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.7.0",
-    "mocha": "^4.0.1",
+    "mocha": "^4.1.0",
     "mock-spawn": "*",
-    "nyc": "^11.3.0",
-    "sinon": "^4.0.2"
+    "nyc": "^11.4.1",
+    "sinon": "^4.1.3"
   }
 }
