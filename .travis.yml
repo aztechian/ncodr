@@ -1,0 +1,12 @@
+dist: trusty
+sudo: required
+language: node_js
+
+services:
+  - docker
+
+script:
+  - docker build -t aztechian/ncodr .
+
+after_success:
+  - echo "would push to docker here"
