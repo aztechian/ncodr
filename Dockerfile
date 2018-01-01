@@ -12,7 +12,7 @@ RUN echo "deb http://us.archive.ubuntu.com/ubuntu/ xenial universe \
   apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8771ADB0816950D8 && \
   apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8540356019f7e55b && \
   apt-get -qq update && \
-  apt-get install -yq makemkv-oss makemkv-bin curl libav-tools libbluray-bin lsdvd dvdbackup libdvd-pkg handbrake-cli && \
+  apt-get install -yq git makemkv-oss makemkv-bin curl libav-tools libbluray-bin lsdvd dvdbackup libdvd-pkg handbrake-cli && \
   dpkg-reconfigure libdvd-pkg && \
   apt-get clean && \
   groupadd -fg 10298 ${U} && \

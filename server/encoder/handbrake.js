@@ -1,17 +1,18 @@
 import { spawn } from 'child_process';
 import readline from 'readline';
 import path from 'path';
+import chownr from 'chownr';
 import { encoder as config } from '../common/conf';
 import logger from '../common/logger';
+
+const chown = Promise.promisify(chownr);
 
 export class HandBrake {
   constructor() {
     this.defaults = config.get('hbOpts');
   }
 
-  encode(job) {
-    if (!job.data.input) return Promise.reject(new Error('No input file given to HandBrake Job'));
-
+  configure(job) {
     const opts = Object.assign(job.data.options, this.defaults);
     const optArray = Object.entries(opts)
       .reduce((item, val) => item.concat(val))
@@ -32,6 +33,14 @@ export class HandBrake {
       out = path.join(config.get('output'), job.data.input.replace(/\.[^/.]+$/, '.m4v'));
     }
     optArray.push('-o', out);
+    return optArray;
+  }
+
+  encode(job) {
+    if (!job.data.input) return Promise.reject(new Error('No input file given to HandBrake Job'));
+    const optArray = this.configure(job);
+    // this is _totally_ hacky, but I'm too lazy right now to get the output file reasonably
+    const outputFile = optArray.slice(-1);
 
     return new Promise((resolve, reject) => {
       let output = '';
@@ -70,24 +79,39 @@ export class HandBrake {
       hb.on('close', code => {
         logger.info(`${this.constructor.name}: Called exit on HandBrakeCLI: ${code}`);
         job.progress(100);
-        if (code === 0) return resolve(code);
+        if (code === 0) return resolve({ output, code, outputFile });
         return reject(new Error(`(${hb.cwd}) ${hb.file} ${hb.args} exited with: ${code}`));
       });
       hb.on('exit', code => {
         logger.info(`${this.constructor.name}: Called exit on HandBrakeCLI: ${code}`);
         if (job.data.scan) {
           job.progress(100);
-          return resolve(output);
+          return resolve({ output, code, outputFile });
         }
         if (code !== 0) {
           return reject(new Error(`(${hb.cwd}) ${hb.file} ${hb.args} exited with: ${code}`));
         }
         job.progress(100);
-        return resolve(code);
+        return resolve({ output, code, outputFile });
       });
     });
   }
-  // TODO: add code to set the owner/group of output file
+
+  process(job) {
+    return this.encode(job)
+      .then(result => this.setOwner(result.outputFile));
+  }
+
+  setOwner(jobPath) {
+    if (config.has('owner') && config.has('group')) {
+      const owner = config.get('owner');
+      const group = config.get('group');
+      logger.debug(`${this.constructor.name}: Setting ownership of ${jobPath} to (${owner}:${group})`);
+      return chown(jobPath, owner, group).then(() => jobPath);
+    }
+    logger.warn(`${this.constructor.name}: Both "owner" and "group" must be set in Ripper config. Not setting ownership on ${jobPath}`);
+    return Promise.resolve(jobPath);
+  }
 }
 
 export default new HandBrake();

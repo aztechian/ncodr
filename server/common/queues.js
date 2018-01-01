@@ -34,7 +34,8 @@ function mapBullQueues() {
         password,
       },
     });
-    logger.info(`Created ${newQ.name} queue (${q.id})`, newQ);
+    logger.info(`Created ${newQ.name} queue (${q.id})`);
+    logger.debug(newQ);
     return newQ;
   });
 }

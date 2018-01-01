@@ -7,4 +7,6 @@ Core:
     port: REDIS_PORT
     password: REDIS_PASSWORD
 Ripper:
-  force: FORCE_RIP
+  enable: RIP_ENABLE
+Encoder:
+  enable: ENCODE_ENABLE

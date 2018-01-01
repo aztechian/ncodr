@@ -6,7 +6,7 @@ services:
   - docker
 
 script:
-  - docker build -t aztechian/ncodr .
+  - npm run docker
 
 after_success:
   - echo "would push to docker here"

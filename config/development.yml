@@ -1,5 +1,6 @@
 ---
 Core:
   logLevel: debug
+  interface: localhost
 Ripper:
   mkvKey: ''

@@ -4,11 +4,13 @@ import { spawn } from 'child_process';
 import readline from 'readline';
 import path from 'path';
 import fs from 'fs';
+import chownr from 'chownr';
 import { ripper as config } from '../common/conf';
 import logger from '../common/logger';
 
 const mkdir = Promise.promisify(fs.mkdir);
 const writeFile = Promise.promisify(fs.writeFile);
+const chown = Promise.promisify(chownr);
 
 export class MakeMKV {
   constructor() {
@@ -146,15 +148,16 @@ export class MakeMKV {
     this.messages = '';
     return this.updateKey()
       .then(() => this.getLabel())
-      .then(label => this.rip(job, label));
+      .then(label => this.rip(job, label))
+      .then(result => this.setOwner(result.outputFile));
   }
 
   rip(job, label) {
-    const output = path.join(config.get('output'), label);
-    const opts = config.get('makemkvOpts').concat([`disc:${this.disc}`, output]);
+    const outputFile = path.join(config.get('output'), label);
+    const opts = config.get('makemkvOpts').concat([`disc:${this.disc}`, outputFile]);
     job.progress(1);
     return new Promise((resolve, reject) => {
-      logger.info(`${this.constructor.name}: Starting makemkvcon with output to ${output} ...`);
+      logger.info(`${this.constructor.name}: Starting makemkvcon with output to ${outputFile} ...`);
       const ripper = spawn('makemkvcon', opts);
       readline.createInterface({
         input: ripper.stdout,
@@ -176,11 +179,22 @@ export class MakeMKV {
             return reject(new Error(this.messages));
           }
           logger.debug(`returning from job promise with ${label}`);
-          return resolve(label);
+          return resolve({ label, outputFile });
         }
         return reject(new Error(label));
       });
     });
+  }
+
+  setOwner(jobPath) {
+    if (config.has('owner') && config.has('group')) {
+      const owner = config.get('owner');
+      const group = config.get('group');
+      logger.debug(`${this.constructor.name}: Setting ownership of ${jobPath} to (${owner}:${group})`);
+      return chown(jobPath, owner, group).then(() => jobPath);
+    }
+    logger.warn(`${this.constructor.name}: Both "owner" and "group" must be set in Ripper config. Not setting ownership on ${jobPath}`);
+    return Promise.resolve(jobPath);
   }
 }
 

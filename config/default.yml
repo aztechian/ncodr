@@ -3,7 +3,6 @@ Core:
   listen: 2000
   interface: 0.0.0.0
   logLevel: info
-  sessionSecret: pleaseOverrideMe
   queues:
     - id: ripQ
       name: disc ripping
@@ -14,19 +13,28 @@ Core:
     port: 6379
     password: ''
 Ripper:
-  force: false
+  enable: 'auto'
   device: /dev/sr0
+  # owner: 1000
+  # group: 0
   # disc: 0
-  # mkvKey: abcdefg
   output: /rips
+  dvdbackupOpts:
+    '-M': ''
+    '-p': ''
+    '-v': ''
   makemkvOpts:
     - backup
     - '--decrypt'
     - '--progress=-stdout'
     - '--robot'
+  # mkvKey: abcdefg
 Encoder:
+  enable: 'auto'
   output: /media
   input: /rips
+  # owner: 1000
+  # group: 0
   hbOpts:
     '--preset': High Profile
     '--optimize': ''
@@ -35,5 +43,5 @@ Encoder:
     '--main-feature': ''
     # - '--min-duration=3600'
   avOpts:
-    - '-strict experimental'
-    - '-c copy'
+    '-strict experimental': ''
+    '-c': 'copy'

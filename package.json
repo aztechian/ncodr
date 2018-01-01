@@ -10,6 +10,8 @@
     "test": "NODE_ENV=test nyc --require babel-register mocha --opts mocha.opts 'server/**/*.test.js'",
     "dev": "backpack dev | pino-clf -a 1 -d 2 | pino",
     "compile": "rm -rf build && backpack build",
+    "version": "node -e 'console.log(require(\"./package.json\").version)'",
+    "docker": "docker build -t aztechian/ncodr:$(npm run -s version) .",
     "start": "node build/main.js | pino-clf -a 1 -d 2 | pino"
   },
   "repository": {
@@ -36,6 +38,7 @@
     "body-parser": "^1.18.2",
     "bull": "^3.3.7",
     "cheerio": "*",
+    "chownr": "^1.0.1",
     "config": "~1.26",
     "express": "^4.16.2",
     "express-pino-logger": "^3.0.1",
