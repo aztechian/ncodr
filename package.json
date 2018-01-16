@@ -39,10 +39,10 @@
     "bull": "^3.3.7",
     "cheerio": "*",
     "chownr": "^1.0.1",
-    "config": "~1.26",
+    "config": "~1.29.2",
     "express": "^4.16.2",
     "express-pino-logger": "^3.0.1",
-    "got": "^7.1.0",
+    "got": "^8.0.2",
     "js-yaml": "~3",
     "keyv": "^3.0",
     "ncodr-ui": "github:aztechian/ncodr-ui#v1.0.3",
@@ -50,12 +50,12 @@
     "passport-google-oauth20": "^1.0",
     "pino": "^4.10.2",
     "pino-clf": "^1.0.2",
-    "source-map-support": "^0.4"
+    "source-map-support": "^0.5.0"
   },
   "devDependencies": {
     "babel-eslint": "^8.1.2",
     "babel-preset-env": "^1.6.1",
-    "backpack-core": "^0.4.3",
+    "backpack-core": "^0.5.0",
     "chai": "*",
     "chai-as-promised": "*",
     "eslint": "^4.14.0",
