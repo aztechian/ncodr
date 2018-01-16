@@ -3,6 +3,7 @@
 .jsbeautifyrc
 .eslint*
 .vagrant
+cc-test-reporter
 Dockerfile
 dvdbackup
 HandBrakeCLI

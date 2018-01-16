@@ -1,5 +1,4 @@
 import Queues from '../../common/queues';
-import l from '../../common/logger';
 
 export class BullService {
   constructor() {

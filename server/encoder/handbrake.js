@@ -1,11 +1,12 @@
 import { spawn } from 'child_process';
 import readline from 'readline';
+import Bluebird from 'bluebird';
 import path from 'path';
 import chownr from 'chownr';
 import { encoder as config } from '../common/conf';
 import logger from '../common/logger';
 
-const chown = Promise.promisify(chownr);
+const chown = Bluebird.promisify(chownr);
 
 export class HandBrake {
   constructor() {

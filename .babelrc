@@ -4,7 +4,19 @@
     ["env", {
       "targets": {
         "node": "current"
-      }
+      },
+      "debug": true,
+    }],
+  ],
+  "plugins": [
+    ["babel-plugin-root-import", {
+      "rootPathPrefix": "@",
+      "rootPathSuffix": "server",
     }]
-  ]
+  ],
+  "env": {
+    "test": {
+      "plugins": ["istanbul"],
+    }
+  }
 }

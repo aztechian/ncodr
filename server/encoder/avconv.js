@@ -1,6 +1,4 @@
-import { spawn } from 'child_process';
 import logger from '../common/logger';
-import { encoder as config } from '../common/conf';
 
 export class Avconv {
   process(job) {
