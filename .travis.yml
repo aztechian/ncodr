@@ -1,12 +1,15 @@
 dist: trusty
 sudo: required
-language: generic
+language: node_js
+node_js:
+  - "8"
 
 services:
   - docker
 
 script:
-  - docker build -t aztechian/ncodr:$(jq -r .version package.json) .
+  - npm run compile
 
 after_success:
+  - docker build -t aztechian/ncodr:$(jq -r .version package.json) .
   - echo "would push to docker here"
