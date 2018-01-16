@@ -70,8 +70,7 @@ export class DvdBackup {
   rip(job, label) {
     logger.info(`${this.constructor.name}: Processing job ${job.id} for DVD`);
     job.progress(0);
-    const opts = job.data.options || {};
-    Object.assign(opts, this.defaults);
+    const opts = Object.assign({}, this.defaults, job.data.options);
     const optArray = Object.entries(opts)
       .reduce((item, val) => item.concat(val))
       .filter(o => o !== '');

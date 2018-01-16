@@ -13,14 +13,15 @@ export class HandBrake {
   }
 
   configure(job) {
-    const opts = Object.assign(job.data.options, this.defaults);
+    const opts = Object.assign({}, this.defaults, job.data.options);
     const optArray = Object.entries(opts)
       .reduce((item, val) => item.concat(val))
       .filter(o => o !== '');
 
     if (job.data.scan) optArray.push('--scan');
     optArray.push('-i', path.join(config.get('input'), job.data.input));
-    if (Object.prototype.hasOwnProperty.call(job.data.options, '-t')) {
+    if (Object.prototype.hasOwnProperty.call(job.data, 'options') &&
+      Object.prototype.hasOwnProperty.call(job.data.options, '-t')) {
       // if -t is specified by user, don't use --main-feature
       const idx = optArray.indexOf('--main-feature');
       if (idx > -1) optArray.splice(idx, 1);
@@ -44,6 +45,7 @@ export class HandBrake {
 
     return new Promise((resolve, reject) => {
       let output = '';
+      // TODO just set the uid/gid of the process as an option to spawn
       const hb = spawn('HandBrakeCLI', optArray);
       logger.info(`${this.constructor.name}: Starting HandBrake encode for job: ${job.id} ${optArray}`);
       logger.info(`${this.constructor.name}: process started with pid - ${hb.pid}`);
@@ -76,12 +78,6 @@ export class HandBrake {
         logger.warn(`${this.constructor.name}: Uh oh. Caught an error during encode: ${err}`);
         reject(err);
       });
-      hb.on('close', code => {
-        logger.info(`${this.constructor.name}: Called exit on HandBrakeCLI: ${code}`);
-        job.progress(100);
-        if (code === 0) return resolve({ output, code, outputFile });
-        return reject(new Error(`(${hb.cwd}) ${hb.file} ${hb.args} exited with: ${code}`));
-      });
       hb.on('exit', code => {
         logger.info(`${this.constructor.name}: Called exit on HandBrakeCLI: ${code}`);
         if (job.data.scan) {
@@ -89,7 +85,7 @@ export class HandBrake {
           return resolve({ output, code, outputFile });
         }
         if (code !== 0) {
-          return reject(new Error(`(${hb.cwd}) ${hb.file} ${hb.args} exited with: ${code}`));
+          return reject(new Error(`HandBrakeCLI exited with: ${code}\n${output}`));
         }
         job.progress(100);
         return resolve({ output, code, outputFile });
