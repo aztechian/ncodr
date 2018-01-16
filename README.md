@@ -1,5 +1,7 @@
 # nCoder
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/aztechian/ncodr.svg)](https://greenkeeper.io/)
+
 This is a web-based application for controlling a ripping and encoding queue.
 It's intention is to support DVD and BD (Blu-Ray Disc) ripping and encoding to MPEG-4.
 
