@@ -38,10 +38,10 @@ Because Bull is used for queueing, it's centralized persistence with Redis means
 Because of this, it is possible to deploy many instances of Ncodr in any combination of those components. Some example use cases:
 
 I have 4 physical hosts on my network that could be used for encoding. Only one of those hosts has an optical drive.
-   I run Ncodr on all four hosts. It auto detects that there is no optical drive on three of the hosts, and thus does not process jobs in the ripping queue for those three. I end up with four hosts capable of processing encode jobs, and one capable of processing ripping jobs. All four hosts are kept busy as long as there are jobs to be worked. Jobs may be managed over the API endpoints of _any_ of the four hosts. The UI may be accessed from _any_ of the four hosts.
+> I run Ncodr on all four hosts. It auto detects that there is no optical drive on three of the hosts, and thus does not process jobs in the ripping queue for those three. I end up with four hosts capable of processing encode jobs, and one capable of processing ripping jobs. All four hosts are kept busy as long as there are jobs to be worked. Jobs may be managed over the API endpoints of _any_ of the four hosts. The UI may be accessed from _any_ of the four hosts.
 
 I have 1 physical host and another physical host with 2 virtual machines on it. The physical host has an optical drive. I have external network availability to one of the VMs, and so I want to access the UI from it.
-   I run Ncodr on all 3 hosts. On the external facing VM, I disable rip and encode job processing, so that it only serves the API and UI. On the other VM and physical host, I disable the UI and API (ie, they _only_ process jobs). Ncodr auto detects job processing capabilities. It usually does not make sense to process jobs (especially encoding) on VMs with the same underlying physical host. The CPU utilization of encoders is such that they will efficiently use all CPUs provided to them - so, it is better to have a VM given all the CPUs you can afford and let the encoding software utilize CPUs efficiently.
+> I run Ncodr on all 3 hosts. On the external facing VM, I disable rip and encode job processing, so that it only serves the API and UI. On the other VM and physical host, I disable the UI and API (ie, they _only_ process jobs). Ncodr auto detects job processing capabilities. It usually does not make sense to process jobs (especially encoding) on VMs with the same underlying physical host. The CPU utilization of encoders is such that they will efficiently use all CPUs provided to them - so, it is better to have a VM given all the CPUs you can afford and let the encoding software utilize CPUs efficiently.
 
 ## Development
 The quickest way to get started with Ncodr is using [docker-compose](docker-compose.yml). Ensure `docker` and `docker-compose` are available on your system. Then, in the root directory where you cloned this repo, run `docker-compose up`. This will start a local Redis container, matched with a nodeJS based container for executing Ncodr in. Since this setup is meant for development, the Ncodr application is bind mounted into the app container so that real-time changes to the code can be made, which _should_ trigger an application restart to pick up those changes. In this way, it is easy to develop quickly.
@@ -75,7 +75,7 @@ Default values are in parenthesis
 
 `REDIS_PORT`: The port of the redis service to connect to (6379)
 
-`REDIS_PASSWORD`: The password to authenticate to redis with (<no password>)
+`REDIS_PASSWORD`: The password to authenticate to redis with (`no password`)
 
 `RIP_ENABLE`: Override the auto-detection of whether to process ripping jobs on this host. Value can be `true`, `false` or `auto` (auto)
 
