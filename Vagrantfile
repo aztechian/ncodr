@@ -57,7 +57,7 @@ Vagrant.configure("2") do |config|
   config.vbguest.auto_update = false
   config.vm.provider :virtualbox do |vb|
     # vb.customize ["storagectl", :id, "--name", "IDEController", "--add", "ide"]
-    vb.customize ["storageattach", :id, "--storagectl", "IDE", "--port", "0", "--device", "0", "--type", "dvddrive", "--medium", "/Users/ian/Documents/legobatman.iso"]
+    vb.customize ["storageattach", :id, "--storagectl", "IDE", "--port", "0", "--device", "0", "--type", "dvddrive", "--medium", "isos/bluray.iso"]
   end
 
   # Define a Vagrant Push strategy for pushing to Atlas. Other push strategies
