@@ -77,10 +77,10 @@ Default values are in parenthesis
 
 `REDIS_PASSWORD`: The password to authenticate to redis with (`no password`)
 
-`RIP_ENABLE`: Override the auto-detection of whether to process ripping jobs on this host. Value can be `true`, `false` or `auto` (auto)
+`RIP`: Override the auto-detection of whether to process ripping jobs on this host. Value can be `true`, `false` or `auto` (auto)
 
-`ENCODE_ENABLE`: Override the auto-detection of whether to process encoding jobs on this host. Value can be `true`, `false` or `auto` (auto)
+`ENCODE`: Override the auto-detection of whether to process encoding jobs on this host. Value can be `true`, `false` or `auto` (auto)
 
-`API_ENABLE`: Override the serving of the HTTP API for queue management (true)
+`API`: Override the serving of the HTTP API for queue management. Value can be `true` or `false` (true)
 
-`UI_ENABLE`: Override the serving of the UI over HTTP (true)
+`UI`: Override the serving of the UI over HTTP. Value can be `true` or `false` (true)

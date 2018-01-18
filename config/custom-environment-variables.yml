@@ -2,11 +2,13 @@ Core:
   listen: OPENSHIFT_NODEJS_PORT
   interface: OPENSHIFT_NODEJS_IP
   logLevel: LOG_LEVEL
+  api: API
+  ui: UI
   redis:
     host: REDIS_HOST
     port: REDIS_PORT
     password: REDIS_PASSWORD
 Ripper:
-  enable: RIP_ENABLE
+  enable: RIP
 Encoder:
-  enable: ENCODE_ENABLE
+  enable: ENCODE
