@@ -6,8 +6,8 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/aa1620124c35e6771c44/maintainability)](https://codeclimate.com/github/aztechian/ncodr/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/aa1620124c35e6771c44/test_coverage)](https://codeclimate.com/github/aztechian/ncodr/test_coverage)
 [![Github All Releases](https://img.shields.io/github/downloads/aztechian/ncodr/releases/total.svg)](https://github.com/aztechian/ncodr/releases)
-[![Docker Pulls](https://img.shields.io/docker/pulls/aztechian/ncodr.svg)](https://github.com/aztechian/ncodr)
-[![license](https://img.shields.io/github/license/aztechian/ncodr.svg)](https://github.com/aztechian/ncodr)
+[![Docker Pulls](https://img.shields.io/docker/pulls/aztechian/ncodr.svg)](https://hub.docker.com/r/aztechian/ncodr/)
+[![license](https://img.shields.io/github/license/aztechian/ncodr.svg)](https://github.com/aztechian/ncodr/blob/master/LICENSE)
 
 Ncodr (en-code-er) is a web-based, distributed application for controlling a ripping and encoding queue.
 It's intention is to support DVD and BD (Blu-Ray Disc) ripping and encoding to MPEG-4. By default, it encodes to an "iTunes" compatible `m4v` container with h264 video codec. Audio encoding can be easily changed from the options field that is submitted with a job.
