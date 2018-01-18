@@ -10,7 +10,7 @@ export class Ripper {
     this.device = config.get('device');
   }
 
-  isRipper() {
+  isCapable() {
     return new Promise((resolve, reject) => {
       fs.access(this.device, err => {
         if (err) {

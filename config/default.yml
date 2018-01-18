@@ -3,6 +3,8 @@ Core:
   listen: 2000
   interface: 0.0.0.0
   logLevel: info
+  api: true
+  ui: true
   queues:
     - id: ripQ
       name: disc ripping
@@ -13,7 +15,7 @@ Core:
     port: 6379
     password: ''
 Ripper:
-  enable: 'auto'
+  enable: auto
   device: /dev/sr0
   # owner: 1000
   # group: 0
@@ -30,7 +32,7 @@ Ripper:
     - '--robot'
   # mkvKey: abcdefg
 Encoder:
-  enable: 'auto'
+  enable: auto
   output: /media
   input: /rips
   # owner: 1000
