@@ -22,7 +22,8 @@ script:
   - npm run compile
   - docker-compose up --build -d
   - sleep 30
-  - docker-compose ps ncodr | grep -qi up
+  - docker-compose ps
+  - docker-compose ps ncodr 2>/dev/null | grep -qi up
   - docker-compose down
 
 after_script:
