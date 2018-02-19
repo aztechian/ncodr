@@ -46,7 +46,7 @@
     "got": "^8.0.2",
     "js-yaml": "~3",
     "keyv": "^3.0",
-    "ncodr-ui": "github:aztechian/ncodr-ui#v1.0.4",
+    "ncodr-ui": "github:aztechian/ncodr-ui#v1.1.2",
     "passport": "^0.4",
     "passport-google-oauth20": "^1.0",
     "pino": "^4.10.2",

@@ -36,15 +36,17 @@ if (useApi === 'true' || useUi === 'true') {
 } // else - no reason to even listen
 
 function jobProcessing(flag, queue, processor) {
+  logger.debug(`called jobProcessing for ${queue.name} --- flag=${flag} (${typeof flag})`);
   if (flag === 'false' || flag === false) {
     logger.warn(`Not processing ${queue.name} jobs on this node`);
   } else if (flag === 'true' || flag === true) {
-    logger.warn(`Forcing ${queue.name} queue processing without hardware checks!`);
+    logger.warn(`Forcing ${queue.name} processing without hardware checks!`);
     logger.info(`Listening for ${queue.name} jobs`);
     queue.process(job => processor.process(job));
   } else {
     processor.isCapable()
       .then(() => {
+        logger.debug(`${queue.name} jobs are capable of being processed`);
         // we have the hardware avaialable to rip discs
         logger.info(`Listening for ${queue.name} jobs`);
         return queue.process(job => processor.process(job));
