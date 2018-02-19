@@ -20,10 +20,13 @@ script:
   - npm run lint
   - npm run test
   - npm run compile
-  - docker build -t aztechian/ncodr:$(jq -r .version package.json) .
+  - docker-compose up --build -d
+  - sleep 30
+  - docker-compose ps ncodr | grep -qi up
+  - docker-compose down
 
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
 after_success:
-  - echo "would push to docker here"
+  - '[[ $TRAVIS_PULL_REQUEST = false ]] && [[ $TRAVIS_BRANCH = master ]] &&  curl --data build=true -X POST $DOCKER_URL'
