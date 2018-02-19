@@ -20,6 +20,8 @@ script:
   - npm run lint
   - npm run test
   - npm run compile
+  - mkdir -p isos media rips
+  - touch isos/dvd.iso
   - docker-compose up --build -d
   - sleep 30
   - docker-compose ps
