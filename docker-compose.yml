@@ -17,8 +17,6 @@ services:
     # stdin_open: true
     # tty: true
     working_dir: /ncodr
-    entrypoint: /ncodr/node_modules/.bin/backpack
-    command: dev
     volumes:
       - .:/ncodr
       - ./isos/dvd.iso:/dev/sr0
