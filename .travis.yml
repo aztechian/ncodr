@@ -22,7 +22,7 @@ script:
   - npm run compile
   - mkdir -p isos media rips
   - touch isos/dvd.iso
-  - docker-compose up --build -d --exit-code-from ncodr
+  - docker-compose up --build -d
   - sleep 30
   - docker-compose ps
   - docker-compose logs ncodr
