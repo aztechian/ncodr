@@ -21,16 +21,16 @@ RUN echo "deb http://us.archive.ubuntu.com/ubuntu/ xenial universe \
   mkdir -p /media /rips && \
   chown -R 10298:10298 /media /rips && \
   chmod 4755 /usr/bin/bd_info
-# apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 816950D8 && \
 
-COPY ["./package*", "./README.md", "/app/"]
-COPY ["./build", "/app/build"]
-COPY ["./config", "/app/config"]
+COPY [".", "/app/"]
 WORKDIR /app
 RUN apt-key adv --fetch-keys http://deb.nodesource.com/gpgkey/nodesource.gpg.key && \
   echo "deb http://deb.nodesource.com/node_8.x xenial main" >> /etc/apt/sources.list && \
   apt-get -qq update && \
   apt-get install -yq nodejs && \
+  NODE_ENV=development npm install && \
+  npm run compile && \
+  rm -rf node_modules && \
   npm install && \
   chown -R ${U}: /app
 

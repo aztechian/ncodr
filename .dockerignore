@@ -3,12 +3,13 @@
 .jsbeautifyrc
 .eslint*
 .vagrant
+.travis.yml
 cc-test-reporter
+Vagrantfile
 Dockerfile
-dvdbackup
-HandBrakeCLI
 .dockerignore
 node_modules
+build
 coverage
 *.iso
 media
