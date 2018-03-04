@@ -17,7 +17,7 @@ RUN echo "deb http://us.archive.ubuntu.com/ubuntu/ xenial universe \
   apt-get clean && \
   groupadd -fg ${U} ncodr && \
   useradd --create-home --uid ${U} --gid ${U} ncodr && \
-  passwd -l ${U} && \
+  passwd -l ncodr && \
   mkdir -p /media /rips && \
   chown -R ${U}:0 /media /rips && \
   chmod 4755 /usr/bin/bd_info
