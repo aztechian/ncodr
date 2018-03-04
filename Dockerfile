@@ -1,7 +1,7 @@
 FROM ubuntu:16.04
 
 LABEL maintainer="Ian Martin <ian@imartin.net>" license="MIT" description="Distrubuted NodeJS app for automated ripping and encoding media"
-ENV DISPLAY=":0" LANG=C.UTF-8 DEBIAN_FRONTEND=noninteractive NODE_ENV=production U=ncodr
+ENV DISPLAY=":0" LANG=C.UTF-8 DEBIAN_FRONTEND=noninteractive NODE_ENV=production U=10298 NO_UPDATE_NOTIFIER=true
 
 RUN echo "deb http://us.archive.ubuntu.com/ubuntu/ xenial universe \
   deb http://us.archive.ubuntu.com/ubuntu/ xenial-updates universe \
@@ -15,11 +15,11 @@ RUN echo "deb http://us.archive.ubuntu.com/ubuntu/ xenial universe \
   apt-get install -yq git makemkv-oss makemkv-bin curl libav-tools libbluray-bin lsdvd dvdbackup libdvd-pkg handbrake-cli && \
   dpkg-reconfigure libdvd-pkg && \
   apt-get clean && \
-  groupadd -fg 10298 ${U} && \
-  useradd --create-home --uid 10298 --gid ${U} ${U} && \
+  groupadd -fg ${U} ncodr && \
+  useradd --create-home --uid ${U} --gid ${U} ncodr && \
   passwd -l ${U} && \
   mkdir -p /media /rips && \
-  chown -R 10298:10298 /media /rips && \
+  chown -R ${U}:0 /media /rips && \
   chmod 4755 /usr/bin/bd_info
 
 COPY [".", "/app/"]
@@ -32,7 +32,7 @@ RUN apt-key adv --fetch-keys http://deb.nodesource.com/gpgkey/nodesource.gpg.key
   npm run compile && \
   rm -rf node_modules && \
   npm install && \
-  chown -R ${U}: /app
+  chown -R ${U}:0 /app
 
 USER ${U}
 EXPOSE 2000
