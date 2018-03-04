@@ -1,7 +1,7 @@
 FROM ubuntu:16.04
 
 LABEL maintainer="Ian Martin <ian@imartin.net>" license="MIT" description="Distrubuted NodeJS app for automated ripping and encoding media"
-ENV DISPLAY=":0" LANG=C.UTF-8 DEBIAN_FRONTEND=noninteractive NODE_ENV=production U=2007 NO_UPDATE_NOTIFIER=true
+ENV DISPLAY=":0" LANG=C.UTF-8 DEBIAN_FRONTEND=noninteractive NODE_ENV=production U=2007 NO_UPDATE_NOTIFIER=true BABEL_DISABLE_CACHE=1
 
 RUN echo "deb http://us.archive.ubuntu.com/ubuntu/ xenial universe \
   deb http://us.archive.ubuntu.com/ubuntu/ xenial-updates universe \
