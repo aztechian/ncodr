@@ -1,6 +1,6 @@
 {
   "name": "ncoder",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "description": "Encoding/Ripping Queue",
   "engines": [
     ">= 8.3.0"
@@ -40,34 +40,34 @@
     "bull": "^3.3.7",
     "cheerio": "*",
     "chownr": "^1.0.1",
-    "config": "~1.30.0",
-    "express": "^4.16.2",
+    "config": "^1.30.0",
+    "express": "^4.16.3",
     "express-pino-logger": "^3.0.1",
-    "got": "^8.0.2",
-    "js-yaml": "~3",
+    "got": "^8.3.0",
+    "js-yaml": "^3.11.0",
     "keyv": "^3.0",
-    "ncodr-ui": "github:aztechian/ncodr-ui#v1.1.2",
+    "ncodr-ui": "github:aztechian/ncodr-ui#v1.1.3",
     "passport": "^0.4",
     "passport-google-oauth20": "^1.0",
-    "pino": "^4.10.2",
+    "pino": "^4.15.4",
     "pino-clf": "^1.0.2",
-    "source-map-support": "^0.5.0"
+    "source-map-support": "^0.5.4"
   },
   "devDependencies": {
     "babel-eslint": "^8.1.2",
-    "babel-plugin-istanbul": "^4.1.5",
+    "babel-plugin-istanbul": "^4.1.6",
     "babel-plugin-root-import": "^5.1.0",
     "babel-preset-env": "^1.6.1",
     "backpack-core": "^0.5.0",
     "chai": "*",
     "chai-as-promised": "*",
-    "eslint": "^4.14.0",
+    "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-import-resolver-babel-root-import-fixed": "^1.0.3",
-    "eslint-plugin-import": "^2.8.0",
-    "mocha": "^5.0.0",
+    "eslint-plugin-import": "^2.10.0",
+    "mocha": "^5.0.5",
     "mock-spawn": "*",
-    "nyc": "^11.4.1",
+    "nyc": "^11.6.0",
     "sinon": "^5.0.0"
   }
 }
