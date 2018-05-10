@@ -1,6 +1,6 @@
 {
   "name": "ncoder",
-  "version": "0.7.4",
+  "version": "0.7.5",
   "description": "Encoding/Ripping Queue",
   "engines": [
     ">= 8.3.0"
