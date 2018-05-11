@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import nock from 'nock';
+// import nock from 'nock';
 import jwt from '@/common/jwt';
 
 describe('JWT', () => {
