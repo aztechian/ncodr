@@ -4,7 +4,7 @@ import * as http from 'http';
 import * as os from 'os';
 import helmet from 'helmet';
 import PinoLogger from 'express-pino-logger';
-import jwtAuth from './jwt';
+import jwtAuth from './jwtAuth';
 import spa from './spaFilter';
 import l from './logger';
 import { core as config } from './conf';
