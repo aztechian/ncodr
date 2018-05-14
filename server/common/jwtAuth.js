@@ -72,6 +72,11 @@ export class JwtAuth {
       .catch(this.update.bind(this));
   }
 
+  /**
+   * [validate description]
+   * @param  {[type]} jwtObj [description]
+   * @return {[type]}        [description]
+   */
   validate(jwtObj) {
     const { pem } = jwtObj;
     if (pem === undefined || !pem) throw new Error('PEM not found for validation!');
@@ -79,16 +84,27 @@ export class JwtAuth {
     // verify will throw exception in case of failure, goes down to .catch
     if (config.has('auth.googleDomain')) {
       const domain = config.get('auth.googleDomain');
-      if (domain && !payload.hd) {
-        logger.warn(`Domain verification required for ${domain}, but user ${payload.sub} has no domain given.`);
-        throw new Error('User has no google domain');
-      }
-      if (payload.hd !== domain) {
-        logger.warn(`User ${payload.sub} is not a member of ${domain}`);
-        throw new Error(`User ${payload.sub} is not a member of ${domain}`);
-      }
+      this.checkDomain(domain, payload);
     }
     return payload;
+  }
+
+  /**
+   * [checkDomain description]
+   * @param  {[type]} domain  [description]
+   * @param  {[type]} payload [description]
+   * @return {[type]}         [description]
+   */
+  checkDomain(domain, payload) {
+    if (domain && !payload.hd) {
+      logger.warn(`Domain verification required for ${domain}, but user ${payload.sub} has no domain given.`);
+      throw new Error('User has no google domain');
+    }
+    if (payload.hd !== domain) {
+      logger.warn(`User ${payload.sub} is not a member of ${domain}`);
+      throw new Error(`User ${payload.sub} is not a member of ${domain}`);
+    }
+    return true;
   }
 
   /**
