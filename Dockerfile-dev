@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 
-LABEL maintainer="Ian Martin <ian@imartin.net>" license="MIT" description="Distrubuted NodeJS app for automated ripping and encoding media"
+LABEL maintainer="Ian Martin <ian@imartin.net>" license="MIT" description="Distributed NodeJS app for automated ripping and encoding media"
 ENV DISPLAY=":0" LANG=C.UTF-8 DEBIAN_FRONTEND=noninteractive NODE_ENV=development U=ncodr
 
 RUN echo "deb http://us.archive.ubuntu.com/ubuntu/ xenial universe \
@@ -20,12 +20,13 @@ RUN echo "deb http://us.archive.ubuntu.com/ubuntu/ xenial universe \
   groupadd -fg 10298 ${U} && \
   useradd --create-home --uid 10298 --gid ${U} ${U} && \
   passwd -l ${U} && \
-  mkdir -p /media /rips && \
+  mkdir -p /media /rips /ncodr && \
   chown -R 10298:10298 /media /rips && \
   chmod 4755 /usr/bin/bd_info
 
 USER ${U}
 EXPOSE 2000
+WORKDIR /ncodr
 VOLUME ['/rips','/media','/ncodr']
 ENTRYPOINT ["/usr/bin/npm"]
-CMD ["run", "dev"]
+CMD ["run", "serve"]

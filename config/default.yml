@@ -5,6 +5,10 @@ Core:
   logLevel: info
   api: true
   ui: true
+  auth:
+    type: google
+    googleClientId:
+    googleDomain:
   queues:
     - id: ripQ
       name: disc ripping

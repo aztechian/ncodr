@@ -8,9 +8,10 @@
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test LOG_LEVEL=error nyc mocha --opts mocha.opts test/unit",
-    "dev": "backpack dev | pino-clf -a 1 -d 2 | pino",
+    "serve": "backpack dev | pino-clf -a 1 -d 2 | pino",
     "lint": "eslint .",
-    "compile": "rm -rf build && backpack build",
+    "jsdoc": "jsdoc",
+    "build": "rm -rf build && backpack build",
     "version": "node -e 'console.log(require(\"./package.json\").version)'",
     "docker": "docker build -t aztechian/ncodr:$(npm run -s version) .",
     "start": "node build/main.js | pino-clf -a 1 -d 2 | pino"
@@ -34,6 +35,7 @@
   },
   "homepage": "https://github.com/aztechian/ncoder#readme",
   "dependencies": {
+    "atob": "^2.0.3",
     "babel-register": "^6.0",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.2",
@@ -44,11 +46,12 @@
     "express": "^4.16.3",
     "express-pino-logger": "^3.0.1",
     "got": "^8.3.0",
+    "helmet": "^3.10.0",
     "js-yaml": "^3.11.0",
-    "keyv": "^3.0",
+    "jsonwebtoken": "^8.1.1",
+    "keyv": "^3.0.0",
     "ncodr-ui": "github:aztechian/ncodr-ui#v1.2.1",
-    "passport": "^0.4",
-    "passport-google-oauth20": "^1.0",
+    "parse-cache-control": "^1.0.1",
     "pino": "^4.15.4",
     "pino-clf": "^1.0.2",
     "source-map-support": "^0.5.4"
@@ -65,9 +68,12 @@
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-import-resolver-babel-root-import-fixed": "^1.0.3",
     "eslint-plugin-import": "^2.10.0",
+    "jsdoc": "^3.5.5",
     "mocha": "^5.0.5",
     "mock-spawn": "*",
+    "nock": "^9.1.9",
     "nyc": "^11.6.0",
-    "sinon": "^5.0.0"
+    "sinon": "^5.0.0",
+    "sinon-chai": "^3.0.0"
   }
 }
