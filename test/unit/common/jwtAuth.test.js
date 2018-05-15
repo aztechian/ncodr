@@ -144,6 +144,12 @@ describe('JwtAuth', () => {
   });
 
   describe('#lookup', () => {
+    const lookupParams = {
+      header: {
+        kid: 'abc',
+      },
+    };
+
     it('should be a function', () => {
       expect(jwtAuth.lookup).to.be.a('function');
     });
@@ -154,15 +160,36 @@ describe('JwtAuth', () => {
 
     it('should return a Promise', () => {
       sinon.stub(jwtAuth.cache, 'get').resolves('ok');
-      jwtAuth.lookup({ header: { kid: 'abc' } }).then(() => {
+      return jwtAuth.lookup(lookupParams).then(() => {
         expect(true).to.be.true;
       });
     });
 
-    it('should return the PEM found in the cache');
+    it('should return the PEM found in the cache', () => {
+      sinon.stub(jwtAuth.cache, 'get').resolves('ok');
+      return jwtAuth.lookup(lookupParams).then(obj => {
+        expect(obj).to.have.property('pem');
+        expect(obj.pem).to.eq('ok');
+      });
+    });
 
-    it('should call update if the KID is not found');
+    it('should call update if the KID is not found', () => {
+      sinon.stub(jwtAuth.cache, 'get').resolves(undefined);
+      const updateStub = sinon.stub(jwtAuth, 'update').resolves('ok');
+      return jwtAuth.lookup(lookupParams).then(obj => {
+        expect(obj).to.have.property('pem');
+        expect(obj.pem).to.eq('ok');
+        expect(updateStub).to.have.been.calledOnce;
+      });
+    });
 
-    it('should return a promise on failure');
+    it('should return a promise on failure', () => {
+      sinon.stub(jwtAuth.cache, 'get').rejects('boo');
+      sinon.stub(jwtAuth, 'update').rejects(new Error('boo2'));
+      return jwtAuth.lookup(lookupParams).catch(err => {
+        expect(err).to.be.instanceOf(Error);
+        expect(err.message).to.eq('boo2');
+      });
+    });
   });
 });

@@ -30,7 +30,7 @@ RUN apt-key adv --fetch-keys http://deb.nodesource.com/gpgkey/nodesource.gpg.key
   apt-get install -yq nodejs && \
   apt-get clean && \
   NODE_ENV=development npm install && \
-  npm run compile && \
+  npm run build && \
   rm -rf node_modules && \
   npm install && \
   chown -R ${U}:0 /app

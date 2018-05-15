@@ -74,8 +74,15 @@ export class JwtAuth {
         const e = new Error(`kid ${kid} not found!`);
         e.jwt = jwt;
         throw e;
+        // throw to the next catch()
       })
-      .catch(this.update.bind(this));
+      .catch(this.update.bind(this))
+      .then(pem => {
+        if (pem.pem) return pem; // this came from first then(), above
+        const obj = jwt;
+        obj.pem = pem;
+        return obj;
+      });
   }
 
   /**
