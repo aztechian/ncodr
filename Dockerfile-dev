@@ -29,4 +29,4 @@ EXPOSE 2000
 WORKDIR /ncodr
 VOLUME ['/rips','/media','/ncodr']
 ENTRYPOINT ["/usr/bin/npm"]
-CMD ["run", "dev"]
+CMD ["run", "serve"]
