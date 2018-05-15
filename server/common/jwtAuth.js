@@ -20,6 +20,13 @@ export class JwtAuth {
     this.init();
   }
 
+  /**
+   * Initializes the cache of KID (key IDs) and PEM mappings from google.
+   * It returns a promise of all the keys being added to the cache map. This allows
+   * the caller to know when all items will be available to find in the map.
+   *
+   * @return {Promise} A promise that resolves when all items are in the cache map
+   */
   init() {
     logger.info('Updating signing PEMs for JWT verification');
     return got('https://www.googleapis.com/oauth2/v1/certs', { json: true })
@@ -39,7 +46,6 @@ export class JwtAuth {
 
   update(err) {
     const { kid } = err.jwt.header;
-    logger.fatal(this);
     return this.init()
       .then(this.cache.get(kid))
       .catch(error => {
@@ -73,9 +79,15 @@ export class JwtAuth {
   }
 
   /**
-   * [validate description]
-   * @param  {[type]} jwtObj [description]
-   * @return {[type]}        [description]
+   * Validates the provided JWT Object (internal to the JwtAuth class),
+   * but generally, this calls jsonwebtoken.verify() and wraps logic around the acceptance
+   * and existance of other attributes about the JWT.
+   *
+   * @param  {Object} jwtObj An object that encapsulates the values needed to authenticate
+   *  with a JWT
+   * @param  {String} jwtObj.token The entire "original" token (Full value following "JWT "
+   *  in an Authorization header)
+   * @return {Object}  The payload of the JWT, as a parsed JavaScript Object
    */
   validate(jwtObj) {
     const { pem } = jwtObj;
@@ -90,10 +102,14 @@ export class JwtAuth {
   }
 
   /**
-   * [checkDomain description]
-   * @param  {[type]} domain  [description]
-   * @param  {[type]} payload [description]
-   * @return {[type]}         [description]
+   * Called by validate() to do some extended checks/validation about the domain matching. This
+   * check is only available for Google's JWT objects.
+   *
+   * @param  {String} domain  The domain to be checked. This should come from the apps settings,
+   *  and should be "truth" for the check.
+   * @param  {Object} payload The parsed payload as a JavaScript object.
+   * @param  {String} payload.hd The home domain setting from Google's JWT implementation.
+   * @return {Boolean}      Boolean indicating whether the checks pass
    */
   checkDomain(domain, payload) {
     if (domain && !payload.hd) {
@@ -108,9 +124,12 @@ export class JwtAuth {
   }
 
   /**
-   * [extractJwt description]
-   * @param  {[type]} authHeader [description]
-   * @return {[type]}            [description]
+   * Converts the raw Authorization header into a parsed and checked object for passing to further
+   * Promises used by this class.
+   *
+   * @param  {String} authHeader The raw Authorization header from the request.
+   * @return {Object}  An internal representation of the JWT for further processing by this class,
+   *  contains the raw headers and payload as well as parsed headers and payloads.
    */
   extractJwt(authHeader) {
     const [, token] = authHeader.split(' ');
@@ -136,9 +155,14 @@ export class JwtAuth {
   }
 
   /**
-   * [auth description]
-   * @param  {[type]} authHeader [description]
-   * @return {[type]}            [description]
+   * Perform complete validation of the JWT from the Authorization header of a request.
+   * This will return a promise. When resolved, the request is valid and should be allowed to
+   * continue through the middleware chain. When rejected, the request should not be serviced by
+   * the application, and a 401 status should (usually) be returned.
+   *
+   * @param  {string} authHeader The complete value of the requests Authorization header.
+   * @return {Promise} A promise resolving when the checking and validation of the request
+   * is completed.
    */
   auth(authHeader) {
     const jwt = this.extractJwt(authHeader);
@@ -158,11 +182,12 @@ export default function () {
   const jwtAuth = new JwtAuth();
 
   /**
-   * [middleware description]
-   * @param  {[type]}   req  [description]
-   * @param  {[type]}   res  [description]
-   * @param  {Function} next [description]
-   * @return {[type]}        [description]
+   * The middleware function to be provided to Express.use()
+   *
+   * @param  {Object}   req  The Express request to be processed.
+   * @param  {Object}   res  The Express response object.
+   * @param  {Function} next The Express next() function to be called for the next middleware
+   * @return {Promise}     A promise resolving to the action of the auth middleware to perform.
    */
   return function middleware(req, res, next) {
     const authHeader = req.header('Authorization');
