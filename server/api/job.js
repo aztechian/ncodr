@@ -1,5 +1,6 @@
-import utils from '../common/utils';
-import qSvc from './services/bull';
+import utils from '@/common/utils';
+import qSvc from '@/api/services/bull';
+import logger from '@/common/logger';
 
 export class Job {
   fetch(req, res, next) {
@@ -38,6 +39,24 @@ export class Job {
       })
       .catch(err => utils.respond(res, 500, `Error retrying job ${req.params.id} in ${req.params.queue}: ${err}`))
       .catch(next);
+  }
+
+  events(req, res) {
+    logger.info(`starting event stream for ${req.params.queue}, job ${req.params.id} to client ${req.ip}`);
+    const queue = qSvc.getQueue(req.params.queue);
+    if (!queue) utils.respond(res, 404, `Unable to find queue ${req.params.queue} for event streams`);
+
+    queue.on('global:progress', (jobId, progress) => {
+      if (jobId === req.params.id) res.sse('progress', progress);
+    });
+    queue.on('global:complete', (jobId, status) => {
+      if (jobId === req.params.id) {
+        res.sse('progress', 100);
+        res.sse('complete', status);
+        res.send();
+      }
+    });
+    return true;
   }
 
   static getUrl(req) {

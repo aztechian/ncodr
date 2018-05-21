@@ -1,5 +1,6 @@
 import * as express from 'express';
-import utils from '../common/utils';
+import sse from 'sse-express';
+import utils from '@/common/utils';
 import files from './files';
 import queues from './queues';
 import queue from './queue';
@@ -26,5 +27,6 @@ export default express
   .delete('/queues/:queue/jobs/:id', job.remove)
   .post('/queues/:queue/jobs/:id/retry', job.retry)
   .post('/queues/:queue/jobs/:id/remove', job.remove)
+  .get('/queues/:queue/jobs/:id/events', sse, job.events)
 
   .get('/queues/:queue/files', files.listEncoderInputFiles);
