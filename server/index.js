@@ -15,12 +15,12 @@ const { ripQ, encodeQ } = Queues.instance;
 jobProcessing(encoderConfig.get('enable'), encodeQ, encoder);
 jobProcessing(ripperConfig.get('enable'), ripQ, ripper);
 
-ripQ.on('global:completed', (job, result) => {
-  logger.warn(`The job - ${job.id} completed with `, result);
+ripQ.on('global:completed', (jobId, result) => {
+  logger.warn(`The job - ${jobId} completed with `, result);
 });
 
-encodeQ.on('global:completed', (job, result) => {
-  logger.warn(`The job - ${job.id} completed with `, result);
+encodeQ.on('global:completed', (jobId, result) => {
+  logger.warn(`The job - ${jobId} completed with `, result);
 });
 
 const server = new Server();

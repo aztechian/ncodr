@@ -21,7 +21,6 @@ services:
       - .:/ncodr
       - ./isos/dvd.iso:/dev/sr0
       - ./media:/media
-      - ./rips:/rips
     environment:
       - REDIS_HOST=redis
       - LOG_LEVEL=debug

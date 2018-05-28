@@ -24,7 +24,7 @@ Ripper:
   # owner: 1000
   # group: 0
   # disc: 0
-  output: /rips
+  output: /media/rips
   dvdbackupOpts:
     '-M': ''
     '-p': ''
@@ -37,8 +37,8 @@ Ripper:
   # mkvKey: abcdefg
 Encoder:
   enable: auto
-  output: /media
-  input: /rips
+  output: /media/complete
+  input: /media/rips
   # owner: 1000
   # group: 0
   hbOpts:
