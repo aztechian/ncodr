@@ -59,7 +59,7 @@
   "devDependencies": {
     "babel-eslint": "^8.1.2",
     "babel-plugin-istanbul": "^4.1.6",
-    "babel-plugin-root-import": "^5.1.0",
+    "babel-plugin-root-import": "^6.0.0",
     "babel-preset-env": "^1.6.1",
     "backpack-core": "^0.7.0",
     "chai": "*",
