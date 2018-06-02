@@ -37,6 +37,6 @@ RUN apt-key adv --fetch-keys http://deb.nodesource.com/gpgkey/nodesource.gpg.key
 
 USER ${U}
 EXPOSE 2000
-VOLUME ["/rips", "/media"]
+VOLUME ["/media"]
 ENTRYPOINT ["/usr/bin/npm"]
 CMD ["start"]

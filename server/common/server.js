@@ -5,7 +5,6 @@ import * as os from 'os';
 import helmet from 'helmet';
 import PinoLogger from 'express-pino-logger';
 import jwtAuth from './jwtAuth';
-import spa from './spaFilter';
 import l from './logger';
 import { core as config } from './conf';
 
@@ -18,22 +17,26 @@ export default class ExpressServer {
     app.use(helmet());
 
     if (config.get('auth.type') === 'google') {
-      l.debug('setting up JWT auth');
+      l.debug('using JWT authentication for API');
       app.use('/api', jwtAuth());
     }
 
     app.use(bodyParser.json());
-    if (config.get('ui').toString() === 'true') {
-      app.use(spa);
-      app.use(Express.static('node_modules/ncodr-ui/dist'));
-      // front-end config file
-      app.use('/config.js', Express.static('config/config.js'));
-    }
     this.app = app;
   }
 
   router(mount, handler) {
     this.app.use(mount, handler);
+    return this;
+  }
+
+  use(middleware) {
+    this.app.use(middleware);
+    return this;
+  }
+
+  static(path) {
+    this.app.use(Express.static(path));
     return this;
   }
 

@@ -27,6 +27,6 @@ RUN echo "deb http://us.archive.ubuntu.com/ubuntu/ xenial universe \
 USER ${U}
 EXPOSE 2000
 WORKDIR /ncodr
-VOLUME ['/rips','/media','/ncodr']
+VOLUME ['/media','/ncodr']
 ENTRYPOINT ["/usr/bin/npm"]
 CMD ["run", "serve"]

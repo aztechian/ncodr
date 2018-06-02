@@ -1,3 +1,4 @@
+import Express from 'express';
 import logger from './common/logger';
 import { core as config, ripper as ripperConfig, encoder as encoderConfig } from './common/conf';
 import Server from './common/server';
@@ -28,11 +29,16 @@ const useApi = config.get('api').toString();
 const useUi = config.get('ui').toString();
 
 if (useApi === 'true' || useUi === 'true') {
-  if (useApi === 'true') {
-    logger.debug('adding /api routes');
-    server.app.use('/api', api);
+  if (useUi === 'true') {
+    server.static('node_modules/ncodr-ui/dist')
+      // front-end config file
+      .router('/config.js', Express.static('config/config.js'));
   }
-  server.listen(port);
+  if (useApi === 'true') {
+    server.router('/api', api);
+  }
+  server.router('*', Express.static('node_modules/ncodr-ui/dist/index.html'))
+    .listen(port);
 } // else - no reason to even listen
 
 function jobProcessing(flag, queue, processor) {

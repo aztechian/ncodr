@@ -6,7 +6,7 @@ Core:
   api: true
   ui: true
   auth:
-    type: google
+    type:
     googleClientId:
     googleDomain:
   queues:
