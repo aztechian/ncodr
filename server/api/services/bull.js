@@ -1,4 +1,4 @@
-import Queues from '../../common/queues';
+import Queues from '@/common/queues';
 
 export class BullService {
   constructor() {

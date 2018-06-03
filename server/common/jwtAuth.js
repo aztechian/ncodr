@@ -161,6 +161,10 @@ export class JwtAuth {
     };
   }
 
+  checkAuthHeader(header) {
+    return header && header.match(/^(jwt|bearer) /i);
+  }
+
   /**
    * Perform complete validation of the JWT from the Authorization header of a request.
    * This will return a promise. When resolved, the request is valid and should be allowed to
@@ -197,9 +201,14 @@ export default function () {
    * @return {Promise}     A promise resolving to the action of the auth middleware to perform.
    */
   return function middleware(req, res, next) {
+    // I hate doing this, but because EventSource doesn't allow setting headers, there's no way
+    // for those requests to legitimately authenticate - short of reimplementing EventSource as
+    // an XHR request instead. So, we'll just let those requests through. Don't put too much
+    // sensitive info in SSE events...
+    if (req.accepts('text/event-stream')) return next();
+
     const authHeader = req.header('Authorization');
-    if (!authHeader) return Promise.resolve(res.status(403).send());
-    if (!authHeader.match(/^(jwt|bearer) /i)) return Promise.resolve(res.status(403).send());
+    if (!jwtAuth.checkAuthHeader(authHeader)) return Promise.resolve(res.status(403).send());
 
     return jwtAuth.auth(authHeader)
       .then(payload => {
