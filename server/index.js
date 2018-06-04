@@ -2,6 +2,7 @@ import Express from 'express';
 import logger from './common/logger';
 import { core as config, ripper as ripperConfig, encoder as encoderConfig } from './common/conf';
 import Server from './common/server';
+import clientConfig from './common/clientConfig';
 import Queues from './common/queues';
 import ripper from './ripper';
 import encoder from './encoder';
@@ -30,9 +31,8 @@ const useUi = config.get('ui').toString();
 
 if (useApi === 'true' || useUi === 'true') {
   if (useUi === 'true') {
-    server.static('node_modules/ncodr-ui/dist')
-      // front-end config file
-      .router('/config.js', Express.static('config/config.js'));
+    server.router('/config.js', clientConfig)
+      .static('node_modules/ncodr-ui/dist');
   }
   if (useApi === 'true') {
     server.router('/api', api);
