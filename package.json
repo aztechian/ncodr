@@ -50,7 +50,7 @@
     "js-yaml": "^3.12.0",
     "jsonwebtoken": "^8.2.2",
     "keyv": "^3.0.0",
-    "ncodr-ui": "github:aztechian/ncodr-ui#v1.2.2",
+    "ncodr-ui": "github:aztechian/ncodr-ui#v1.2.5",
     "parse-cache-control": "^1.0.1",
     "pino": "^4.17.2",
     "pino-clf": "^1.0.2",
