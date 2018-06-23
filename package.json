@@ -65,7 +65,7 @@
     "backpack-core": "^0.7.0",
     "chai": "*",
     "chai-as-promised": "*",
-    "eslint": "^4.19.1",
+    "eslint": "^5.0.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-import-resolver-babel-root-import-fixed": "^1.0.3",
     "eslint-plugin-import": "^2.12.0",
