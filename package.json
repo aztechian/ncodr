@@ -1,5 +1,5 @@
 {
-  "name": "ncoder",
+  "name": "ncodr",
   "version": "0.9.1",
   "description": "Encoding/Ripping Queue",
   "engines": [
@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aztechian/ncoder.git"
+    "url": "git+https://github.com/aztechian/ncodr.git"
   },
   "keywords": [
     "encode",
@@ -31,9 +31,9 @@
   "author": "Ian Martin <ian@imartin.net>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/aztechian/ncoder/issues"
+    "url": "https://github.com/aztechian/ncodr/issues"
   },
-  "homepage": "https://github.com/aztechian/ncoder#readme",
+  "homepage": "https://github.com/aztechian/ncodr#readme",
   "dependencies": {
     "atob": "^2.0.3",
     "babel-register": "^6.0",
@@ -48,9 +48,9 @@
     "got": "^8.3.0",
     "helmet": "^3.12.1",
     "js-yaml": "^3.12.0",
-    "jsonwebtoken": "^8.2.2",
+    "jsonwebtoken": "^8.3.0",
     "keyv": "^3.0.0",
-    "ncodr-ui": "github:aztechian/ncodr-ui#v1.2.5",
+    "ncodr-ui": "github:aztechian/ncodr-ui#v1.2.6",
     "parse-cache-control": "^1.0.1",
     "pino": "^4.17.3",
     "pino-clf": "^1.0.2",
@@ -72,9 +72,10 @@
     "jsdoc": "^3.5.5",
     "mocha": "^5.2.0",
     "mock-spawn": "*",
-    "nock": "^9.3.0",
+    "nock": "^9.3.3",
     "nyc": "^12.0.2",
-    "sinon": "^5.0.10",
-    "sinon-chai": "^3.1.0"
+    "sinon": "^5.1.1",
+    "sinon-chai": "^3.2.0",
+    "sinon-express-mock": "^2.0.4"
   }
 }

@@ -6,7 +6,6 @@ import jsonwebtoken from 'jsonwebtoken';
 import logger from './logger';
 import { core as config } from './conf';
 
-
 export class JwtAuth {
   constructor() {
     this.cache = new Keyv();
@@ -103,7 +102,7 @@ export class JwtAuth {
     // verify will throw exception in case of failure, goes down to .catch
     if (config.has('auth.googleDomain')) {
       const domain = config.get('auth.googleDomain');
-      this.checkDomain(domain, payload);
+      JwtAuth.checkDomain(domain, payload);
     }
     return payload;
   }
@@ -118,7 +117,8 @@ export class JwtAuth {
    * @param  {String} payload.hd The home domain setting from Google's JWT implementation.
    * @return {Boolean}      Boolean indicating whether the checks pass
    */
-  checkDomain(domain, payload) {
+  static checkDomain(domain, payload) {
+    logger.debug(`Validating domain for request. Need "${domain}", got "${payload.hd}"`);
     if (domain && !payload.hd) {
       logger.warn(`Domain verification required for ${domain}, but user ${payload.sub} has no domain given.`);
       throw new Error('User has no google domain');
@@ -138,7 +138,7 @@ export class JwtAuth {
    * @return {Object}  An internal representation of the JWT for further processing by this class,
    *  contains the raw headers and payload as well as parsed headers and payloads.
    */
-  extractJwt(authHeader) {
+  static extractJwt(authHeader) {
     const [, token] = authHeader.split(' ');
     if (!token) {
       logger.warn('Invalid Authorization header format');
@@ -161,8 +161,21 @@ export class JwtAuth {
     };
   }
 
-  checkAuthHeader(header) {
-    return header && header.match(/^(jwt|bearer) /i);
+  static checkAuthHeader(header) {
+    return !!header && /^(jwt|bearer) /i.test(header);
+  }
+
+  /**
+   * Determines if this request is reasonably valid for an event stream (Server-Sent Events)
+   * @param  {object}  req The Express Request object
+   * @return {Boolean}     Boolean to indicate if the request is for an Event
+   */
+  static isEventRequest(req) {
+    if (/text\/event-stream/.test(req.get('Accept')) &&
+      /\/events$/.test(req.path)) {
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -176,7 +189,7 @@ export class JwtAuth {
    * is completed.
    */
   auth(authHeader) {
-    const jwt = this.extractJwt(authHeader);
+    const jwt = JwtAuth.extractJwt(authHeader);
     // becuase this will be taken into the promise scope, we must explicitly bind this to the
     // class object so we can reference it later.
     // no free lunches... who'd have guessed!
@@ -205,10 +218,10 @@ export default function () {
     // for those requests to legitimately authenticate - short of reimplementing EventSource as
     // an XHR request instead. So, we'll just let those requests through. Don't put too much
     // sensitive info in SSE events...
-    if (req.accepts('text/event-stream')) return next();
+    if (JwtAuth.isEventRequest(req)) return next();
 
     const authHeader = req.header('Authorization');
-    if (!jwtAuth.checkAuthHeader(authHeader)) return Promise.resolve(res.status(403).send());
+    if (!JwtAuth.checkAuthHeader(authHeader)) return Promise.resolve(res.status(403).send());
 
     return jwtAuth.auth(authHeader)
       .then(payload => {
