@@ -171,8 +171,8 @@ export class JwtAuth {
    * @return {Boolean}     Boolean to indicate if the request is for an Event
    */
   static isEventRequest(req) {
-    if (/text\/event-stream/.test(req.get('Accept')) &&
-      /\/events$/.test(req.path)) {
+    if (/text\/event-stream/.test(req.get('Accept'))
+      && /\/events$/.test(req.path)) {
       return true;
     }
     return false;

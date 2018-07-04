@@ -21,8 +21,8 @@ export class HandBrake {
 
     if (job.data.scan) optArray.push('--scan');
     optArray.push('-i', path.join(config.get('input'), job.data.input));
-    if (Object.prototype.hasOwnProperty.call(job.data, 'options') &&
-      Object.prototype.hasOwnProperty.call(job.data.options, '-t')) {
+    if (Object.prototype.hasOwnProperty.call(job.data, 'options')
+      && Object.prototype.hasOwnProperty.call(job.data.options, '-t')) {
       // if -t is specified by user, don't use --main-feature
       const idx = optArray.indexOf('--main-feature');
       if (idx > -1) optArray.splice(idx, 1);
