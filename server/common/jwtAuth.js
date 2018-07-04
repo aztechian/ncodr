@@ -162,7 +162,7 @@ export class JwtAuth {
   }
 
   static checkAuthHeader(header) {
-    return header && header.match(/^(jwt|bearer) /i);
+    return !!header && /^(jwt|bearer) /i.test(header);
   }
 
   /**
