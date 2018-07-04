@@ -5,6 +5,7 @@ import sinonChai from 'sinon-chai';
 import { JwtAuth } from '@/common/jwtAuth';
 import logger from '@/common/logger';
 import jsonwebtoken from 'jsonwebtoken';
+import { mockReq } from 'sinon-express-mock';
 
 const { expect } = chai;
 chai.use(sinonChai);
@@ -26,23 +27,23 @@ describe('JwtAuth', () => {
 
   describe('#extractJwt', () => {
     it('should be a function', () => {
-      expect(jwtAuth.extractJwt).to.be.a('function');
+      expect(JwtAuth.extractJwt).to.be.a('function');
     });
 
     it('should accept one parameter', () => {
-      expect(jwtAuth.extractJwt.length).to.eq(1);
+      expect(JwtAuth.extractJwt.length).to.eq(1);
     });
 
     it('should print a warning if the Authorization header isn\'t right', () => {
       const warnSpy = sinon.spy(logger, 'warn');
-      jwtAuth.extractJwt('ohnoImnotright!');
+      JwtAuth.extractJwt('ohnoImnotright!');
       expect(warnSpy).to.have.been.calledOnce;
     });
 
     it('should return an empty object on error', () => {
       const warnSpy = sinon.spy(logger, 'warn');
-      const badHeader = jwtAuth.extractJwt('ohnoImnotright!');
-      const badJwt = jwtAuth.extractJwt('JWT thisisntright.either');
+      const badHeader = JwtAuth.extractJwt('ohnoImnotright!');
+      const badJwt = JwtAuth.extractJwt('JWT thisisntright.either');
       expect(warnSpy).to.have.been.calledTwice;
       expect(badHeader).to.be.eql({});
       expect(badJwt).to.be.eql({});
@@ -77,10 +78,10 @@ describe('JwtAuth', () => {
 
     it('should return a payload object', () => {
       sinon.stub(jsonwebtoken, 'verify').returns({ payload: 'efg' });
-      sinon.stub(jwtAuth, 'checkDomain').returns(true);
+      sinon.stub(JwtAuth, 'checkDomain').returns(true);
       const value = jwtAuth.validate({ pem: 'abcd' });
       expect(value).to.have.property('payload');
-      expect(value.payload).to.eq('efg');
+      expect(value).to.eql({ payload: 'efg' });
     });
 
     it('should throw an error if pem is not provided', () => {
@@ -90,23 +91,23 @@ describe('JwtAuth', () => {
 
   describe('#checkDomain', () => {
     it('should be a function', () => {
-      expect(jwtAuth.checkDomain).to.be.a('function');
+      expect(JwtAuth.checkDomain).to.be.a('function');
     });
 
     it('should accept two parameters', () => {
-      expect(jwtAuth.checkDomain.length).to.eq(2);
+      expect(JwtAuth.checkDomain.length).to.eq(2);
     });
 
     it('should throw an error if domain is set and payload doesn\'t', () => {
-      expect(() => jwtAuth.checkDomain('abc.com', {})).to.throw(Error, 'User has no google domain');
+      expect(() => JwtAuth.checkDomain('abc.com', {})).to.throw(Error, 'User has no google domain');
     });
 
     it('should throw an error if the payload domain doesn\'t match', () => {
-      expect(() => jwtAuth.checkDomain('blah.com', { hd: 'lala.org' })).to.throw(Error, 'not a member');
+      expect(() => JwtAuth.checkDomain('blah.com', { hd: 'lala.org' })).to.throw(Error, 'not a member');
     });
 
     it('should return true if domains match', () => {
-      expect(jwtAuth.checkDomain('mydomain.com', { hd: 'mydomain.com' })).to.be.true;
+      expect(JwtAuth.checkDomain('mydomain.com', { hd: 'mydomain.com' })).to.be.true;
     });
   });
 
@@ -190,6 +191,86 @@ describe('JwtAuth', () => {
         expect(err).to.be.instanceOf(Error);
         expect(err.message).to.eq('boo2');
       });
+    });
+  });
+
+  describe('#checkAuthHeader', () => {
+    it('should be a function', () => {
+      expect(JwtAuth.checkAuthHeader).to.be.a('function');
+    });
+
+    it('should take one parameter', () => {
+      expect(JwtAuth.checkAuthHeader.length).to.eq(1);
+    });
+
+    it('should return a boolean', () => {
+      expect(JwtAuth.checkAuthHeader('somestring')).to.be.a('Boolean');
+    });
+
+    it('should return false for an invalid JWT header', () => {
+      expect(JwtAuth.checkAuthHeader('blah')).to.be.false;
+      expect(JwtAuth.checkAuthHeader('JET asdas')).to.be.false;
+      expect(JwtAuth.checkAuthHeader(' JET asdas')).to.be.false;
+      expect(JwtAuth.checkAuthHeader('Basic kajkl8392')).to.be.false;
+      expect(JwtAuth.checkAuthHeader('eyJhbGciOiJSUzI1NiIsImtpZCI6IjRlZj')).to.be.false;
+      expect(JwtAuth.checkAuthHeader('Digest lalkwej')).to.be.false;
+      expect(JwtAuth.checkAuthHeader('')).to.be.false;
+      expect(JwtAuth.checkAuthHeader(undefined)).to.be.false;
+    });
+
+    it('should return true for a valid JWT header', () => {
+      expect(JwtAuth.checkAuthHeader('jwt ')).to.be.true;
+      expect(JwtAuth.checkAuthHeader('JWT something')).to.be.true;
+      expect(JwtAuth.checkAuthHeader('Bearer ')).to.be.true;
+      expect(JwtAuth.checkAuthHeader('bearer ')).to.be.true;
+    });
+  });
+
+  describe('#isEventRequest', () => {
+    let badReq;
+    let goodReq;
+    before(() => {
+      badReq = {
+        // headers: {
+        //   Accept: 'blah',
+        // },
+        get: sinon.stub().returns('blah'), // for call to get('Accept')
+        path: '/something/not/right',
+      };
+
+      goodReq = {
+        get: sinon.stub().returns('text/event-stream'), // for call to get('Accept')
+        path: '/path/to/events',
+      };
+    });
+
+    it('should be a function', () => {
+      expect(JwtAuth.isEventRequest).to.be.a('function');
+    });
+
+    it('should take one parameter', () => {
+      expect(JwtAuth.isEventRequest.length).to.eq(1);
+    });
+
+    it('should return a boolean', () => {
+      const req = mockReq(badReq);
+      expect(JwtAuth.isEventRequest(req)).to.be.a('Boolean');
+    });
+
+    it('should return false for a non-SSE request', () => {
+      const req = mockReq(badReq);
+      expect(JwtAuth.isEventRequest(req)).to.be.false;
+      expect(req.get).to.have.been.called;
+
+      const anotherReq = badReq;
+      anotherReq.path = '/events';
+      const req2 = mockReq(anotherReq);
+      expect(JwtAuth.isEventRequest(req2)).to.be.false;
+    });
+
+    it('should return true for an SSE request', () => {
+      const req = mockReq(goodReq);
+      expect(JwtAuth.isEventRequest(req)).to.be.true;
     });
   });
 });
