@@ -54,6 +54,9 @@ export class JwtAuth {
   }
 
   lookup(jwt) {
+    if (!Object.prototype.hasOwnProperty.call(jwt, 'header') || !Object.prototype.hasOwnProperty.call(jwt.header, 'kid')) {
+      return Promise.reject(new Error('JWT does not contain KID.'));
+    }
     const { kid } = jwt.header;
     // a client passing an old JWT will incur the overhead of re-querying google for the latest
     // keys to make sure we're not lying to the client. This slows the response a bit - which
@@ -91,20 +94,25 @@ export class JwtAuth {
    *
    * @param  {Object} jwtObj An object that encapsulates the values needed to authenticate
    *  with a JWT
-   * @param  {String} jwtObj.token The entire "original" token (Full value following "JWT "
-   *  in an Authorization header)
    * @return {Object}  The payload of the JWT, as a parsed JavaScript Object
    */
   validate(jwtObj) {
-    const { pem } = jwtObj;
-    if (pem === undefined || !pem) throw new Error('PEM not found for validation!');
-    const payload = jsonwebtoken.verify(jwtObj.token, pem, this.jwtOpts);
-    // verify will throw exception in case of failure, goes down to .catch
-    if (config.has('auth.googleDomain')) {
-      const domain = config.get('auth.googleDomain');
-      JwtAuth.checkDomain(domain, payload);
-    }
-    return payload;
+    return new Promise((resolve, reject) => {
+      if (!Object.prototype.hasOwnProperty.call(jwtObj, 'pem')) {
+        reject(new Error('JWT Object does not contain "pem" field.'));
+      }
+
+      const { pem } = jwtObj;
+      if (pem === undefined || !pem) reject(new Error('PEM not found for validation!'));
+
+      const payload = jsonwebtoken.verify(jwtObj.token, pem, this.jwtOpts);
+      // verify will throw exception in case of failure, goes down to .catch
+      if (config.has('auth.googleDomain')) {
+        const domain = config.get('auth.googleDomain');
+        JwtAuth.checkDomain(domain, payload);
+      }
+      resolve(payload);
+    });
   }
 
   /**
@@ -142,11 +150,11 @@ export class JwtAuth {
     const [, token] = authHeader.split(' ');
     if (!token) {
       logger.warn('Invalid Authorization header format');
-      return {};
+      return null;
     }
     if ((token.match(/\./g) || []).length !== 2) {
-      logger.warn('Improper JWT!');
-      return {};
+      logger.warn('Improper JWT!', token);
+      return null;
     }
     const [rawHeader, rawPayload, signature] = token.split('.');
     const header = JSON.parse(atob(rawHeader));
@@ -190,6 +198,9 @@ export class JwtAuth {
    */
   auth(authHeader) {
     const jwt = JwtAuth.extractJwt(authHeader);
+    if (!jwt) {
+      return Promise.reject(new Error('Invalid JWT in request.'));
+    }
     // becuase this will be taken into the promise scope, we must explicitly bind this to the
     // class object so we can reference it later.
     // no free lunches... who'd have guessed!

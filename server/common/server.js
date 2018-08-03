@@ -3,6 +3,7 @@ import * as bodyParser from 'body-parser';
 import * as http from 'http';
 import * as os from 'os';
 import helmet from 'helmet';
+import compression from 'compression';
 import PinoLogger from 'express-pino-logger';
 import jwtAuth from './jwtAuth';
 import l from './logger';
@@ -22,6 +23,7 @@ export default class ExpressServer {
     }
 
     app.use(bodyParser.json());
+    app.use(compression());
     this.app = app;
   }
 

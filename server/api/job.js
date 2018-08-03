@@ -47,7 +47,10 @@ export class Job {
     if (!queue) utils.respond(res, 404, `Unable to find queue ${req.params.queue} for event streams`);
 
     queue.on('global:progress', (jobId, progress) => {
-      if (jobId === req.params.id) res.sse('progress', progress);
+      if (jobId === req.params.id) {
+        res.sse('progress', progress);
+        res.flush(); // for mixing SSE with compression
+      }
     });
     queue.on('global:complete', (jobId, status) => {
       if (jobId === req.params.id) {

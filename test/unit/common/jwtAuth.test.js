@@ -45,8 +45,8 @@ describe('JwtAuth', () => {
       const badHeader = JwtAuth.extractJwt('ohnoImnotright!');
       const badJwt = JwtAuth.extractJwt('JWT thisisntright.either');
       expect(warnSpy).to.have.been.calledTwice;
-      expect(badHeader).to.be.eql({});
-      expect(badJwt).to.be.eql({});
+      expect(badHeader).to.be.null;
+      expect(badJwt).to.be.null;
     });
   });
 
@@ -76,17 +76,19 @@ describe('JwtAuth', () => {
       expect(jwtAuth.validate.length).to.eq(1);
     });
 
-    it('should return a payload object', () => {
+    it('should return a promise to a payload object', () => {
       sinon.stub(jsonwebtoken, 'verify').returns({ payload: 'efg' });
       sinon.stub(JwtAuth, 'checkDomain').returns(true);
-      const value = jwtAuth.validate({ pem: 'abcd' });
-      expect(value).to.have.property('payload');
-      expect(value).to.eql({ payload: 'efg' });
+      return jwtAuth.validate({ pem: 'abcd' }).then(value => {
+        expect(value).to.have.property('payload');
+        expect(value).to.eql({ payload: 'efg' });
+      });
     });
 
-    it('should throw an error if pem is not provided', () => {
-      expect(() => jwtAuth.validate({})).to.throw(Error);
-    });
+    it('should reject if pem is not provided',
+      () => jwtAuth.validate({}).catch(err => {
+        expect(err).to.be.instanceOf(Error);
+      }));
   });
 
   describe('#checkDomain', () => {

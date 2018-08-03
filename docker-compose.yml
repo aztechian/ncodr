@@ -14,15 +14,15 @@ services:
     image: ncodr:dev
     depends_on:
       - redis
-    # stdin_open: true
-    # tty: true
     working_dir: /ncodr
     volumes:
       - .:/ncodr
       - ./isos/dvd.iso:/dev/sr0
       - ./media:/media
     environment:
-      - REDIS_HOST=redis
-      - LOG_LEVEL=debug
+      REDIS_HOST: redis
+      LOG_LEVEL: debug
+      NODE_ENV: development
+      UI: 'false'
     ports:
       - "2000:2000"
