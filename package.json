@@ -45,7 +45,7 @@
     "compression": "^1.7.2",
     "config": "^1.31.0",
     "express": "^4.16.3",
-    "express-pino-logger": "^3.0.2",
+    "express-pino-logger": "^4.0.0",
     "got": "^8.3.2",
     "helmet": "^3.13.0",
     "js-yaml": "^3.12.0",
