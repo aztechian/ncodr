@@ -37,6 +37,7 @@ RUN apt-key adv --fetch-keys http://deb.nodesource.com/gpgkey/nodesource.gpg.key
 
 USER ${U}
 EXPOSE 2000
+HEALTHCHECK --start-period=15s --timeout=5s CMD /usr/bin/pgrep node
 VOLUME ["/media"]
 ENTRYPOINT ["/usr/bin/npm"]
 CMD ["start"]

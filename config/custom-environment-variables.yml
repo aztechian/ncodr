@@ -15,6 +15,7 @@ Core:
 Ripper:
   enable: RIP
   output: RIPPER_OUTPUT
+  device: RIPPER_DEVICE
 Encoder:
   enable: ENCODE
   output: ENCODER_OUTPUT
