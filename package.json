@@ -1,6 +1,6 @@
 {
   "name": "ncodr",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Encoding/Ripping Queue",
   "engines": [
     ">= 8.3.0"
