@@ -16,6 +16,7 @@ Ripper:
   enable: RIP
   output: RIPPER_OUTPUT
   device: RIPPER_DEVICE
+  mkvKey: MAKEMKV_KEY
 Encoder:
   enable: ENCODE
   output: ENCODER_OUTPUT

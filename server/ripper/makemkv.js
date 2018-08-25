@@ -53,10 +53,10 @@ export class MakeMKV {
       logger.info('Using MakeMKV key from configuration value');
       return Promise.resolve(config.get('mkvKey'));
     }
-    return got('http://www.makemkv.com/forum2/viewtopic.php?f=5&t=1053')
+    return got('http://www.makemkv.com/forum/viewtopic.php?f=5&t=1053')
       .then(response => {
         const $ = cheerio.load(response.body);
-        logger.debug(`retrieved content from forum post: ${$('div.codecontent').text()}`);
+        logger.debug(`retrieved content from forum post: ${$('div.codebox code').text()}`);
         return $('div.codecontent').text();
       })
       .catch(err => {
