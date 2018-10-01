@@ -8,13 +8,13 @@
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test LOG_LEVEL=error nyc mocha --opts mocha.opts test/unit",
-    "serve": "backpack dev | pino-clf -a 1 -d 2 | pino",
+    "serve": "backpack dev | pino-clf -a 1 -d 2 | pino-pretty",
     "lint": "eslint .",
     "jsdoc": "jsdoc",
     "build": "rm -rf build && backpack build",
     "version": "node -e 'console.log(require(\"./package.json\").version)'",
     "docker": "docker build -t aztechian/ncodr:$(npm run -s version) .",
-    "start": "node build/main.js | pino-clf -a 1 -d 2 | pino"
+    "start": "node build/main.js | pino-clf -a 1 -d 2 | pino-pretty"
   },
   "repository": {
     "type": "git",
