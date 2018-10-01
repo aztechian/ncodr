@@ -56,8 +56,9 @@ export class MakeMKV {
     return got('http://www.makemkv.com/forum/viewtopic.php?f=5&t=1053')
       .then(response => {
         const $ = cheerio.load(response.body);
-        logger.debug(`retrieved content from forum post: ${$('div.codebox code').text()}`);
-        return $('div.codecontent').text();
+        const key = $('div.codebox code').text();
+        logger.debug(`retrieved content from forum post: ${key}`);
+        return key;
       })
       .catch(err => {
         logger.warn(`Unable to get MakeMKV beta key from the web: ${err}`);
