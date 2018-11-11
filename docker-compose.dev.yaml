@@ -1,0 +1,16 @@
+---
+version: "3"
+services:
+  ncodr:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ncodr:dev
+    volumes:
+      - .:/app
+      - ./isos/audio.bin:/dev/sr0
+    environment:
+      NODE_ENV: development
+    command:
+      - run
+      - serve

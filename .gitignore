@@ -4,7 +4,7 @@ logs
 npm-debug.log*
 
 /config/local*
-*.iso
+/docker-compose.override.yaml
 /.vagrant
 /media/*
 /rips/*
