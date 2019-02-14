@@ -39,7 +39,7 @@
     "babel-register": "^6.0",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.3",
-    "bull": "^3.4.4",
+    "bull": "^3.7.0",
     "cheerio": "*",
     "chownr": "^1.1.1",
     "compression": "^1.7.2",
