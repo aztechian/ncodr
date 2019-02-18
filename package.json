@@ -61,7 +61,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
-    "babel-plugin-istanbul": "^4.1.6",
+    "babel-plugin-istanbul": "^5.1.1",
     "babel-plugin-root-import": "^6.1.0",
     "babel-preset-env": "^1.6.1",
     "backpack-core": "^0.7.0",
