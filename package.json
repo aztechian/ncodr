@@ -72,7 +72,7 @@
     "eslint-import-resolver-babel-root-import-fixed": "^1.0.3",
     "eslint-plugin-import": "^2.13.0",
     "jsdoc": "^3.5.5",
-    "mocha": "^5.2.0",
+    "mocha": "^6.0.0",
     "mock-spawn": "*",
     "nock": "^10.0.0",
     "nyc": "^12.0.2",
