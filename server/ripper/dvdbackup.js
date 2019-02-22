@@ -2,6 +2,7 @@ import { spawn } from 'child_process';
 import readline from 'readline';
 import chownr from 'chownr';
 import path from 'path';
+import Utils from './utils';
 import logger from '../common/logger';
 import { ripper as config } from '../common/conf';
 
@@ -11,6 +12,10 @@ export class DvdBackup {
   constructor() {
     this._device = config.get('device');
     this.defaults = config.get('dvdbackupOpts');
+    this.overrides = {
+      '-i': this._device,
+      '-o': config.get('output'),
+    };
   }
 
   detect() {
@@ -70,16 +75,13 @@ export class DvdBackup {
   rip(job, label) {
     logger.info(`${this.constructor.name}: Processing job ${job.id} for DVD`);
     job.progress(0);
-    const opts = Object.assign({}, this.defaults, job.data.options);
-    const optArray = Object.entries(opts)
-      .reduce((item, val) => item.concat(val))
-      .filter(o => o !== '');
-    optArray.push('-n', label, '-i', this._device, '-o', config.get('output'));
+    const opts = Object.assign({}, this.defaults, job.data.options, this.overrides, { '-n': label });
+    const params = Utils.cmdLineOpts(opts);
     const outputFile = path.join(config.get('output'), label);
 
     return new Promise((resolve, reject) => {
-      logger.info(`${this.constructor.name}: Starting rip dvdbackup ${optArray.join(' ')}`);
-      const ripper = spawn('dvdbackup', optArray);
+      logger.info(`${this.constructor.name}: Starting dvdbackup ${params.join(' ')}`);
+      const ripper = spawn('dvdbackup', params);
       readline.createInterface({
         input: ripper.stdout,
         terminal: false,

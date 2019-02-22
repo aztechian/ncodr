@@ -35,6 +35,9 @@ Ripper:
     - '--progress=-stdout'
     - '--robot'
   # mkvKey: abcdefg
+  cdparanoiaOpts:
+    '-B': ''
+    '-e': ''
 Encoder:
   enable: auto
   output: /media/complete
@@ -47,6 +50,7 @@ Encoder:
     '--quality': 21
     '--cfr': ''
     '--main-feature': ''
+    '--audio-copy-mask': 'dtshd,dts,ac3,eac3,aac'
     # - '--min-duration=3600'
   avOpts:
     '-strict experimental': ''

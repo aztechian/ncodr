@@ -4,6 +4,7 @@ import logger from '../common/logger';
 import { ripper as config } from '../common/conf';
 import DVDBackup from './dvdbackup';
 import MakeMkv from './makemkv';
+import CDParanoia from './cdparanoia';
 
 export class Ripper {
   constructor() {
@@ -34,12 +35,17 @@ export class Ripper {
       .then(() => true)
       .catch(() => false);
 
-    return Promise.all([isDvd, isBd])
+    const isCd = CDParanoia.detect()
+      .then(() => true)
+      .catch(() => false);
+
+    return Promise.all([isDvd, isBd, isCd])
       .then(values => {
-        const [dvd, bd] = values;
+        const [dvd, bd, cd] = values;
         if (dvd) return DVDBackup.process(job);
         if (bd) return MakeMkv.process(job);
-        throw new Error(`DVD and Blu-Ray detection failed on device: ${this.device}`);
+        if (cd) return CDParanoia.process(job);
+        throw new Error(`DVD, Blu-Ray and CD detection failed on device: ${this.device}`);
       });
   }
 }
