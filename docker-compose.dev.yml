@@ -2,13 +2,13 @@
 version: "3"
 services:
   ncodr:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     image: ncodr:dev
     volumes:
       - .:/app
-      - ./isos/audio.bin:/dev/sr0
+      # example device files to mount for testing (if present in your working copy)
+      # - ./isos/audio.bin:/dev/sr0
+      # - ./bluray.iso:/dev/sr0
     environment:
       NODE_ENV: development
     command:
