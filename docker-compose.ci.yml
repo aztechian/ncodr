@@ -1,0 +1,10 @@
+---
+version: "3"
+services: 
+  ncodr:
+    build: .
+    image: ncodr:dev
+    # override device files for CI usage - these won't be available in travis-ci
+    devices:
+      - /dev/urandom:/dev/sr0:r
+      - /dev/urandom:/dev/sg0:r

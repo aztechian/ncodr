@@ -8,21 +8,22 @@ services:
     ports:
       - "6379:6379"
   ncodr:
-    build:
-      context: .
-      dockerfile: Dockerfile-dev
-    image: ncodr:dev
+    image: aztechian/ncodr:latest
     depends_on:
       - redis
-    working_dir: /ncodr
+    restart: "on-failure:3"
+    user: root
+    security_opt:
+      - "label=disable"
+    cap_add:
+      - SYS_RAWIO
+    devices:
+      - /dev/sr0:/dev/sr0:r
+      - /dev/sg0:/dev/sg0:r
     volumes:
-      - .:/ncodr
-      - ./isos/dvd.iso:/dev/sr0
       - ./media:/media
     environment:
       REDIS_HOST: redis
       LOG_LEVEL: debug
-      NODE_ENV: development
-      UI: 'false'
     ports:
       - "2000:2000"

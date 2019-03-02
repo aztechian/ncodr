@@ -1,4 +1,4 @@
-dist: trusty
+dist: xenial
 sudo: required
 language: node_js
 node_js:
@@ -20,8 +20,7 @@ script:
   - npm run lint
   - npm run test
   - npm run build
-  - mkdir -p isos media rips
-  - touch isos/dvd.iso
+  - ln -s docker-compose.ci.yml docker-compose.override.yml
   - docker-compose up --build -d
   - sleep 30
   - docker-compose ps

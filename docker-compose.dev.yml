@@ -1,0 +1,16 @@
+---
+version: "3"
+services:
+  ncodr:
+    build: .
+    image: ncodr:dev
+    volumes:
+      - .:/app
+      # example device files to mount for testing (if present in your working copy)
+      # - ./isos/audio.bin:/dev/sr0
+      # - ./bluray.iso:/dev/sr0
+    environment:
+      NODE_ENV: development
+    command:
+      - run
+      - serve
