@@ -20,7 +20,6 @@ script:
   - npm run lint
   - npm run test
   - npm run build
-  - sudo mknod ./sr0 b 11 0
   - ln -s docker-compose.ci.yml docker-compose.override.yml
   - docker-compose up --build -d
   - sleep 30
