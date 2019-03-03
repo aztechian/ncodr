@@ -10,24 +10,41 @@
 [![license](https://img.shields.io/github/license/aztechian/ncodr.svg)](https://github.com/aztechian/ncodr/blob/master/LICENSE)
 
 Ncodr (en-code-er) is a web-based, distributed application for controlling a ripping and encoding queue.
-It's intention is to support DVD and BD (Blu-Ray Disc) ripping and encoding to MPEG-4. By default, it encodes to an "iTunes" compatible `m4v` container with h264 video codec. Audio encoding can be easily changed from the options field that is submitted with a job.
+It's intention is to support DVD and BD (Blu-Ray Disc) ripping and encoding to MPEG-4. By default, it encodes to an "iTunes"
+compatible `m4v` container with h264 video codec. Audio encoding can be easily changed from the options field that is submitted with a job.
 
 Utilizing [bull](https://github.com/OptimalBits/bull) for the queue control, this
 app will submit jobs to the respective queue, and provide workers to process the
-queued jobs. Bull utilizes a [Redis](https://redis.io) database for persistent queue information storage. This should be externally provided by your production environment.
+queued jobs. Bull is backed by a [Redis](https://redis.io) database for persistent queue information storage.
+For a production environment, Redis should be available as an external service to Ncodr. A persistent storage for Redis is not
+provided from this project.
 
 Additionally, Ncodr supplies a RESTful API around the bull queues, so that jobs may be easily submitted via HTTP interfaces.
 
-The tools doing the hard part (`dvdbackup`, `makemkv` and `HandBrakeCLI`) are expected to be available on the `$PATH` for Ncodr to use. The primary packaging for this app is a ~Docker~ sorry, Moby container, which provides all the tools needed, and makes Ncodr the entry point.
+The tools doing the hard part (`dvdbackup`, `makemkv` and `HandBrakeCLI`) are expected to be available on the `$PATH` for Ncodr to use.
+The primary packaging for this app is a ~Docker~ Moby container, which provides all the tools needed, and makes Ncodr the entry point. The
+simplest way to get running is by using the production [docker-compose](docker-compose.yml). This uses a pre-built docker image that is published
+to [docker hub](https://hub.docker.com/r/aztechian/ncodr).
+
+Alternatively, zip files of the compiled app with configuration, `package.json` and node_modules for production is available
+from the [releases](https://github.com/aztechian/ncodr/releases) page. Given a Node.js installation on the target system, it should run
+with a simple `npm start` command.
 
 As long as the app is configured to look at the redis location, as many containers as necessary can
 be started to process jobs for parallelizing encoding work. Generally, this would be
 one container per physical host, as HandBrake can be multi-threaded across CPUs - even
 in a container.
 
-`/dev/sr0` detection will let a container know if it can process ripping queue jobs.
+`/dev/sr0` detection will let a container know if it can process ripping queue jobs. Be aware that you may need to run
+a container that will rip discs as root so that it has permission to access device files directly. There are some examples
+of additional permissions needed for device usage in the [docker-compose](docker-compose.yml).
+By default, Ncodr runs as a high-numbered UID (not `root`) so that it is usable on container management systems (Kubernetes, OpenShift).
+If you are running separate encoding containers, they will likely work just fine as the default, non-root user, or you can specify another
+UID for the container to run as.
 
-Because Bull is used for queueing, it's centralized persistence with Redis means that you may run many instances of Ncodr on your network (or, really anywhere) to process jobs. All that is required is connectivity to the Redis database (and likely a centralized storage). There are 3 components that make up Ncodr:
+Because Bull is used for queueing, it's centralized persistence with Redis means that you may run many instances of Ncodr
+on your network (or, really anywhere) to process jobs. All that is required is connectivity to the Redis database
+(and likely a centralized storage). There are 3 components that make up Ncodr:
 
 * Queue Processing (ripping and encoding can be controlled separately)
 
@@ -44,43 +61,57 @@ I have 1 physical host and another physical host with 2 virtual machines on it. 
 > I run Ncodr on all 3 hosts. On the external facing VM, I disable rip and encode job processing, so that it only serves the API and UI. On the other VM and physical host, I disable the UI and API (ie, they _only_ process jobs). Ncodr auto detects job processing capabilities. It usually does not make sense to process jobs (especially encoding) on VMs with the same underlying physical host. The CPU utilization of encoders is such that they will efficiently use all CPUs provided to them - so, it is better to have a VM given all the CPUs you can afford and let the encoding software utilize CPUs efficiently.
 
 ## Development
-The quickest way to get started with Ncodr is using [docker-compose](docker-compose.yml). Ensure `docker` and `docker-compose` are available on your system. Then, in the root directory where you cloned this repo, run `docker-compose up`. This will start a local Redis container, matched with a nodeJS based container for executing Ncodr in. Since this setup is meant for development, the Ncodr application is bind mounted into the app container so that real-time changes to the code can be made, which _should_ trigger an application restart to pick up those changes. In this way, it is easy to develop quickly.
 
-The benefit of using `docker-compose` as described above is that the node environment is exactly the same as what is run in production. However, it is entirely possible to run Ncodr locally on a development workstation. You will need NodeJS version 8.x LTS installed, with a recent version on NPM. Then, do the usual `npm install` and `npm run dev`. This will start a process on your workstation listening (by default) on port 2000.
+The quickest way to get started with Ncodr is with [docker-compose](docker-compose.yml):
+    ln -s docker-compose.dev.yml docker-compose.override.yml
+    docker-compose up
 
-Alternatively, you can run a single docker container with the reloading benefits described above by using the [dev Dockerfile](Dockerfile-dev): `docker build -t ncodr:dev -f Dockerfile-dev .`, then `docker run --rm -it -p 2000:2000 -v $PWD:/app ncodr:dev`
+Ensure `docker` and `docker-compose` are available on your system. This will start a local Redis container, matched with a nodeJS based
+container for executing Ncodr in. Since this setup is meant for development, the Ncodr application is bind mounted into the app container
+so that real-time changes to the code can be made, which _should_ trigger an application restart to pick up those changes. In this way, it
+is easy to develop quickly.
+
+The benefit of using `docker-compose` as described above is that the node environment is exactly the same as what is run in production. However,
+it is of course possible to run Ncodr locally on a development workstation. You will need NodeJS version >=8.x installed, with a recent version on
+NPM. Then, do the usual `npm install` and `npm run serve`. This will start a process on your workstation listening (by default) on port 2000.
 
 Other commands for developers to know:
 
-`npm run lint` - Executes ESLint against the current code
-`npm test` - Executes the unit tests
-`npm run compile` - Executes webpack to output the minimized, ES5 compatible JavaScript in the `/dist`
-`npm run version` - Return back the current version of Ncodr
-`npm run docker` - Create an Ncodr production docker image, with current version tag
-`npm start` - Build and start a production instance of Ncodr, running locally
+| Command | Description |
+|`npm run lint`| Executes ESLint against the current code |
+|`npm test` | Executes the unit tests |
+|`npm run build`|Executes webpack to output the minimized, ES5 compatible JavaScript in the `/build` directory |
+|`npm run version` | Return back the current version of Ncodr |
+|`npm run docker` | Create an Ncodr production docker image, with current version tag |
+|`npm start` | Start a production instance of Ncodr, running locally |
+|`npm run package` | Create the zip file that is used for GitHub releases |
+|`npm run jsdoc` | Generate JSDoc documentation |
+
+You will notice there are a few variations of docker-compose files available:
+[docker-compose](docker-compose.yml) is an example of a production deployment of Ncodr
+[docker-compose.dev](docker-compose.dev.yml) is for use when developing Ncodr on a local workstation
+[docker-compose.ci](docker-compose.ci.yml) is to stub out some production settings when testing in Travis CI pipelines
 
 ## Options
-Generally, see the [config](config/custom-environment-variables.yml) for what variables can be set from environment variables. For a complete set of options that can be tweaked, see the [defaults](config/default.yml).
+
+See the [config](config/custom-environment-variables.yml) for what variables can be set from environment variables. These generally follow
+the format of `<SECTION>_<KEY>`, so to set `Ripper` -> `Device` you would set the environment variable like: `RIPPER_DEVICE=/dev/sr2`
+For a complete set of options that can be tweaked, see the [defaults](config/default.yml).
 The configuration of Ncodr is based on [node-config](https://github.com/lorenwest/node-config). You can also see its documentation on how things may be configured.
 
 ### Environment Variables
 
+Below are some of the more important settings that can be used for configuring Ncodr.
 Default values are in parenthesis
 
-`OPENSHIFT_NODEJS_PORT`: Set the port which Ncodr listens on (2000)
-
-`LOG_LEVEL`: Application logging level (`info` in production, `debug` in development)
-
-`REDIS_HOST`: The hostname of the redis server to use for queues (localhost)
-
-`REDIS_PORT`: The port of the redis service to connect to (6379)
-
-`REDIS_PASSWORD`: The password to authenticate to redis with (`no password`)
-
-`RIP`: Override the auto-detection of whether to process ripping jobs on this host. Value can be `true`, `false` or `auto` (auto)
-
-`ENCODE`: Override the auto-detection of whether to process encoding jobs on this host. Value can be `true`, `false` or `auto` (auto)
-
-`API`: Override the serving of the HTTP API for queue management. Value can be `true` or `false` (true)
-
-`UI`: Override the serving of the UI over HTTP. Value can be `true` or `false` (true)
+|Variable Name| Description | Default |
+|-------------|-------------|---------|
+|`PORT`| Set the port on which Ncodr listens| 2000|
+|`LOG_LEVEL`| Application logging level | `info` in production, `debug` in development|
+|`REDIS_HOST`| The hostname of the redis server to use for queues | localhost|
+|`REDIS_PORT`| The port of the redis service to connect | 6379|
+|`REDIS_PASSWORD`| The password to authenticate to redis | `no password`|
+|`RIP`| Override the auto-detection of whether to process ripping jobs on this host. Value can be `true`, `false` or `auto` | auto|
+|`ENCODE`| Override the auto-detection of whether to process encoding jobs on this host. Value can be `true`, `false` or `auto`| auto|
+|`API`| Override the serving of the HTTP API for queue management. Value can be `true` or `false`| true|
+|`UI`| Override the serving of the UI over HTTP. Value can be `true` or `false`| true|
