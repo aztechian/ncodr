@@ -4,7 +4,7 @@
   settings:
     import/resolver:
       - node
-      - 'eslint-import-resolver-babel-root-import-fixed'
+      - eslint-import-resolver-babel-plugin-root-import
   parserOptions:
     sourceType: module
     allowImportExportEverywhere: false
