@@ -37,7 +37,7 @@
   "dependencies": {
     "atob": "^2.1.2",
     "babel-register": "^6.0",
-    "bluebird": "^3.5.1",
+    "bluebird": "^3.5.3",
     "body-parser": "^1.18.3",
     "bull": "^3.7.0",
     "cheerio": "*",
@@ -48,7 +48,7 @@
     "express-pino-logger": "^4.0.0",
     "got": "^9.6.0",
     "helmet": "^3.15.0",
-    "js-yaml": "^3.12.0",
+    "js-yaml": "^3.12.2",
     "jsonwebtoken": "^8.5.0",
     "keyv": "^3.1.0",
     "ncodr-ui": "github:aztechian/ncodr-ui#v1.2.7",
