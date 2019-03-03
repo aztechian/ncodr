@@ -37,7 +37,7 @@
   "dependencies": {
     "atob": "^2.1.2",
     "babel-register": "^6.0",
-    "bluebird": "^3.5.1",
+    "bluebird": "^3.5.3",
     "body-parser": "^1.18.3",
     "bull": "^3.7.0",
     "cheerio": "*",
