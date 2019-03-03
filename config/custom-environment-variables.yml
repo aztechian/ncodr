@@ -1,6 +1,6 @@
 Core:
-  listen: OPENSHIFT_NODEJS_PORT
-  interface: OPENSHIFT_NODEJS_IP
+  listen: PORT
+  interface: LISTEN_IP
   logLevel: LOG_LEVEL
   api: API
   ui: UI
@@ -14,10 +14,15 @@ Core:
     googleDomain: GOOGLE_DOMAIN
 Ripper:
   enable: RIP
+  disc: RIPPER_DISC
+  owner: RIPPER_OWNER
+  group: RIPPER_GROUP
   output: RIPPER_OUTPUT
   device: RIPPER_DEVICE
   mkvKey: MAKEMKV_KEY
 Encoder:
   enable: ENCODE
+  owner: ENCODER_OWNER
+  group: ENCODER_GROUP
   output: ENCODER_OUTPUT
   input: ENCODER_INPUT
