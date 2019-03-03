@@ -12,6 +12,7 @@
     "lint": "eslint .",
     "jsdoc": "jsdoc",
     "build": "rm -rf build && backpack build",
+    "package": "npm prune --production && zip -r ncodr-$(npm run -s version).zip build config node_modules LICENSE package.json package-lock.json README",
     "version": "node -e 'console.log(require(\"./package.json\").version)'",
     "docker": "docker build -t aztechian/ncodr:$(npm run -s version) .",
     "start": "node build/main.js | pino-clf -a 1 -d 2 | pino-pretty"
@@ -51,7 +52,7 @@
     "js-yaml": "^3.12.2",
     "jsonwebtoken": "^8.5.0",
     "keyv": "^3.1.0",
-    "ncodr-ui": "github:aztechian/ncodr-ui#v1.2.7",
+    "ncodr-ui": "github:aztechian/ncodr-ui#v1.3.1",
     "parse-cache-control": "^1.0.1",
     "pino": "^5.11.1",
     "pino-pretty": "^2.5.0",
