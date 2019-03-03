@@ -23,7 +23,7 @@ RUN apt-get -qq update && \
 COPY [".", "/app/"]
 WORKDIR /app
 RUN apt-key adv --fetch-keys http://deb.nodesource.com/gpgkey/nodesource.gpg.key && \
-  echo "deb http://deb.nodesource.com/node_8.x bionic main" >> /etc/apt/sources.list && \
+  echo "deb http://deb.nodesource.com/node_10.x bionic main" >> /etc/apt/sources.list && \
   apt-get -qq update && \
   apt-get install -yq nodejs && \
   apt-get clean && \
