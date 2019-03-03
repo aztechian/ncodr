@@ -78,6 +78,7 @@ NPM. Then, do the usual `npm install` and `npm run serve`. This will start a pro
 Other commands for developers to know:
 
 | Command | Description |
+|---------|-------------|
 |`npm run lint`| Executes ESLint against the current code |
 |`npm test` | Executes the unit tests |
 |`npm run build`|Executes webpack to output the minimized, ES5 compatible JavaScript in the `/build` directory |
