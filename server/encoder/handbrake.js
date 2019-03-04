@@ -30,14 +30,28 @@ export class HandBrake {
       if (idx > -1) optArray.splice(idx, 1);
     }
 
-    let out = '';
-    if (job.data.output) {
-      out = path.join(config.get('output'), job.data.output);
-    } else {
-      out = path.join(config.get('output'), job.data.input.replace(/\.[^/.]+$/, '.m4v'));
-    }
+    const out = this.outputFile(job);
     optArray.push('-o', out);
     return optArray;
+  }
+
+  /**
+   * Create the filename of the output file. If an output is provided in the job data, use it.
+   * Otherwise, create the filename from the input file, with .m4v extensions
+   *
+   * @param {*} job
+   * @returns {string} the computed output filename, including configured base path
+   * @memberof HandBrake
+   */
+  outputFile(job) {
+    let { output } = job.data;
+    if (!output) {
+      output = job.data.input.replace(/\.[^/.]+$/, '');
+    }
+    if (!output.match(/\..+$/)) {
+      output += '.m4v'; // add extension if there isn't one
+    }
+    return path.join(config.get('output'), output);
   }
 
   encode(job) {
