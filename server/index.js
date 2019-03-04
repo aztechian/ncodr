@@ -1,12 +1,12 @@
 import Express from 'express';
-import logger from './common/logger';
-import { core as config, ripper as ripperConfig, encoder as encoderConfig } from './common/conf';
-import Server from './common/server';
-import clientConfig from './common/clientConfig';
-import Queues from './common/queues';
-import ripper from './ripper';
-import encoder from './encoder';
-import api from './api/router';
+import logger from '@/common/logger';
+import { core as config, ripper as ripperConfig, encoder as encoderConfig } from '@/common/conf';
+import Server from '@/common/server';
+import clientConfig from '@/common/clientConfig';
+import Queues from '@/common/queues';
+import ripper from '@/ripper';
+import encoder from '@/encoder';
+import api from '@/api/router';
 
 const port = config.get('listen');
 const ip = config.get('interface');
