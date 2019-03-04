@@ -188,6 +188,9 @@ export class MakeMKV {
   }
 
   setOwner(jobPath) {
+    logger.debug(`config has owner? ${config.has('owner')}`);
+    logger.debug(`config has group? ${config.has('owner')}`);
+    logger.debug(config);
     if (config.has('owner') && config.has('group')) {
       const owner = config.get('owner');
       const group = config.get('group');
