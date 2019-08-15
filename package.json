@@ -54,7 +54,7 @@
     "ncodr-ui": "github:aztechian/ncodr-ui#v1.3.1",
     "parse-cache-control": "^1.0.1",
     "pino": "^5.11.1",
-    "pino-pretty": "^2.5.0",
+    "pino-pretty": "^3.2.1",
     "pino-clf": "^1.0.6",
     "source-map-support": "^0.5.10",
     "sse-express": "^1.0.2"
