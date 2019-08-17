@@ -2,8 +2,8 @@ import chai from 'chai';
 import nock from 'nock';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import { JwtAuth } from '@/common/jwtAuth';
-import logger from '@/common/logger';
+import { JwtAuth } from '~/common/jwtAuth';
+import logger from '~/common/logger';
 import jsonwebtoken from 'jsonwebtoken';
 import { mockReq } from 'sinon-express-mock';
 

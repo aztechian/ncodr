@@ -1,6 +1,6 @@
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import handbrake from '@/encoder/handbrake';
+import handbrake from '~/encoder/handbrake';
 
 chai.use(chaiAsPromised);
 

@@ -1,7 +1,7 @@
 import fs from 'fs';
-import { encoder as config } from '@/common/conf';
-import Utils from '@/common/utils';
-import l from '@/common/logger';
+import { encoder as config } from '~/common/conf';
+import Utils from '~/common/utils';
+import l from '~/common/logger';
 
 const readdir = Promise.promisify(fs.readdir);
 
