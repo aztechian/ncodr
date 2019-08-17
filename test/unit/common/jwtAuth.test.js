@@ -2,10 +2,10 @@ import chai from 'chai';
 import nock from 'nock';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import { JwtAuth } from '~/common/jwtAuth';
-import logger from '~/common/logger';
 import jsonwebtoken from 'jsonwebtoken';
 import { mockReq } from 'sinon-express-mock';
+import { JwtAuth } from '~/common/jwtAuth';
+import logger from '~/common/logger';
 
 const { expect } = chai;
 chai.use(sinonChai);
@@ -15,9 +15,13 @@ describe('JwtAuth', () => {
   before(() => {
     nock('https://www.googleapis.com')
       .get('/oauth2/v1/certs')
-      .reply(200, {}, {
-        'cache-control': 'public, max-age=100, must-revalidate, no-transform',
-      });
+      .reply(
+        200,
+        {},
+        {
+          'cache-control': 'public, max-age=100, must-revalidate, no-transform',
+        },
+      );
     jwtAuth = new JwtAuth();
   });
 
@@ -34,7 +38,7 @@ describe('JwtAuth', () => {
       expect(JwtAuth.extractJwt.length).to.eq(1);
     });
 
-    it('should print a warning if the Authorization header isn\'t right', () => {
+    it("should print a warning if the Authorization header isn't right", () => {
       const warnSpy = sinon.spy(logger, 'warn');
       JwtAuth.extractJwt('ohnoImnotright!');
       expect(warnSpy).to.have.been.calledOnce;
@@ -60,7 +64,9 @@ describe('JwtAuth', () => {
     });
 
     it('should reject when google gives an error', () => {
-      nock('https://www.googleapis.com').get('/oauth2/v1/certs').reply(404);
+      nock('https://www.googleapis.com')
+        .get('/oauth2/v1/certs')
+        .reply(404);
       return jwtAuth.init().catch(error => {
         expect(error).to.be.instanceOf(Error);
       });
@@ -85,10 +91,9 @@ describe('JwtAuth', () => {
       });
     });
 
-    it('should reject if pem is not provided',
-      () => jwtAuth.validate({}).catch(err => {
-        expect(err).to.be.instanceOf(Error);
-      }));
+    it('should reject if pem is not provided', () => jwtAuth.validate({}).catch(err => {
+      expect(err).to.be.instanceOf(Error);
+    }));
   });
 
   describe('#checkDomain', () => {
@@ -100,12 +105,15 @@ describe('JwtAuth', () => {
       expect(JwtAuth.checkDomain.length).to.eq(2);
     });
 
-    it('should throw an error if domain is set and payload doesn\'t', () => {
+    it("should throw an error if domain is set and payload doesn't", () => {
       expect(() => JwtAuth.checkDomain('abc.com', {})).to.throw(Error, 'User has no google domain');
     });
 
-    it('should throw an error if the payload domain doesn\'t match', () => {
-      expect(() => JwtAuth.checkDomain('blah.com', { hd: 'lala.org' })).to.throw(Error, 'not a member');
+    it("should throw an error if the payload domain doesn't match", () => {
+      expect(() => JwtAuth.checkDomain('blah.com', { hd: 'lala.org' })).to.throw(
+        Error,
+        'not a member',
+      );
     });
 
     it('should return true if domains match', () => {
@@ -113,9 +121,7 @@ describe('JwtAuth', () => {
     });
   });
 
-  describe('#auth', () => {
-
-  });
+  describe('#auth', () => {});
 
   describe('#update', () => {
     it('should be a function', () => {

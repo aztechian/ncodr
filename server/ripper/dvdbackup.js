@@ -41,15 +41,17 @@ export class DvdBackup {
     return new Promise((resolve, reject) => {
       let labelOutput = '';
       const labelProc = spawn('lsdvd', [this._device]);
-      readline.createInterface({
-        input: labelProc.stdout,
-        terminal: false,
-      }).on('line', line => {
-        if (line.toString().match(/^Disc Title: /)) {
-          logger.debug(`${this.constructor.name}: Found DVD volume label: ${line}`);
-          labelOutput += line.replace(/^Disc Title: */, '');
-        }
-      });
+      readline
+        .createInterface({
+          input: labelProc.stdout,
+          terminal: false,
+        })
+        .on('line', line => {
+          if (line.toString().match(/^Disc Title: /)) {
+            logger.debug(`${this.constructor.name}: Found DVD volume label: ${line}`);
+            labelOutput += line.replace(/^Disc Title: */, '');
+          }
+        });
       labelProc.on('exit', code => {
         if (code === 0) {
           return resolve(labelOutput.replace(/ /, '_'));
@@ -70,7 +72,7 @@ export class DvdBackup {
   rip(job, label) {
     logger.info(`${this.constructor.name}: Processing job ${job.id} for DVD`);
     job.progress(0);
-    const opts = Object.assign({}, this.defaults, job.data.options);
+    const opts = { ...this.defaults, ...job.data.options };
     const optArray = Object.entries(opts)
       .reduce((item, val) => item.concat(val))
       .filter(o => o !== '');
@@ -80,21 +82,23 @@ export class DvdBackup {
     return new Promise((resolve, reject) => {
       logger.info(`${this.constructor.name}: Starting rip dvdbackup ${optArray.join(' ')}`);
       const ripper = spawn('dvdbackup', optArray);
-      readline.createInterface({
-        input: ripper.stdout,
-        terminal: false,
-      }).on('line', line => {
-        if (line.length > 0) {
-          logger.debug(`${this.constructor.name}: `, line);
-        }
-        if (line.match(/^Copying \w+, part/)) {
-          // There's really no sure way to parse this output from dvdbackup
-          // so, simply grabbing the titles pct complete, and passing it along to bull
-          // yes, this will make the pct meter go back to zero for each title... :(
-          const [, titlePct] = line.match(/^Copying .*: (\d+)% done/);
-          job.progress(parseInt(titlePct, 10));
-        }
-      });
+      readline
+        .createInterface({
+          input: ripper.stdout,
+          terminal: false,
+        })
+        .on('line', line => {
+          if (line.length > 0) {
+            logger.debug(`${this.constructor.name}: `, line);
+          }
+          if (line.match(/^Copying \w+, part/)) {
+            // There's really no sure way to parse this output from dvdbackup
+            // so, simply grabbing the titles pct complete, and passing it along to bull
+            // yes, this will make the pct meter go back to zero for each title... :(
+            const [, titlePct] = line.match(/^Copying .*: (\d+)% done/);
+            job.progress(parseInt(titlePct, 10));
+          }
+        });
       ripper.stderr.on('data', line => {
         logger.trace(line.toString());
       });
@@ -118,10 +122,16 @@ export class DvdBackup {
     if (config.has('owner') && config.has('group')) {
       const owner = config.get('owner');
       const group = config.get('group');
-      logger.debug(`${this.constructor.name}: Setting ownership of ${jobPath} to (${owner}:${group})`);
+      logger.debug(
+        `${this.constructor.name}: Setting ownership of ${jobPath} to (${owner}:${group})`,
+      );
       return chown(jobPath, owner, group).then(() => jobPath);
     }
-    logger.warn(`${this.constructor.name}: Both "owner" and "group" must be set in Ripper config. Not setting ownership on ${jobPath}`);
+    logger.warn(
+      `${
+        this.constructor.name
+      }: Both "owner" and "group" must be set in Ripper config. Not setting ownership on ${jobPath}`,
+    );
     return Promise.resolve(jobPath);
   }
 }
