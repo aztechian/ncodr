@@ -1,5 +1,5 @@
 --recursive
 --ui bdd
 --reporter spec
---require babel-register
+--require @babel/register
 --require chai/register-expect

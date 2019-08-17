@@ -1,13 +1,8 @@
 {
-  "exclude": [
-    "build",
-    "coverage",
-    "test",
-    "backpack.config.js"
-  ],
+  "exclude": ["build", "coverage", "test", "backpack.config.js"],
   "all": true,
   "sourceMap": false,
   "instrument": false,
-  "require": ["babel-register"],
+  "require": ["@babel/register"],
   "reporter": ["lcovonly", "text", "text-summary", "html"]
 }

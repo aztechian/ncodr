@@ -1,6 +1,6 @@
 import * as express from 'express';
 import sse from 'sse-express';
-import utils from '@/common/utils';
+import utils from '~/common/utils';
 import files from './files';
 import queues from './queues';
 import queue from './queue';
