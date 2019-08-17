@@ -14,15 +14,17 @@ export class HandBrake {
   }
 
   configure(job) {
-    const opts = Object.assign({}, this.defaults, job.data.options);
+    const opts = { ...this.defaults, ...job.data.options };
     const optArray = Object.entries(opts)
       .reduce((item, val) => item.concat(val))
       .filter(o => o !== '');
 
     if (job.data.scan) optArray.push('--scan');
     optArray.push('-i', path.join(config.get('input'), job.data.input));
-    if (Object.prototype.hasOwnProperty.call(job.data, 'options')
-      && Object.prototype.hasOwnProperty.call(job.data.options, '-t')) {
+    if (
+      Object.prototype.hasOwnProperty.call(job.data, 'options')
+      && Object.prototype.hasOwnProperty.call(job.data.options, '-t')
+    ) {
       // if -t is specified by user, don't use --main-feature
       const idx = optArray.indexOf('--main-feature');
       if (idx > -1) optArray.splice(idx, 1);
@@ -48,29 +50,33 @@ export class HandBrake {
       let output = '';
       // TODO just set the uid/gid of the process as an option to spawn
       const hb = spawn('HandBrakeCLI', optArray);
-      logger.info(`${this.constructor.name}: Starting HandBrake encode for job: ${job.id} ${optArray}`);
+      logger.info(
+        `${this.constructor.name}: Starting HandBrake encode for job: ${job.id} ${optArray}`,
+      );
       logger.info(`${this.constructor.name}: process started with pid - ${hb.pid}`);
       logger.info(`${this.constructor.name}: HandBrakeCLI ${optArray.join(' ')}`);
-      readline.createInterface({
-        input: hb.stdout,
-        terminal: false,
-      }).on('line', data => {
-        logger.debug(`${this.constructor.name}: ${data.toString()}`);
-        const line = data.toString();
-        output += line;
-        const finished = line.match(/^Finished/);
-        const status = line.match(/Encoding: .*, (\d+\.\d+) % \((\d+\.\d+) fps,/);
-        if (status) {
-          logger.trace(`${this.constructor.name}: ${status[1]} % | ${status[2]} fps`);
-          job.progress(status[1]);
-        } else if (finished) {
-          logger.trace(`${this.constructor.name}: finished`);
-          job.progress(100);
-        } else {
-          logger.trace(`${this.constructor.name}: Received: `, data);
-          job.progress(0);
-        }
-      });
+      readline
+        .createInterface({
+          input: hb.stdout,
+          terminal: false,
+        })
+        .on('line', data => {
+          logger.debug(`${this.constructor.name}: ${data.toString()}`);
+          const line = data.toString();
+          output += line;
+          const finished = line.match(/^Finished/);
+          const status = line.match(/Encoding: .*, (\d+\.\d+) % \((\d+\.\d+) fps,/);
+          if (status) {
+            logger.trace(`${this.constructor.name}: ${status[1]} % | ${status[2]} fps`);
+            job.progress(status[1]);
+          } else if (finished) {
+            logger.trace(`${this.constructor.name}: finished`);
+            job.progress(100);
+          } else {
+            logger.trace(`${this.constructor.name}: Received: `, data);
+            job.progress(0);
+          }
+        });
       hb.stderr.on('data', data => {
         logger.trace(`${this.constructor.name}: ${data.toString()}`);
       });
@@ -95,18 +101,23 @@ export class HandBrake {
   }
 
   process(job) {
-    return this.encode(job)
-      .then(result => this.setOwner(result.outputFile));
+    return this.encode(job).then(result => this.setOwner(result.outputFile));
   }
 
   setOwner(jobPath) {
     if (config.has('owner') && config.has('group')) {
       const owner = config.get('owner');
       const group = config.get('group');
-      logger.debug(`${this.constructor.name}: Setting ownership of ${jobPath} to (${owner}:${group})`);
+      logger.debug(
+        `${this.constructor.name}: Setting ownership of ${jobPath} to (${owner}:${group})`,
+      );
       return chown(jobPath, owner, group).then(() => jobPath);
     }
-    logger.warn(`${this.constructor.name}: Both "owner" and "group" must be set in Ripper config. Not setting ownership on ${jobPath}`);
+    logger.warn(
+      `${
+        this.constructor.name
+      }: Both "owner" and "group" must be set in Ripper config. Not setting ownership on ${jobPath}`,
+    );
     return Promise.resolve(jobPath);
   }
 }
