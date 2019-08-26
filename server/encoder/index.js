@@ -1,5 +1,5 @@
 import handbrake from './handbrake';
-import avconv from './avconv';
+import avconv from './ffmpeg';
 import logger from '../common/logger';
 
 export class Encoder {
