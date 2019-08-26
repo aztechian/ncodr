@@ -1,6 +1,6 @@
-import logger from '@/common/logger';
-import { encoder as config } from '@/common/conf';
-import util from '@/common/util';
+import logger from '~/common/logger';
+import { encoder as config } from '~/common/conf';
+import util from '~/common/utils';
 import handbrake from './handbrake';
 import avconv from './avconv';
 

@@ -2,8 +2,8 @@ import { spawn } from 'child_process';
 import readline from 'readline';
 import chownr from 'chownr';
 import path from 'path';
-import logger from '@/common/logger';
-import { ripper as config } from '@/common/conf';
+import logger from '~/common/logger';
+import { ripper as config } from '~/common/conf';
 
 const chown = Promise.promisify(chownr);
 

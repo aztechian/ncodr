@@ -5,8 +5,8 @@ import readline from 'readline';
 import path from 'path';
 import fs from 'fs';
 import chownr from 'chownr';
-import { ripper as config } from '@/common/conf';
-import logger from '@/common/logger';
+import { ripper as config } from '~/common/conf';
+import logger from '~/common/logger';
 
 const mkdir = Promise.promisify(fs.mkdir);
 const writeFile = Promise.promisify(fs.writeFile);

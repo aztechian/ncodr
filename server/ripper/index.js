@@ -1,7 +1,8 @@
 import Promise from 'bluebird';
-import util from '@/common/utils';
-import logger from '@/common/logger';
-import { ripper as config } from '@/common/conf';
+import fs from 'fs';
+import util from '~/common/utils';
+import logger from '~/common/logger';
+import { ripper as config } from '~/common/conf';
 import DVDBackup from './dvdbackup';
 import MakeMkv from './makemkv';
 
