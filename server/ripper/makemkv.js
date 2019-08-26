@@ -31,11 +31,11 @@ export class MakeMKV {
     return new Promise((resolve, reject) => {
       const bd_info = spawn('bd_info', [this.device]); // eslint-disable-line camelcase
       bd_info.on('error', err => {
-        logger.warn(this.constructor.name, err);
+        logger.warn(this.constructor.name, err.toString());
         return reject(err);
       });
       bd_info.stderr.on('data', data => {
-        logger.debug(this.constructor.name, data);
+        logger.debug(this.constructor.name, data.toString());
       });
       bd_info.on('exit', code => {
         if (code === 0) {
