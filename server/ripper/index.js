@@ -1,7 +1,8 @@
-import fs from 'fs';
 import Promise from 'bluebird';
-import logger from '../common/logger';
-import { ripper as config } from '../common/conf';
+import fs from 'fs';
+import util from '~/common/utils';
+import logger from '~/common/logger';
+import { ripper as config } from '~/common/conf';
 import DVDBackup from './dvdbackup';
 import MakeMkv from './makemkv';
 
@@ -22,7 +23,7 @@ export class Ripper {
           resolve(this.device);
         }
       });
-    });
+    }).then(util.ensureDir(config.get('output')));
   }
 
   process(job) {

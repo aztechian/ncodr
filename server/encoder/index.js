@@ -1,6 +1,8 @@
+import logger from '~/common/logger';
+import { encoder as config } from '~/common/conf';
+import util from '~/common/utils';
 import handbrake from './handbrake';
 import avconv from './ffmpeg';
-import logger from '../common/logger';
 
 export class Encoder {
   process(job) {
@@ -19,7 +21,7 @@ export class Encoder {
   // for detection of encoding processing
   isCapable() {
     logger.debug('Encoding is supported on this node.');
-    return Promise.resolve(true);
+    return util.ensureDir(config.get('output'));
   }
 }
 

@@ -1,3 +1,7 @@
+import fs from 'fs';
+
+const mkdir = Promise.promisify(fs.mkdir);
+
 export default class Utils {
   static respond(res, code = 500, message = 'Error') {
     return res.status(code).json({
@@ -29,5 +33,11 @@ export default class Utils {
   // eslint-disable-next-line no-unused-vars
   static badRequest(req, res, next) {
     return Utils.respond(res, 400, `${req.method} ${req.baseUrl}${req.url} - Bad Request`);
+  }
+
+  static ensureDir(path) {
+    return mkdir(path).catch(err => {
+      if (err.code !== 'EEXIST') throw err;
+    });
   }
 }

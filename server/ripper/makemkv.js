@@ -5,8 +5,8 @@ import readline from 'readline';
 import path from 'path';
 import fs from 'fs';
 import chownr from 'chownr';
-import { ripper as config } from '../common/conf';
-import logger from '../common/logger';
+import { ripper as config } from '~/common/conf';
+import logger from '~/common/logger';
 
 const mkdir = Promise.promisify(fs.mkdir);
 const writeFile = Promise.promisify(fs.writeFile);
@@ -188,6 +188,9 @@ export class MakeMKV {
   }
 
   setOwner(jobPath) {
+    logger.debug(`config has owner? ${config.has('owner')}`);
+    logger.debug(`config has group? ${config.has('owner')}`);
+    logger.debug(config);
     if (config.has('owner') && config.has('group')) {
       const owner = config.get('owner');
       const group = config.get('group');
