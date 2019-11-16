@@ -50,7 +50,7 @@
     "helmet": "^3.20.0",
     "js-yaml": "^3.13.1",
     "jsonwebtoken": "^8.5.1",
-    "keyv": "^3.1.0",
+    "keyv": "^4.0.0",
     "ncodr-ui": "github:aztechian/ncodr-ui#v1.4.0",
     "parse-cache-control": "^1.0.1",
     "pino": "^5.13.2",
