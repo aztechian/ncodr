@@ -79,7 +79,7 @@
     "mock-spawn": "*",
     "nock": "^10.0.6",
     "nyc": "^14.1.1",
-    "sinon": "^7.4.1",
+    "sinon": "^8.0.0",
     "sinon-chai": "^3.3.0",
     "sinon-express-mock": "^2.2.1"
   }
