@@ -31,17 +31,18 @@ script:
 
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+  - npm prune --production
+  - npm pack
 
 after_success:
-  - '[[ $TRAVIS_PULL_REQUEST = false ]] && [[ $TRAVIS_BRANCH = master ]] &&  curl --data build=true -X POST $DOCKER_URL'
-  - npm run package
+  - "[[ $TRAVIS_PULL_REQUEST = false ]] && [[ $TRAVIS_BRANCH = master ]] &&  curl --data build=true -X POST $DOCKER_URL"
 
 deploy:
   provider: releases
   api_key:
     secure: a82ExBJvRkaSq+gYKN4bGA5jtERY0pWZS2KL5aY3g6BaonIuVK3M2hjjYMa0TRGUewNNE7JnEhTmsS3JB3koPSHT3ep9UfQ3hAjh50MDEUK78htUOiozKdc6raxyE9LxGi/td/KrI6TuIaKsoY+35T5xBEKdE1ZXLnu8xcGQjmQ6a8iFwkAm6moNEyslR0xJfTMK32svpX3gs9v3sLbffRWvRCgjoOeZVz7g/XtYJESG2+oKT0aCTVvR8pGcQ2D76/bn6TlLhfhsNxfqqfgFbqtXhMnPDkRlVTi60pexvoxKoXuka4zwFSzb49qQddDw5XDuZ5TpvTF6wdwTkGYUs9Om+GwtwKf0FQ1GoZzWVXmQhujbkvwxlDNpowe+V7T9IuCvTPSbyLGKU4tqmPF3RVDZKQzg7DdCfR7KiMtxuBlRYitLJNLR8sLQ9QyGZIvXsSTVK9e+8J0li5P6L6nxF9jpRvqTdRWJdrph5mBbp2auI/wh9Q+tcK9v2bqOx4rasKajH9BCtiuIWAS8e3cRqxKKMhDuH/oxyRM4C5QXWIga+/SfRNTHj3immhJL4CUseXfDcEU6OD1OzlEojPyRoa69U0fs8Om+0i3rKKjfXT0epnn+PgBPD10te74CrLgzhzd/tPd/2zmFru1KZ9nxT2Ie4hkcYOqc2XSOAH8GF40=
   file_glob: true
-  file: ncodr-*.zip
+  file: ncodr-*.tar
   skip_cleanup: true
   on:
     tags: true

@@ -3,6 +3,8 @@
 // import Buffer from 'buffer';
 // import logger from '../common/logger';
 
+// https://azopcorp.com/blog/howtoparseffmpegstderouttodisplayjobprogress
+
 export class Ffmpeg {
   // process(job) {
   //   let length = null;
