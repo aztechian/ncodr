@@ -59,7 +59,7 @@
     "keyv": "^3.1.0",
     "ncodr-ui": "github:aztechian/ncodr-ui#v1.4.0",
     "parse-cache-control": "^1.0.1",
-    "pino": "^5.13.2",
+    "pino": "^6.0.0",
     "pino-clf": "^1.0.6",
     "pino-pretty": "^3.2.1",
     "source-map-support": "^0.5.13",
