@@ -61,7 +61,7 @@
     "parse-cache-control": "^1.0.1",
     "pino": "^5.13.2",
     "pino-clf": "^1.0.6",
-    "pino-pretty": "^3.2.1",
+    "pino-pretty": "^4.0.0",
     "source-map-support": "^0.5.13",
     "sse-express": "^1.0.2"
   },
