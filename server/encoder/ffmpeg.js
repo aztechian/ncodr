@@ -12,7 +12,6 @@ export class Ffmpeg {
   //   const regex = /Duration:(.*), start:/;
   //   const regex2 = /time=(.*) bitrate/;
 
-
   //   const ffmpeg = exec('ffmpeg', ['-i',
   //     `${path.dirname(__dirname)}/videos/input.mp4`,
   //     '-c:v ',
@@ -49,4 +48,4 @@ export class Ffmpeg {
   // }
 }
 
-export default new Ffmpeg();
+export default new Ffmpeg()

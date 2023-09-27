@@ -1,11 +1,11 @@
-import * as express from 'express';
-import sse from 'sse-express';
-import utils from '~/common/utils';
-import files from './files';
-import queues from './queues';
-import queue from './queue';
-import jobs from './jobs';
-import job from './job';
+import * as express from 'express'
+import sse from 'sse-express'
+import utils from '../common/utils.js'
+import files from './files.js'
+import queues from './queues.js'
+import queue from './queue.js'
+import jobs from './jobs.js'
+import job from './job.js'
 
 export default express
   .Router()
@@ -29,4 +29,4 @@ export default express
   .post('/queues/:queue/jobs/:id/remove', job.remove)
   .get('/queues/:queue/jobs/:id/events', sse, job.events)
 
-  .get('/queues/:queue/files', files.listEncoderInputFiles);
+  .get('/queues/:queue/files', files.listEncoderInputFiles)
