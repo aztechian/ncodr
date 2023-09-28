@@ -47,6 +47,6 @@ jobs:
         if: always()
         with:
           files: |
-            coverage/tmp/coverage-*.json
+            coverage/results.json
           # set comment_mode to "always" for pull_request event, set to "off" for all other event types
           comment_mode: ${{ (github.event.workflow_run.event == 'pull_request' || github.event_name == 'pull_request') && 'always' || 'off' }}
