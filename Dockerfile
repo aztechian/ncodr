@@ -30,5 +30,5 @@ RUN yarn install && \
 EXPOSE 2000
 HEALTHCHECK --start-period=15s --timeout=5s CMD /usr/bin/pgrep node
 VOLUME ["/media", "/rips"]
-ENTRYPOINT ["yarn"]
-CMD ["start"]
+ENTRYPOINT ["tini"]
+CMD ["node", "index.js"]

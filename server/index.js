@@ -6,23 +6,7 @@ import Queues from './common/queues.js'
 import ripper from './ripper/index.js'
 import encoder from './encoder/index.js'
 import api from './api/router.js'
-
-// const Express = require('express');
-// const logger = require('~/common/logger');
-// const clientConfig = require('~/common/clientConfig');
-// const Server = require('~/common/server');
-// const Queues = require('~/common/queues');
-// const ripper = require('~/ripper');
-// const encoder = require('~/encoder');
-// const api = require('~/api/router');
-
 import { core as config, ripper as ripperConfig, encoder as encoderConfig } from './common/conf.js'
-// import Server from '~/common/server';
-// import clientConfig from '~/common/clientConfig';
-// import Queues from '~/common/queues';
-// import ripper from '~/ripper';
-// import encoder from '~/encoder';
-// import api from '~/api/router';
 
 const port = config.get('listen')
 const ip = config.get('interface')
@@ -53,8 +37,7 @@ if (useApi === 'true' || useUi === 'true') {
   if (useApi === 'true') {
     server.router('/api', api)
   }
-  server.router('*', Express.static('node_modules/ncodr-ui/dist/index.html'))
-    .listen(port)
+  server.router('*', Express.static('node_modules/ncodr-ui/dist/index.html')).listen(port)
 } // else - no reason to even listen
 
 function jobProcessing (flag, queue, processor) {
