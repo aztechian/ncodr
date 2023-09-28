@@ -21,13 +21,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
-        with:
-          cache: 'yarn'
-          node-version-file: 'package.json'
-          cache-dependency-path: 'yarn.lock'
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -46,6 +39,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: false
           tags: aztechian/nut:${{ github.event.pull_request.head.ref }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Build and push latest
         uses: docker/build-push-action@v4
