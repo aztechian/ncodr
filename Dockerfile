@@ -1,41 +1,34 @@
-FROM ubuntu:18.04
+FROM node:20-bookworm-slim
 
 LABEL maintainer="Ian Martin <ian@imartin.net>" license="MIT" description="Distrubuted NodeJS app for automated ripping and encoding media"
-ENV DISPLAY=":0" LANG=C.UTF-8 DEBIAN_FRONTEND=noninteractive NODE_ENV=production U=2007 NO_UPDATE_NOTIFIER=true BABEL_DISABLE_CACHE=1
+ENV DISPLAY=":0" LANG=C.UTF-8 DEBIAN_FRONTEND=noninteractive NODE_ENV=production UID=2007 NO_UPDATE_NOTIFIER=true
 
 RUN apt-get -qq update && \
-  apt-get install -yq gnupg && \
-  apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8771ADB0816950D8 && \
-  apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8540356019f7e55b && \
-  echo 'deb http://ppa.launchpad.net/heyarje/makemkv-beta/ubuntu bionic main' > /etc/apt/sources.list.d/makemkv.list && \
-  echo 'deb http://ppa.launchpad.net/stebbins/handbrake-releases/ubuntu bionic main' > /etc/apt/sources.list.d/handbrake.list && \
+  apt-get install -yq curl tini && \
+  curl https://apt.benthetechguy.net/benthetechguy-archive-keyring.gpg -o /usr/share/keyrings/benthetechguy-archive-keyring.gpg && \
+  echo "deb [signed-by=/usr/share/keyrings/benthetechguy-archive-keyring.gpg] https://apt.benthetechguy.net/debian bookworm non-free" > /etc/apt/sources.list.d/benthetechguy.list && \
+  # enable contrib repo for libdvd-pkg
+  sed -e '0,/main/s//main contrib/' -i /etc/apt/sources.list.d/debian.sources && \
   apt-get -qq update && \
-  apt-get install -yq git makemkv-oss makemkv-bin curl ffmpeg libbluray-bin lsdvd dvdbackup libdvd-pkg handbrake-cli libcdio-utils cdparanoia && \
+  apt-get install -yq git makemkvcon ffmpeg libbluray-bin lsdvd dvdbackup libdvd-pkg handbrake-cli libcdio-utils cdparanoia && \
   dpkg-reconfigure libdvd-pkg && \
   apt-get clean && \
-  groupadd -fg ${U} ncodr && \
-  useradd --create-home --uid ${U} --gid ${U} ncodr && \
+  apt autoclean && \
+  groupadd -fg ${UID} ncodr && \
+  useradd --create-home --uid ${UID} --gid ${UID} ncodr && \
   passwd -l ncodr && \
   mkdir -p /media /rips && \
-  chown -R ${U}:0 /media /rips && \
+  chown -R ${UID}:0 /media /rips && \
   chmod 4755 /usr/bin/bd_info
 
-COPY [".", "/app/"]
+USER ${UID}
 WORKDIR /app
-RUN apt-key adv --fetch-keys http://deb.nodesource.com/gpgkey/nodesource.gpg.key && \
-  echo "deb http://deb.nodesource.com/node_10.x bionic main" >> /etc/apt/sources.list && \
-  apt-get -qq update && \
-  apt-get install -yq nodejs && \
-  apt-get clean && \
-  NODE_ENV=development npm install && \
-  npm run build && \
-  rm -rf node_modules && \
-  npm install && \
-  chown -R ${U}:0 /app
+COPY --chown=${UID}:0 . /app/
+RUN yarn install && \
+  yarn cache clean
 
-USER ${U}
 EXPOSE 2000
 HEALTHCHECK --start-period=15s --timeout=5s CMD /usr/bin/pgrep node
-VOLUME ["/media"]
-ENTRYPOINT ["/usr/bin/npm"]
+VOLUME ["/media", "/rips"]
+ENTRYPOINT ["yarn"]
 CMD ["start"]
