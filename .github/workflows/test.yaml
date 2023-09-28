@@ -26,8 +26,12 @@ jobs:
           cache-dependency-path: 'yarn.lock'
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: Run linter
-        run: yarn lint
+      - name: Lint and Review
+        uses: reviewdog/action-eslint@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          eslint_flags: '.'
   test:
     runs-on: ubuntu-latest
     steps:
