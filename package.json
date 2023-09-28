@@ -16,6 +16,7 @@
   ],
   "scripts": {
     "test": "NODE_ENV=test LOG_LEVEL=error c8 mocha ./test/unit/**/*.test.js",
+    "test:ci": "NODE_ENV=test LOG_LEVEL=error c8 mocha ./test/unit/**/*.test.js --reporter json --reporter-option output=coverage/results.json",
     "serve": "nodemon index.js | pino-clf -a 1 -d 2 | pino-pretty -t",
     "lint": "eslint .",
     "jsdoc": "jsdoc",
