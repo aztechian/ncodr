@@ -43,7 +43,8 @@ jobs:
         if: github.ref != 'refs/heads/main'
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          # platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64 # TODO only build x86_64 for now
           push: false
           tags: aztechian/nut:${{ github.event.pull_request.head.ref }}
 
