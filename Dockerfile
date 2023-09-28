@@ -4,13 +4,13 @@ LABEL maintainer="Ian Martin <ian@imartin.net>" license="MIT" description="Distr
 ENV DISPLAY=":0" LANG=C.UTF-8 DEBIAN_FRONTEND=noninteractive NODE_ENV=production UID=2007 NO_UPDATE_NOTIFIER=true
 
 RUN apt-get -qq update && \
-  apt-get install -yq curl tini && \
-  curl https://apt.benthetechguy.net/benthetechguy-archive-keyring.gpg -o /usr/share/keyrings/benthetechguy-archive-keyring.gpg && \
+  apt-get -qq install curl tini > /dev/null && \
+  curl -s https://apt.benthetechguy.net/benthetechguy-archive-keyring.gpg -o /usr/share/keyrings/benthetechguy-archive-keyring.gpg && \
   echo "deb [signed-by=/usr/share/keyrings/benthetechguy-archive-keyring.gpg] https://apt.benthetechguy.net/debian bookworm non-free" > /etc/apt/sources.list.d/benthetechguy.list && \
   # enable contrib repo for libdvd-pkg
   sed -e '0,/main/s//main contrib/' -i /etc/apt/sources.list.d/debian.sources && \
   apt-get -qq update && \
-  apt-get install -yq git makemkvcon ffmpeg libbluray-bin lsdvd dvdbackup libdvd-pkg handbrake-cli libcdio-utils cdparanoia && \
+  apt-get -qq install git makemkvcon ffmpeg libbluray-bin lsdvd dvdbackup libdvd-pkg handbrake-cli libcdio-utils cdparanoia > /dev/null && \
   dpkg-reconfigure libdvd-pkg && \
   apt-get clean && \
   apt autoclean && \
