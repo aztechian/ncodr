@@ -39,7 +39,10 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: false
           tags: ${{ github.repository }}:${{ github.event.pull_request.head.ref }}
-          cache-from: type=gha
+          # use cache from PR branch, but fall back to main branch if not found
+          cache-from: |
+            type=gha
+            type=gha,scope=main
           cache-to: type=gha,mode=max
 
       - name: Build and push latest
@@ -50,6 +53,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ github.repository }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Build and push tagged version
         uses: docker/build-push-action@v4
@@ -59,3 +64,5 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ github.repository }}:${{ github.ref_name }}
+          cache-from: type=gha,scope=main
+          cache-to: type=gha,mode=max
