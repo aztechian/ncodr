@@ -8,7 +8,7 @@ services:
     ports:
       - "6379:6379"
   ncodr:
-    image: aztechian/ncodr:0.10.0
+    image: aztechian/ncodr:latest
     depends_on:
       - redis
     restart: "on-failure:3"
@@ -22,6 +22,7 @@ services:
       - /dev/sg0:/dev/sg0:r
     volumes:
       - ./media:/media
+      - ./rips:/rips
     environment:
       REDIS_HOST: redis
       LOG_LEVEL: debug

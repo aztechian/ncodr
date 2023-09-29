@@ -1,13 +1,12 @@
 # Ncodr
 
-[![GitHub release](https://img.shields.io/github/tag/aztechian/ncodr.svg)](https://github.com/aztechian/ncodr/releases)
-[![Build Status](https://travis-ci.org/aztechian/ncodr.svg?branch=master)](https://travis-ci.org/aztechian/ncodr)
-[![Greenkeeper badge](https://badges.greenkeeper.io/aztechian/ncodr.svg)](https://greenkeeper.io/)
-[![Maintainability](https://api.codeclimate.com/v1/badges/aa1620124c35e6771c44/maintainability)](https://codeclimate.com/github/aztechian/ncodr/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/aa1620124c35e6771c44/test_coverage)](https://codeclimate.com/github/aztechian/ncodr/test_coverage)
-[![Github All Releases](https://img.shields.io/github/downloads/aztechian/ncodr/releases/total.svg)](https://github.com/aztechian/ncodr/releases)
-[![Docker Pulls](https://img.shields.io/docker/pulls/aztechian/ncodr.svg)](https://hub.docker.com/r/aztechian/ncodr/)
-[![license](https://img.shields.io/github/license/aztechian/ncodr.svg)](https://github.com/aztechian/ncodr/blob/master/LICENSE)
+[![GitHub release](https://img.shields.io/github/v/release/aztechian/ncodr?logo=GitHub)](https://github.com/aztechian/ncodr/releases)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/aztechian/ncodr/build.yaml?logo=github)](https://travis-ci.org/aztechian/ncodr)
+[![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/aztechian/ncodr?logo=codeclimate)](https://codeclimate.com/github/aztechian/ncodr/maintainability)
+[![Codecov](https://img.shields.io/codecov/c/github/aztechian/ncodr?token=PkAzpQMTOV&logo=codecov)](https://app.codecov.io/gh/aztechian/ncodr)
+[![Docker Image Version (latest semver)](https://img.shields.io/docker/v/aztechian/ncodr?sort=semver&logo=docker)](https://hub.docker.com/r/aztechian/ncodr/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/aztechian/ncodr?logo=docker)](https://hub.docker.com/r/aztechian/ncodr/)
+[![GitHub](https://img.shields.io/github/license/aztechian/ncodr?logo=license)](https://github.com/aztechian/ncodr/blob/master/LICENSE)
 
 Ncodr (en-code-er) is a web-based, distributed application for controlling a ripping and encoding queue.
 It's intention is to support DVD and BD (Blu-Ray Disc) ripping and encoding to MPEG-4. By default, it encodes to an "iTunes"
@@ -21,14 +20,14 @@ provided from this project.
 
 Additionally, Ncodr supplies a RESTful API around the bull queues, so that jobs may be easily submitted via HTTP interfaces.
 
-The tools doing the hard part (`dvdbackup`, `makemkv` and `HandBrakeCLI`) are expected to be available on the `$PATH` for Ncodr to use.
-The primary packaging for this app is a ~Docker~ Moby container, which provides all the tools needed, and makes Ncodr the entry point. The
+The tools doing the hard part (`dvdbackup`, `makemkvcon` and `HandBrakeCLI`) are expected to be available on the `$PATH` for Ncodr to use.
+The primary packaging for this app is a container, which provides all the tools needed, and makes Ncodr the entry point. The
 simplest way to get running is by using the production [docker-compose](docker-compose.yml). This uses a pre-built docker image that is published
 to [docker hub](https://hub.docker.com/r/aztechian/ncodr).
 
 Alternatively, zip files of the compiled app with configuration, `package.json` and node_modules for production is available
 from the [releases](https://github.com/aztechian/ncodr/releases) page. Given a Node.js installation on the target system, it should run
-with a simple `npm start` command.
+with a simple `yarn run start` command.
 
 As long as the app is configured to look at the redis location, as many containers as necessary can
 be started to process jobs for parallelizing encoding work. Generally, this would be
@@ -43,8 +42,8 @@ If you are running separate encoding containers, they will likely work just fine
 UID for the container to run as.
 
 Because Bull is used for queueing, it's centralized persistence with Redis means that you may run many instances of Ncodr
-on your network (or, really anywhere) to process jobs. All that is required is connectivity to the Redis database
-(and likely a centralized storage). There are 3 components that make up Ncodr:
+on your network (or really, anywhere) to process jobs. All that is required is connectivity to the Redis database
+(and likely a common storage). There are 3 components that make up Ncodr:
 
 * Queue Processing (ripping and encoding can be controlled separately)
 
@@ -62,7 +61,7 @@ I have 1 physical host and another physical host with 2 virtual machines on it. 
 
 ## Development
 
-The quickest way to get started with Ncodr is with [docker-compose](docker-compose.yml):
+The quickest way to get started with Ncodr is with devcontainers in VSCode. There is also a docker-compose file available:
     ln -s docker-compose.dev.yml docker-compose.override.yml
     docker-compose up
 
@@ -73,20 +72,18 @@ is easy to develop quickly.
 
 The benefit of using `docker-compose` as described above is that the node environment is exactly the same as what is run in production. However,
 it is of course possible to run Ncodr locally on a development workstation. You will need NodeJS version >=8.x installed, with a recent version on
-NPM. Then, do the usual `npm install` and `npm run serve`. This will start a process on your workstation listening (by default) on port 2000.
+NPM. Then, do the usual `yarn install` and `yarn serve`. This will start a process on your workstation listening (by default) on port 2000.
 
 Other commands for developers to know:
 
 | Command | Description |
 |---------|-------------|
-|`npm run lint`| Executes ESLint against the current code |
-|`npm test` | Executes the unit tests |
-|`npm run build`|Executes webpack to output the minimized, ES5 compatible JavaScript in the `/build` directory |
-|`npm run version` | Return back the current version of Ncodr |
-|`npm run docker` | Create an Ncodr production docker image, with current version tag |
-|`npm start` | Start a production instance of Ncodr, running locally |
-|`npm run package` | Create the zip file that is used for GitHub releases |
-|`npm run jsdoc` | Generate JSDoc documentation |
+|`yarn serve`| Starts ncodr locally in development mode, with reloading on code changes |
+|`yarn lint`| Executes ESLint against the current code |
+|`yarn test` | Executes the unit tests |
+|`yarn run version` | Return back the current version of Ncodr |
+|`yarn docker` | Create an Ncodr production docker image, with current version tag |
+|`yarn start` | Start a production instance of Ncodr, running locally |
 
 You will notice there are a few variations of docker-compose files available:
 [docker-compose](docker-compose.yml) is an example of a production deployment of Ncodr
