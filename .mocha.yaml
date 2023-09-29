@@ -1,0 +1,6 @@
+---
+recursive: true
+ui: bdd
+reporter: spec
+require:
+  - chai/register-expect

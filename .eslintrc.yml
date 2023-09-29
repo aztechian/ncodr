@@ -1,0 +1,21 @@
+extends: standard
+settings:
+  import/resolver:
+    - node
+env:
+  es2021: true
+  node: true
+  mocha: true
+parserOptions:
+  ecmaVersion: latest
+  sourceType: module
+  allowImportExportEverywhere: false
+rules:
+  "import/extensions": [
+    warn,
+    {"js": "ignorePackages"}
+  ]
+overrides:
+  - files: "**/*.test.js"
+    rules:
+      "no-unused-expressions": 0

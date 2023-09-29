@@ -1,0 +1,62 @@
+---
+name: Testing
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+# This ensures that previous jobs for the PR are canceled when the PR is
+# updated.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'yarn'
+          node-version-file: 'package.json'
+          cache-dependency-path: 'yarn.lock'
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Lint and Review
+        uses: reviewdog/action-eslint@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          eslint_flags: '.'
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'yarn'
+          node-version-file: 'package.json'
+          cache-dependency-path: 'yarn.lock'
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Run tests
+        run: yarn test:ci
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+          files: ./coverage/lcov.info
+          flags: unittests
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: |
+            coverage/results.json
+          # set comment_mode to "always" for pull_request event, set to "off" for all other event types
+          comment_mode: ${{ (github.event.workflow_run.event == 'pull_request' || github.event_name == 'pull_request') && 'always' || 'off' }}

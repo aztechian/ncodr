@@ -1,41 +1,41 @@
-import Queue from 'bull';
-import logger from './logger';
-import { core as config } from './conf';
+import Queue from 'bull'
+import logger from './logger.js'
+import { core as config } from './conf.js'
 
-const host = config.get('redis.host');
-const port = config.get('redis.port');
-const password = config.get('redis.password');
+const host = config.get('redis.host')
+const port = config.get('redis.port')
+const password = config.get('redis.password')
 
 export default {
   _instance: null,
-  get instance() {
+  get instance () {
     if (!this._instance) {
-      logger.debug(`Redis connection info: ${host}:${port} (password: ${password ? 'yes' : 'no'})`);
+      logger.debug(`Redis connection info: ${host}:${port} (password: ${password ? 'yes' : 'no'})`)
       this._instance = {
         queues: mapBullQueues(),
-        get ripQ() {
-          return this.queues.find(q => q.name === 'disc ripping');
+        get ripQ () {
+          return this.queues.find(q => q.name === 'disc ripping')
         },
-        get encodeQ() {
-          return this.queues.find(q => q.name === 'video encoding');
-        },
-      };
+        get encodeQ () {
+          return this.queues.find(q => q.name === 'video encoding')
+        }
+      }
     }
-    return this._instance;
-  },
-};
+    return this._instance
+  }
+}
 
-function mapBullQueues() {
+function mapBullQueues () {
   return config.get('queues').map(q => {
     const newQ = Queue(q.name, {
       redis: {
         host,
         port,
-        password,
-      },
-    });
-    logger.info(`Created ${newQ.name} queue (${q.id})`);
-    logger.debug(newQ);
-    return newQ;
-  });
+        password
+      }
+    })
+    logger.info(`Created ${newQ.name} queue (${q.id})`)
+    logger.debug(newQ)
+    return newQ
+  })
 }

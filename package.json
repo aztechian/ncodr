@@ -1,9 +1,10 @@
 {
   "name": "ncodr",
-  "version": "0.11.0",
+  "version": "0.12.0",
+  "type": "module",
   "description": "Encoding/Ripping Queue",
   "engines": {
-    "node": ">= 8.3.0"
+    "node": "^20.0.0"
   },
   "main": "index.js",
   "files": [
@@ -14,19 +15,28 @@
     "README"
   ],
   "scripts": {
-    "test": "NODE_ENV=test LOG_LEVEL=error nyc mocha --opts mocha.opts test/unit",
-    "serve": "backpack dev | pino-clf -a 1 -d 2 | pino-pretty -t",
+    "test": "NODE_ENV=test LOG_LEVEL=error c8 mocha ./test/unit/**/*.test.js",
+    "test:ci": "NODE_ENV=test LOG_LEVEL=error c8 mocha ./test/unit/**/*.test.js --reporter json --reporter-option output=coverage/results.json",
+    "serve": "nodemon index.js | pino-clf -a 1 -d 2 | pino-pretty -t",
     "lint": "eslint .",
     "jsdoc": "jsdoc",
-    "build": "rm -rf build && backpack build",
+    "clean": "rm -rf coverage node_modules",
     "version": "node -e 'console.log(require(\"./package.json\").version)'",
     "docker": "docker build -t aztechian/ncodr:$(npm run -s version) .",
-    "start": "node build/main.js | pino-clf -a 1 -d 2 | pino-pretty -t"
+    "start": "node index.js | pino-clf -a 1 -d 2 | pino-pretty -t"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/aztechian/ncodr.git"
+  "c8": {
+    "all": true,
+    "sourceMap": false,
+    "instrument": false,
+    "reporter": [
+      "lcovonly",
+      "text",
+      "text-summary",
+      "html"
+    ]
   },
+  "repository": "git+https://github.com/aztechian/ncodr.git",
   "keywords": [
     "encode",
     "queue",
@@ -42,51 +52,46 @@
   },
   "homepage": "https://github.com/aztechian/ncodr#readme",
   "dependencies": {
-    "atob": "^2.1.2",
-    "bluebird": "^3.5.5",
-    "body-parser": "^1.19.0",
-    "bull": "^3.10.0",
+    "atob": "^2.0.0",
+    "bluebird": "^3.0.0",
+    "body-parser": "^1.0.0",
+    "bull": "*",
     "cheerio": "*",
-    "chownr": "^1.1.2",
-    "compression": "^1.7.4",
-    "config": "^3.2.2",
-    "express": "^4.17.1",
-    "express-pino-logger": "^4.0.0",
-    "got": "^9.6.0",
-    "helmet": "^3.20.0",
-    "js-yaml": "^3.13.1",
-    "jsonwebtoken": "^8.5.1",
-    "keyv": "^3.1.0",
+    "chownr": "^2.0.0",
+    "compression": "^1.0.0",
+    "config": "^3.0.0",
+    "express": "^4.18.2",
+    "got": "^13.0.0",
+    "helmet": "^7.0.0",
+    "js-yaml": "^4.0.0",
+    "jsonwebtoken": "^9.0.0",
+    "keyv": "^4.0.0",
     "ncodr-ui": "github:aztechian/ncodr-ui#v1.4.0",
     "parse-cache-control": "^1.0.1",
-    "pino": "^5.13.2",
-    "pino-clf": "^1.0.6",
-    "pino-pretty": "^3.2.1",
+    "pino": "^8.0.0",
+    "pino-clf": "^1.0.0",
+    "pino-http": "^8.0.0",
+    "pino-pretty": "^10.0.0",
     "source-map-support": "^0.5.13",
     "sse-express": "^1.0.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.5.5",
-    "@babel/register": "^7.5.5",
-    "babel-eslint": "10.0.3",
-    "babel-plugin-istanbul": "^5.2.0",
-    "babel-plugin-root-import": "^6.4.1",
-    "babel-preset-env": "^1.7.0",
-    "backpack-core": "^0.8.4",
+    "c8": "^8.0.1",
     "chai": "*",
     "chai-as-promised": "*",
-    "eslint": "^6.2.2",
-    "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-import-resolver-alias": "^1.1.2",
-    "eslint-import-resolver-node": "^0.3.2",
-    "eslint-plugin-import": "^2.18.2",
+    "eslint": "^8.0.1",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-n": "^15.0.0 || ^16.0.0 ",
+    "eslint-plugin-promise": "^6.0.0",
     "jsdoc": "^3.6.3",
-    "mocha": "^6.2.0",
+    "mocha": "^10.0.0",
     "mock-spawn": "*",
-    "nock": "^10.0.6",
-    "nyc": "^14.1.1",
-    "sinon": "^7.4.1",
-    "sinon-chai": "^3.3.0",
-    "sinon-express-mock": "^2.2.1"
-  }
+    "nock": "*",
+    "nodemon": "^3.0.1",
+    "sinon": "^16.0.0",
+    "sinon-chai": "^3.0.0",
+    "sinon-express-mock": "^2.0.0"
+  },
+  "private": false
 }

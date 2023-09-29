@@ -1,0 +1,61 @@
+---
+name: Build
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+
+# This ensures that previous jobs for the PR are canceled when the PR is
+# updated.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ vars.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build feature branch
+        uses: docker/build-push-action@v4
+        if: github.ref != 'refs/heads/main'
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: false
+          tags: ${{ github.repository }}:${{ github.event.pull_request.head.ref }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push latest
+        uses: docker/build-push-action@v4
+        if: github.ref == 'refs/heads/main'
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ github.repository }}:latest
+
+      - name: Build and push tagged version
+        uses: docker/build-push-action@v4
+        if: startsWith(github.event.ref, 'refs/tags/v')
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ github.repository }}:${{ github.ref_name }}

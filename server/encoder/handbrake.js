@@ -1,38 +1,38 @@
-import { spawn } from 'child_process';
-import readline from 'readline';
-import Bluebird from 'bluebird';
-import path from 'path';
-import chownr from 'chownr';
-import { encoder as config } from '~/common/conf';
-import logger from '~/common/logger';
+import { spawn } from 'child_process'
+import readline from 'readline'
+import Bluebird from 'bluebird'
+import path from 'path'
+import chownr from 'chownr'
+import { encoder as config } from '../common/conf.js'
+import logger from '../common/logger.js'
 
-const chown = Bluebird.promisify(chownr);
+const chown = Bluebird.promisify(chownr)
 
 export class HandBrake {
-  constructor() {
-    this.defaults = config.get('hbOpts');
+  constructor () {
+    this.defaults = config.get('hbOpts')
   }
 
-  configure(job) {
-    const opts = { ...this.defaults, ...job.data.options };
+  configure (job) {
+    const opts = { ...this.defaults, ...job.data.options }
     const optArray = Object.entries(opts)
       .reduce((item, val) => item.concat(val))
-      .filter(o => o !== '');
+      .filter(o => o !== '')
 
-    if (job.data.scan) optArray.push('--scan');
-    optArray.push('-i', path.join(config.get('input'), job.data.input));
+    if (job.data.scan) optArray.push('--scan')
+    optArray.push('-i', path.join(config.get('input'), job.data.input))
     if (
-      Object.prototype.hasOwnProperty.call(job.data, 'options')
-      && Object.prototype.hasOwnProperty.call(job.data.options, '-t')
+      Object.prototype.hasOwnProperty.call(job.data, 'options') &&
+      Object.prototype.hasOwnProperty.call(job.data.options, '-t')
     ) {
       // if -t is specified by user, don't use --main-feature
-      const idx = optArray.indexOf('--main-feature');
-      if (idx > -1) optArray.splice(idx, 1);
+      const idx = optArray.indexOf('--main-feature')
+      if (idx > -1) optArray.splice(idx, 1)
     }
 
-    const out = this.outputFile(job);
-    optArray.push('-o', out);
-    return optArray;
+    const out = this.outputFile(job)
+    optArray.push('-o', out)
+    return optArray
   }
 
   /**
@@ -43,97 +43,97 @@ export class HandBrake {
    * @returns {string} the computed output filename, including configured base path
    * @memberof HandBrake
    */
-  outputFile(job) {
-    let { output } = job.data;
+  outputFile (job) {
+    let { output } = job.data
     if (!output) {
-      output = job.data.input.replace(/\.[^/.]+$/, '');
+      output = job.data.input.replace(/\.[^/.]+$/, '')
     }
     if (!output.match(/\..+$/)) {
-      output += '.m4v'; // add extension if there isn't one
+      output += '.m4v' // add extension if there isn't one
     }
-    return path.join(config.get('output'), output);
+    return path.join(config.get('output'), output)
   }
 
-  encode(job) {
-    if (!job.data.input) return Promise.reject(new Error('No input file given to HandBrake Job'));
-    const optArray = this.configure(job);
+  encode (job) {
+    if (!job.data.input) return Promise.reject(new Error('No input file given to HandBrake Job'))
+    const optArray = this.configure(job)
     // this is _totally_ hacky, but I'm too lazy right now to get the output file reasonably
-    const outputFile = optArray.slice(-1);
+    const outputFile = optArray.slice(-1)
 
     return new Promise((resolve, reject) => {
-      let output = '';
+      let output = ''
       // TODO just set the uid/gid of the process as an option to spawn
-      const hb = spawn('HandBrakeCLI', optArray);
+      const hb = spawn('HandBrakeCLI', optArray)
       logger.info(
-        `${this.constructor.name}: Starting HandBrake encode for job: ${job.id} ${optArray}`,
-      );
-      logger.info(`${this.constructor.name}: process started with pid - ${hb.pid}`);
-      logger.info(`${this.constructor.name}: HandBrakeCLI ${optArray.join(' ')}`);
+        `${this.constructor.name}: Starting HandBrake encode for job: ${job.id} ${optArray}`
+      )
+      logger.info(`${this.constructor.name}: process started with pid - ${hb.pid}`)
+      logger.info(`${this.constructor.name}: HandBrakeCLI ${optArray.join(' ')}`)
       readline
         .createInterface({
           input: hb.stdout,
-          terminal: false,
+          terminal: false
         })
         .on('line', data => {
-          logger.debug(`${this.constructor.name}: ${data.toString()}`);
-          const line = data.toString();
-          output += line;
-          const finished = line.match(/^Finished/);
-          const status = line.match(/Encoding: .*, (\d+\.\d+) % \((\d+\.\d+) fps,/);
+          logger.debug(`${this.constructor.name}: ${data.toString()}`)
+          const line = data.toString()
+          output += line
+          const finished = line.match(/^Finished/)
+          const status = line.match(/Encoding: .*, (\d+\.\d+) % \((\d+\.\d+) fps,/)
           if (status) {
-            logger.trace(`${this.constructor.name}: ${status[1]} % | ${status[2]} fps`);
-            job.progress(status[1]);
+            logger.trace(`${this.constructor.name}: ${status[1]} % | ${status[2]} fps`)
+            job.progress(status[1])
           } else if (finished) {
-            logger.trace(`${this.constructor.name}: finished`);
-            job.progress(100);
+            logger.trace(`${this.constructor.name}: finished`)
+            job.progress(100)
           } else {
-            logger.trace(`${this.constructor.name}: Received: `, data);
-            job.progress(0);
+            logger.trace(`${this.constructor.name}: Received: `, data)
+            job.progress(0)
           }
-        });
+        })
       hb.stderr.on('data', data => {
-        logger.trace(`${this.constructor.name}: ${data.toString()}`);
-      });
+        logger.trace(`${this.constructor.name}: ${data.toString()}`)
+      })
 
       hb.on('error', err => {
-        logger.warn(`${this.constructor.name}: Uh oh. Caught an error during encode: ${err}`);
-        reject(err);
-      });
+        logger.warn(`${this.constructor.name}: Uh oh. Caught an error during encode: ${err}`)
+        reject(err)
+      })
       hb.on('exit', code => {
-        logger.info(`${this.constructor.name}: Called exit on HandBrakeCLI: ${code}`);
+        logger.info(`${this.constructor.name}: Called exit on HandBrakeCLI: ${code}`)
         if (job.data.scan) {
-          job.progress(100);
-          return resolve({ output, code, outputFile });
+          job.progress(100)
+          return resolve({ output, code, outputFile })
         }
         if (code !== 0) {
-          return reject(new Error(`HandBrakeCLI exited with: ${code}\n${output}`));
+          return reject(new Error(`HandBrakeCLI exited with: ${code}\n${output}`))
         }
-        job.progress(100);
-        return resolve({ output, code, outputFile });
-      });
-    });
+        job.progress(100)
+        return resolve({ output, code, outputFile })
+      })
+    })
   }
 
-  process(job) {
-    return this.encode(job).then(result => this.setOwner(result.outputFile));
+  process (job) {
+    return this.encode(job).then(result => this.setOwner(result.outputFile))
   }
 
-  setOwner(jobPath) {
+  setOwner (jobPath) {
     if (config.has('owner') && config.has('group')) {
-      const owner = config.get('owner');
-      const group = config.get('group');
+      const owner = config.get('owner')
+      const group = config.get('group')
       logger.debug(
-        `${this.constructor.name}: Setting ownership of ${jobPath} to (${owner}:${group})`,
-      );
-      return chown(jobPath, owner, group).then(() => jobPath);
+        `${this.constructor.name}: Setting ownership of ${jobPath} to (${owner}:${group})`
+      )
+      return chown(jobPath, owner, group).then(() => jobPath)
     }
     logger.warn(
       `${
         this.constructor.name
-      }: Both "owner" and "group" must be set in Ripper config. Not setting ownership on ${jobPath}`,
-    );
-    return Promise.resolve(jobPath);
+      }: Both "owner" and "group" must be set in Ripper config. Not setting ownership on ${jobPath}`
+    )
+    return Promise.resolve(jobPath)
   }
 }
 
-export default new HandBrake();
+export default new HandBrake()

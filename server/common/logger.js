@@ -1,10 +1,9 @@
-import pino from 'pino';
-import { core as config } from './conf';
-
+import pino from 'pino'
+import { core as config } from './conf.js'
 
 const l = pino({
   name: 'ncodr',
-  level: config.get('logLevel'),
-});
+  level: config.get('logLevel')
+})
 
-export default l;
+export default l
