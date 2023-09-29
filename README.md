@@ -2,6 +2,8 @@
 
 [![GitHub release](https://img.shields.io/github/v/release/aztechian/ncodr?logo=GitHub)](https://github.com/aztechian/ncodr/releases)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/aztechian/ncodr/build.yaml?logo=github)](https://travis-ci.org/aztechian/ncodr)
+[![GitHub good first issues](https://img.shields.io/github/issues-search?query=repo%3Aaztechian%2Fncodr%20label%3A%22first%20issue%22%20is%3Aopen&logo=github&label=good%20first%20issues&color=purple)
+](https://github.com/aztechian/ncodr/issues?q=is%3Aissue+is%3Aopen+label%3A%22first+issue%22)
 [![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/aztechian/ncodr?logo=codeclimate)](https://codeclimate.com/github/aztechian/ncodr/maintainability)
 [![Codecov](https://img.shields.io/codecov/c/github/aztechian/ncodr?token=PkAzpQMTOV&logo=codecov)](https://app.codecov.io/gh/aztechian/ncodr)
 [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/aztechian/ncodr?sort=semver&logo=docker)](https://hub.docker.com/r/aztechian/ncodr/)
