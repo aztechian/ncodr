@@ -38,7 +38,7 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: false
-          tags: aztechian/nut:${{ github.event.pull_request.head.ref }}
+          tags: ${{ github.repository }}:${{ github.event.pull_request.head.ref }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -49,7 +49,7 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: aztechian/nut:latest
+          tags: ${{ github.repository }}:latest
 
       - name: Build and push tagged version
         uses: docker/build-push-action@v4
@@ -58,4 +58,4 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: aztechian/nut:${{ github.ref_name }}
+          tags: ${{ github.repository }}:${{ github.ref_name }}
