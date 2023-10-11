@@ -1,51 +1,42 @@
-// import { exec } from 'child_process';
-// import path from 'path';
-// import Buffer from 'buffer';
-// import logger from '../common/logger';
+import FFmpeg from 'fluent-ffmpeg'
+import ffmpegPath from 'ffmpeg-static'
+import logger from '../common/logger.js'
+import { encoder as config } from '../common/conf.js'
+import utils from '../common/utils.js'
 
-// https://azopcorp.com/blog/howtoparseffmpegstderouttodisplayjobprogress
+export default class Ffmpeg {
+  process (job) {
+    const command = new FFmpeg()
+    command.setFfmpegPath(ffmpegPath)
+    const outputFile = utils.outputFile(job.data.input, config.get('output'))
 
-export class Ffmpeg {
-  // process(job) {
-  //   let length = null;
-  //   let currenttime = 0;
-  //   const regex = /Duration:(.*), start:/;
-  //   const regex2 = /time=(.*) bitrate/;
+    return Promise((resolve, reject) => {
+      command.input(job.data.input)
+        .preset(this.mp4preset)
+        .on('error', err => {
+          logger.error(err)
+          reject(err)
+        })
+        .on('end', () => {
+          logger.info(`completed ffmpeg: ${job.data.input} -> ${outputFile}`)
+          resolve(outputFile)
+        })
+        .on('start', commandLine => {
+          logger.info(`started encoding: ${commandLine}`)
+        })
+        .save(outputFile)
+    })
+  }
 
-  //   const ffmpeg = exec('ffmpeg', ['-i',
-  //     `${path.dirname(__dirname)}/videos/input.mp4`,
-  //     '-c:v ',
-  //     'libxvid',
-  //     `${path.dirname(__dirname)}/videos/output.avi`,
-  //   ]);
-
-  //   ffmpeg.stderr.on('data', data => {
-  //     const buff = Buffer.from(data);
-  //     const str = buff.toString('utf8');
-  //     const Duration_matches = str.match(regex);
-  //     const Current_matches = str.match(regex2);
-  //     if (Duration_matches) {
-  //       length = timeString2ms(Duration_matches[1]);
-  //     }
-  //     if (Current_matches) {
-  //       currenttime = this.timeString2ms(Current_matches[1]);
-  //     }
-  //     if (length) {
-  //       logger.log(Math.ceil((current / length) * 100) + "%");
-  //     }
-  //   });
-  // }
-
-  // timeString2ms(a, b, c) { // time(HH:MM:SS.mss)
-  //   return c = 0,
-  //     a = a.split('.'),
-  //     !a[1] || (c += a[1] * 1),
-  //     a = a[0].split(':'), b = a.length,
-  //     c += (b == 3 ?
-  //       a[0] * 3600 + a[1] * 60 + a[2] * 1 :
-  //       b == 2 ? a[0] * 60 + a[1] * 1 : s = a[0] * 1) * 1e3,
-  //     c;
-  // }
+  mp4preset (ffmpeg) {
+    ffmpeg.format('mp4')
+      .videoCodec('copy')
+      .audioCodec('copy')
+      .outputOptions('-movflags', 'faststart')
+      .outputOptions('-c:s', 'mov_text')
+      .outputOptions('-map', '0:v?')
+      .outputOptions('-map', '0:a?')
+      .outputOptions('-map', '0:s?')
+      .outputOptions('-map_metadata', '0')
+  }
 }
-
-export default new Ffmpeg()

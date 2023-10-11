@@ -8,13 +8,9 @@ import logger from '../common/logger.js'
 
 const chown = Bluebird.promisify(chownr)
 
-export class HandBrake {
-  constructor () {
-    this.defaults = config.get('hbOpts')
-  }
-
+export default class HandBrake {
   configure (job) {
-    const opts = { ...this.defaults, ...job.data.options }
+    const opts = { ...config.get('hbOpts'), ...job.data.options }
     const optArray = Object.entries(opts)
       .reduce((item, val) => item.concat(val))
       .filter(o => o !== '')
@@ -135,5 +131,3 @@ export class HandBrake {
     return Promise.resolve(jobPath)
   }
 }
-
-export default new HandBrake()

@@ -1,4 +1,5 @@
-import fs from 'fs/promises'
+import fs from 'node:fs/promises'
+import path from 'node:path'
 
 export default class Utils {
   static respond (res, code = 500, message = 'Error') {
@@ -37,5 +38,9 @@ export default class Utils {
     return fs.mkdir(path).catch(err => {
       if (err.code !== 'EEXIST') throw err
     })
+  }
+
+  static outputFile (inputFilename, outputDir, ext = 'm4v') {
+    return path.format({ ...path.parse(inputFilename), base: '', ext: `.${ext}`, dir: outputDir })
   }
 }

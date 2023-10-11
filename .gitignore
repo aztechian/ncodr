@@ -7,9 +7,9 @@ yarn-error.log*
 /config/local*
 /docker-compose.override.yaml
 /.vagrant
-/media/*
-/rips/*
-/isos/*
+/media
+/rips
+/isos
 
 # Runtime data
 pids
@@ -30,7 +30,6 @@ coverage
 
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 build/Release
-/build
 
 # Dependency directories
 node_modules
@@ -41,3 +40,5 @@ jspm_packages
 
 # Optional REPL history
 .node_repl_history
+
+.DS_Store

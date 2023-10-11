@@ -31,8 +31,7 @@ const useUi = config.get('ui').toString()
 
 if (useApi === 'true' || useUi === 'true') {
   if (useUi === 'true') {
-    server.router('/config.js', clientConfig)
-      .static('node_modules/ncodr-ui/dist')
+    server.router('/config.js', clientConfig).static('node_modules/ncodr-ui/dist')
   }
   if (useApi === 'true') {
     server.router('/api', api)
@@ -40,6 +39,9 @@ if (useApi === 'true' || useUi === 'true') {
   server.router('*', Express.static('node_modules/ncodr-ui/dist/index.html')).listen(port)
 } // else - no reason to even listen
 
+// abstracts the setup of job processing for a given queue. This does not start any jobs,
+// only associates the processing function with the queue. Bull will call the processor later.
+// This relies on a processor having an "interface": 'process' that takes a job as an argument, and `isCapable` to check if the node is capable of processing the job.
 function jobProcessing (flag, queue, processor) {
   logger.debug(`called jobProcessing for ${queue.name} --- flag=${flag} (${typeof flag})`)
   if (flag === 'false' || flag === false) {

@@ -1,12 +1,13 @@
 import chai, { expect } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
-import handbrake from '../../../server/encoder/handbrake.js'
+import HandBrake from '../../../server/encoder/handbrake.js'
 
 chai.use(chaiAsPromised)
 
 describe('Handbrake', () => {
   describe('#encode', () => {
     let jobData
+    const handbrake = new HandBrake()
     beforeEach(() => {
       jobData = {
         jobId: 999,
