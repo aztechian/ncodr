@@ -1,14 +1,14 @@
-import Bluebird from 'bluebird'
-import { spawn } from 'child_process'
-import readline from 'readline'
+import util from 'node:util'
+import { spawn } from 'node:child_process'
+import readline from 'node:readline'
 import chownr from 'chownr'
 import path from 'path'
 import logger from '../common/logger.js'
 import { ripper as config } from '../common/conf.js'
 
-const chown = Bluebird.promisify(chownr)
+const chown = util.promisify(chownr)
 
-export class DvdBackup {
+export default class DvdBackup {
   constructor () {
     this._device = config.get('device')
     this.defaults = config.get('dvdbackupOpts')
@@ -62,11 +62,11 @@ export class DvdBackup {
     })
   }
 
-  process (job) {
+  async process (job) {
     // we return the disc label to Bull as the jobs' return value
-    return this.getLabel()
-      .then(label => this.rip(job, label))
-      .then(result => this.setOwner(result.outputFile))
+    const label = await this.getLabel()
+    const result = await this.rip(job, label)
+    return await this.setOwner(result.outputFile)
   }
 
   // Copying Title, part 4/7: 3% done (34/1024 MiB)
@@ -119,22 +119,15 @@ export class DvdBackup {
     })
   }
 
-  setOwner (jobPath) {
+  async setOwner (jobPath) {
     if (config.has('owner') && config.has('group')) {
       const owner = config.get('owner')
       const group = config.get('group')
-      logger.debug(
-        `${this.constructor.name}: Setting ownership of ${jobPath} to (${owner}:${group})`
-      )
-      return chown(jobPath, owner, group).then(() => jobPath)
+      logger.debug(`${this.constructor.name}: Setting ownership of ${jobPath} to (${owner}:${group})`)
+      await chown(jobPath, owner, group)
+      return jobPath
     }
-    logger.warn(
-      `${
-        this.constructor.name
-      }: Both "owner" and "group" must be set in Ripper config. Not setting ownership on ${jobPath}`
-    )
-    return Promise.resolve(jobPath)
+    logger.warn(`${this.constructor.name}: Both "owner" and "group" must be set in Ripper config. Not setting ownership on ${jobPath}`)
+    return jobPath
   }
 }
-
-export default new DvdBackup()

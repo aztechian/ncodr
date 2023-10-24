@@ -1,4 +1,4 @@
-import fs from 'node:fs/promises'
+import { mkdir } from 'node:fs/promises'
 import path from 'node:path'
 
 export default class Utils {
@@ -34,10 +34,12 @@ export default class Utils {
     return Utils.respond(res, 400, `${req.method} ${req.baseUrl}${req.url} - Bad Request`)
   }
 
-  static ensureDir (path) {
-    return fs.mkdir(path).catch(err => {
+  static async ensureDir (path) {
+    try {
+      return await mkdir(path)
+    } catch (err) {
       if (err.code !== 'EEXIST') throw err
-    })
+    }
   }
 
   static outputFile (inputFilename, outputDir, ext = 'm4v') {

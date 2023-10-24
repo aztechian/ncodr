@@ -1,12 +1,12 @@
 import { spawn } from 'child_process'
 import readline from 'readline'
-import Bluebird from 'bluebird'
+import util from 'node:util'
 import path from 'path'
 import chownr from 'chownr'
 import { encoder as config } from '../common/conf.js'
 import logger from '../common/logger.js'
 
-const chown = Bluebird.promisify(chownr)
+const chown = util.promisify(chownr)
 
 export default class HandBrake {
   configure (job) {

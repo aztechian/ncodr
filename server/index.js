@@ -17,13 +17,8 @@ const { ripQ, encodeQ } = Queues.instance
 jobProcessing(encoderConfig.get('enable'), encodeQ, encoder)
 jobProcessing(ripperConfig.get('enable'), ripQ, ripper)
 
-ripQ.on('global:completed', (jobId, result) => {
-  logger.warn(`The job - ${jobId} completed with `, result)
-})
-
-encodeQ.on('global:completed', (jobId, result) => {
-  logger.warn(`The job - ${jobId} completed with `, result)
-})
+ripQ.on('global:completed', globalCompleteHandler)
+encodeQ.on('global:completed', globalCompleteHandler)
 
 const server = new Server()
 const useApi = config.get('api').toString()
@@ -62,6 +57,10 @@ function jobProcessing (flag, queue, processor) {
         logger.debug(`Node not capabable of ${queue.name} jobs, not processing`)
       })
   }
+}
+
+function globalCompleteHandler (jobId, result) {
+  logger.warn(`The job - ${jobId} completed with `, result)
 }
 
 export default server
