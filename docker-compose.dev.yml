@@ -3,7 +3,7 @@ version: "3"
 services:
   ncodr:
     build: .
-    image: ncodr:dev
+    image: aztechian/ncodr:dev
     volumes:
       - .:/app
       # example device files to mount for testing (if present in your working copy)
