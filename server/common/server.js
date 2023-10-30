@@ -15,7 +15,7 @@ export default class ExpressServer {
     const reqLogger = new PinoLogger({ logger: l })
     app.set('etag', 'strong') // use strong (md5) etags
     app.use(reqLogger)
-    app.use(helmet())
+    app.use(helmet({ contentSecurityPolicy: { directives: { 'script-src': ['\'self\'', 'https://apis.google.com', 'https://storage.googleapis.com'] } } }))
 
     if (config.get('auth.type') === 'google') {
       l.debug('using JWT authentication for API')

@@ -1,19 +1,17 @@
-import Bluebird from 'bluebird'
-import got from 'got'
+import util from 'node:util'
+import { mkdir, writeFile } from 'node:fs/promises'
+import path from 'node:path'
+import { spawn } from 'node:child_process'
+import readline from 'node:readline'
 import cheerio from 'cheerio'
-import { spawn } from 'child_process'
-import readline from 'readline'
-import path from 'path'
-import fs from 'fs'
 import chownr from 'chownr'
+import got from 'got'
 import { ripper as config } from '../common/conf.js'
 import logger from '../common/logger.js'
 
-const mkdir = Bluebird.promisify(fs.mkdir)
-const writeFile = Bluebird.promisify(fs.writeFile)
-const chown = Bluebird.promisify(chownr)
+const chown = util.promisify(chownr)
 
-export class MakeMKV {
+export default class MakeMKV {
   constructor () {
     this.device = config.get('device')
     // collect all messages output from ripping
@@ -49,43 +47,48 @@ export class MakeMKV {
     })
   }
 
-  getBetaKey () {
+  async getBetaKey () {
     if (config.has('mkvKey') && config.get('mkvKey')) {
       logger.info('Using MakeMKV key from configuration value')
       return Promise.resolve(config.get('mkvKey'))
     }
-    return got('http://www.makemkv.com/forum/viewtopic.php?f=5&t=1053')
-      .then(response => {
-        const $ = cheerio.load(response.body)
-        const key = $('div.codebox code').text()
-        logger.debug(`retrieved content from forum post: ${key}`)
-        return key
-      })
-      .catch(err => {
-        logger.warn(`Unable to get MakeMKV beta key from the web: ${err}`)
-        throw new Error('')
-      })
+
+    try {
+      const response = await got('http://www.makemkv.com/forum/viewtopic.php?f=5&t=1053')
+      const $ = cheerio.load(response.body)
+      const key = $('div.codebox code').text()
+      logger.debug(`retrieved content from forum post: ${key}`)
+      return key
+    } catch (err) {
+      logger.warn(`Unable to get MakeMKV beta key from the web: ${err}`)
+      throw new Error(err)
+    }
   }
 
-  writeSettings (settings) {
-    return mkdir(this.settingsDir)
-      .catch(err => {
-        if (err.code !== 'EEXIST') {
-          throw err
-        }
-      })
-      .then(() => {
-        logger.debug(`Created ${this.settingsDir}`)
-        logger.debug(`Creating makemkv settings with:\n${settings}`)
-        return writeFile(path.join(this.settingsDir, 'settings.conf'), settings)
-      })
+  async writeSettings (settings) {
+    try {
+      await mkdir(this.settingsDir)
+    } catch (err) {
+      if (err.code !== 'EEXIST') {
+        throw err
+      }
+    }
+    logger.debug(`Created ${this.settingsDir}`)
+    logger.debug(`Creating makemkv settings with:\n${settings}`)
+    return await writeFile(path.join(this.settingsDir, 'settings.conf'), settings)
   }
 
-  updateKey () {
-    return this.getBetaKey()
-      .catch(() => 'app_Update = false\n')
-      .then(key => `app_Update = false\napp_Key = "${key}"`)
-      .then(settings => this.writeSettings(settings))
+  async updateKey () {
+    let settings = 'app_Update = false\n'
+
+    try {
+      const key = await this.getBetaKey()
+      settings += `app_Key = "${key}"`
+    } catch (error) {
+      logger.info(error)
+    }
+
+    return await this.writeSettings(settings)
   }
 
   getLabel () {
@@ -146,12 +149,12 @@ export class MakeMKV {
     return pct
   }
 
-  process (job) {
+  async process (job) {
     this.messages = ''
-    return this.updateKey()
-      .then(() => this.getLabel())
-      .then(label => this.rip(job, label))
-      .then(result => this.setOwner(result.outputFile))
+    await this.updateKey()
+    const label = await this.getLabel()
+    const result = await this.rip(job, label)
+    return await this.setOwner(result.outputFile)
   }
 
   rip (job, label) {
@@ -188,7 +191,7 @@ export class MakeMKV {
     })
   }
 
-  setOwner (jobPath) {
+  async setOwner (jobPath) {
     logger.debug(`config has owner? ${config.has('owner')}`)
     logger.debug(`config has group? ${config.has('owner')}`)
     logger.debug(config)
@@ -196,11 +199,10 @@ export class MakeMKV {
       const owner = config.get('owner')
       const group = config.get('group')
       logger.debug(`${this.constructor.name}: Setting ownership of ${jobPath} to (${owner}:${group})`)
-      return chown(jobPath, owner, group).then(() => jobPath)
+      await chown(jobPath, owner, group)
+      return jobPath
     }
     logger.warn(`${this.constructor.name}: Both "owner" and "group" must be set in Ripper config. Not setting ownership on ${jobPath}`)
-    return Promise.resolve(jobPath)
+    return jobPath
   }
 }
-
-export default new MakeMKV()

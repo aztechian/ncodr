@@ -2,7 +2,7 @@ import utils from '../common/utils.js'
 import qSvc from './services/bull.js'
 import logger from '../common/logger.js'
 
-export class Job {
+class Job {
   fetch (req, res, next) {
     return qSvc
       .getJob(req.params.queue, req.params.id)

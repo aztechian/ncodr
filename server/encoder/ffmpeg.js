@@ -1,51 +1,77 @@
-// import { exec } from 'child_process';
-// import path from 'path';
-// import Buffer from 'buffer';
-// import logger from '../common/logger';
+import FFmpeg from 'fluent-ffmpeg'
+import ffmpegPath from 'ffmpeg-static'
+import logger from '../common/logger.js'
+import { encoder as config } from '../common/conf.js'
+import utils from '../common/utils.js'
 
-// https://azopcorp.com/blog/howtoparseffmpegstderouttodisplayjobprogress
+export default class Ffmpeg {
+  constructor () {
+    this.command = new FFmpeg()
+    this.command.setFfmpegPath(ffmpegPath)
+    this.attachListeners()
+  }
 
-export class Ffmpeg {
-  // process(job) {
-  //   let length = null;
-  //   let currenttime = 0;
-  //   const regex = /Duration:(.*), start:/;
-  //   const regex2 = /time=(.*) bitrate/;
+  process (job) {
+    this.outputFile = utils.outputFile(job.data.input, config.get('output'))
 
-  //   const ffmpeg = exec('ffmpeg', ['-i',
-  //     `${path.dirname(__dirname)}/videos/input.mp4`,
-  //     '-c:v ',
-  //     'libxvid',
-  //     `${path.dirname(__dirname)}/videos/output.avi`,
-  //   ]);
+    if (job.data.retry) {
+      this.command.preset(this.mp4FallbackPreset)
+    } else {
+      this.command.preset(this.mp4preset)
+    }
 
-  //   ffmpeg.stderr.on('data', data => {
-  //     const buff = Buffer.from(data);
-  //     const str = buff.toString('utf8');
-  //     const Duration_matches = str.match(regex);
-  //     const Current_matches = str.match(regex2);
-  //     if (Duration_matches) {
-  //       length = timeString2ms(Duration_matches[1]);
-  //     }
-  //     if (Current_matches) {
-  //       currenttime = this.timeString2ms(Current_matches[1]);
-  //     }
-  //     if (length) {
-  //       logger.log(Math.ceil((current / length) * 100) + "%");
-  //     }
-  //   });
-  // }
+    return new Promise((resolve, reject) => {
+      this.command.input(job.data.input)
+        .on('error', err => { reject(err) })
+        .on('end', () => { resolve(this.outputFile) })
+        .save(this.outputFile)
+    })
+  }
 
-  // timeString2ms(a, b, c) { // time(HH:MM:SS.mss)
-  //   return c = 0,
-  //     a = a.split('.'),
-  //     !a[1] || (c += a[1] * 1),
-  //     a = a[0].split(':'), b = a.length,
-  //     c += (b == 3 ?
-  //       a[0] * 3600 + a[1] * 60 + a[2] * 1 :
-  //       b == 2 ? a[0] * 60 + a[1] * 1 : s = a[0] * 1) * 1e3,
-  //     c;
-  // }
+  mp4preset (ffmpeg) {
+    ffmpeg.format('mp4')
+      .videoCodec('copy')
+      .audioCodec('copy')
+      .outputOptions('-movflags', 'faststart')
+      .outputOptions('-c:s', 'mov_text')
+      .outputOptions('-map', '0:v?')
+      .outputOptions('-map', '0:a?')
+      .outputOptions('-map', '0:s?')
+      .outputOptions('-map_metadata', '0')
+  }
+
+  // nearly the same settings as mp4preset, but without subtitles
+  mp4FallbackPreset (ffmpeg) {
+    ffmpeg.format('mp4')
+      .videoCodec('copy')
+      .audioCodec('copy')
+      .outputOptions('-movflags', 'faststart')
+      .outputOptions('-map', '0:v?')
+      .outputOptions('-map', '0:a?')
+      .outputOptions('-map_metadata', '0')
+  }
+
+  static onError (err, stdout, stderr) {
+    logger.warn(`error during ffmpeg encoding: ${err.message}`)
+    logger.debug(`ffmpeg stdout: ${stdout}`)
+    logger.debug(`ffmpeg stderr: ${stderr}`)
+  }
+
+  static onEnd () {
+    logger.info('completed ffmpeg encoding')
+  }
+
+  static onStart (commandLine) {
+    logger.info(`started encoding: ${commandLine}`)
+  }
+
+  attachListeners () {
+    return this.command.on('error', Ffmpeg.onError)
+      .on('end', Ffmpeg.onEnd)
+      .on('start', Ffmpeg.onStart)
+  }
+
+  cleanup () {
+    this.command.removeAllListeners()
+  }
 }
-
-export default new Ffmpeg()

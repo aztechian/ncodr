@@ -1,17 +1,18 @@
 import logger from '../common/logger.js'
 import { encoder as config } from '../common/conf.js'
 import util from '../common/utils.js'
-import handbrake from './handbrake.js'
-import avconv from './ffmpeg.js'
+import HandBrake from './handbrake.js'
+import Ffmpeg from './ffmpeg.js'
 
-export class Encoder {
+class Encoder {
   process (job) {
     switch (job.data.type) {
       case 'handbrake':
       case 'handbrakecli':
-        return handbrake.process(job)
+        return new HandBrake().process(job)
       case 'avconv':
-        return avconv.process(job)
+      case 'ffmpeg':
+        return new Ffmpeg().process(job)
       default:
         return Promise.reject(new Error(`unkown job type: ${job.data.type}`))
     }

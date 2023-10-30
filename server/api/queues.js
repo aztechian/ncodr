@@ -1,7 +1,7 @@
 import utils from '../common/utils.js'
 import qSvc from './services/bull.js'
 
-export class Queues {
+class Queues {
   fetch (req, res, next) {
     return qSvc.queues()
       .then(response => res.json(response))

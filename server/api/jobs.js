@@ -1,7 +1,7 @@
 import utils from '../common/utils.js'
 import qSvc from './services/bull.js'
 
-export class Jobs {
+class Jobs {
   fetch (req, res, next) {
     let worker
     if (req.query.status) {

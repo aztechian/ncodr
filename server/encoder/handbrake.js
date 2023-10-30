@@ -1,20 +1,16 @@
 import { spawn } from 'child_process'
 import readline from 'readline'
-import Bluebird from 'bluebird'
+import util from 'node:util'
 import path from 'path'
 import chownr from 'chownr'
 import { encoder as config } from '../common/conf.js'
 import logger from '../common/logger.js'
 
-const chown = Bluebird.promisify(chownr)
+const chown = util.promisify(chownr)
 
-export class HandBrake {
-  constructor () {
-    this.defaults = config.get('hbOpts')
-  }
-
+export default class HandBrake {
   configure (job) {
-    const opts = { ...this.defaults, ...job.data.options }
+    const opts = { ...config.get('hbOpts'), ...job.data.options }
     const optArray = Object.entries(opts)
       .reduce((item, val) => item.concat(val))
       .filter(o => o !== '')
@@ -135,5 +131,3 @@ export class HandBrake {
     return Promise.resolve(jobPath)
   }
 }
-
-export default new HandBrake()
