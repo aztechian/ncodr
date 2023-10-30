@@ -39,7 +39,8 @@ jobs:
         with:
           context: .
           platforms: linux/amd64,linux/arm64
-          load: true
+          push: false
+          # load: true
           # if we wanted to integration test the image, we could run it here. load=true means that the build output will be the local docker
           # daemon. So the image will be available after this step, and could be pushed later with another call to docker/build-push-action, which
           # would use the cache from this step, so it would be fast.
